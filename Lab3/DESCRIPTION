@@ -1,0 +1,15 @@
+Package: Lab3
+Type: Package
+Title: Implementation of Euclidian and Dijkstra algorithm
+Version: 1.0
+Date: 2016-09-11
+Author: Rasmus Holm [aut, cre],
+    Zhendong Wang [aut, cre],
+    Karolina Ziomek [aut, cre]
+Maintainer: Rasmus Holm <rasho258@student.liu.se>             
+Description: Implementation of Euclidian algorithm: finds the greatest common
+    divisor of two numbers. Implementation of Dijkstra algorithm: finds the shortest
+    paths within a directed graph.
+License: CC0
+RoxygenNote: 5.0.1
+Suggests: testthat
