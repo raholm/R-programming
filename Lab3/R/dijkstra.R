@@ -1,3 +1,6 @@
+#' Dijkstra Algorithm
+#'
+#' @description
 #' Computes the least path costs to all nodes in a directed graph from the initial node.
 #' 
 #' Computes the least path costs to all nodes in a directed graph from the initial node.It assumes the nodes are of type numeric from 1 to |V| (number of nodes).
