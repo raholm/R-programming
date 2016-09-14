@@ -1,7 +1,6 @@
-#' Finds the greatest common divisor of two integers using the Euclidean algorithm.
+#' Finds the greatest common divisor of two integers by using the Euclidean algorithm.
 #' 
-#' @param a A positive integer.
-#' @param b A positive integer.
+#' @param a&b Both are positive integers which are supposed to find the GCD of them.
 #' @return The greatest common divisor of \code{a} and \code{b}.
 #' 
 #' @examples 
