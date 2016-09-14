@@ -1,6 +1,6 @@
-#' Computes the least path costs to all nodes in a directed graph from the initial node.
+#' Computes the least path costs to all nodes in a directed graph from the initial node
 #' 
-#' Computes the least path costs to all nodes in a directed graph from the initial node.It assumes the nodes are of type numeric from 1 to |V| (number of nodes).
+#' It assumes the nodes are of type numeric from 1 to |V| (number of nodes).
 #' 
 #' @param graph A directed graph which is supposed to compute the least path of different nodes.
 #' @param node_init A node which is chosen for computing the shortest path.
@@ -39,6 +39,11 @@ dijkstra_check_input <- function(graph, node_init) {
     {
         stopifnot(variable %in% names(graph))
     }
+    
+    ## Ensure that the nodes are "labeled" 1, 2, ..., |V|
+    nodes <- unique(c(graph$v1, graph$v2))
+    stopifnot(length(nodes) == length(1:max(nodes)))
+    stopifnot(nodes == 1:max(nodes))
 
     ## Make sure the node_init actually exists.
     stopifnot(node_init %in% graph[, "v1"] || node_init %in% graph[, "v2"])

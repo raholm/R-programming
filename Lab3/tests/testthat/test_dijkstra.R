@@ -7,6 +7,9 @@ test_that("dijkstra of invalid input is invalid", {
   expect_error(dijkstra(wiki_graph, 999))
   expect_error(dijkstra(wiki_graph, -1))
   expect_error(dijkstra(1, 1))
+  
+  invalid_graph <- data.frame(v1=c(1, 3), v2=c(3, 1), w=c(1, 1))
+  expect_error(dijkstra(invalid_graph, 1))
 })
 
 test_that("dijkstra of valid graph returns correct output", {
