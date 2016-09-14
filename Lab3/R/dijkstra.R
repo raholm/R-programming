@@ -49,7 +49,7 @@ dijkstra_check_input <- function(graph, node_init) {
 }
 
 dijkstra_initialize <- function(graph, node_init) {
-    nodes <- unique(c(graph[, "v1"], graph[, "v2"]))
+    nodes <- unique(c(graph$v1, graph$v2))
     node_unvisited <- nodes
     node_distances <- rep(Inf, length(nodes))
     node_distances[node_init] <- 0
