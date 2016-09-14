@@ -1,4 +1,3 @@
-
 #' A data set containing the wiki graph.
 #'
 #' @format A data frame with 3 vectors:
