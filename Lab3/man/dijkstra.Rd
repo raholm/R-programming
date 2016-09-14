@@ -26,7 +26,7 @@ Vector of path costs to every node from \code{node_init}.
 \description{
 Computes the least path costs to all nodes in a directed graph from the initial node.
 
-The nodes have to labeled from 1 to |V| (number of nodes in total)
+The nodes have to labeled from 1 to |V| (number of nodes in total).
 }
 \examples{
 dijkstra(wiki_graph, 1)

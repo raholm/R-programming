@@ -3,7 +3,7 @@
 #' @description 
 #' Computes the least path costs to all nodes in a directed graph from the initial node.
 #' 
-#' The nodes have to labeled from 1 to |V| (number of nodes in total)
+#' The nodes have to labeled from 1 to |V| (number of nodes in total).
 #' 
 #' @param graph A directed graph which is supposed to compute the least path of different nodes.
 #' @param node_init A node which is chosen for computing the shortest path.
