@@ -1,128 +1,131 @@
-dijkstra <- function(graph, node.init)
-{
-  ## This function assumes the nodes start from 1 to |V|.
-  dijkstra.check.input(graph, node.init)
-  
-  init <- dijkstra.initialize(graph, node.init)
-  
-  return(dijkstra.distances(graph,
-                            init$unvisited,
-                            init$distances,
-                            init$previous))
+#' Computes the least path costs to all nodes in a directed graph from the initial node.
+#' It assumes the nodes are of type numeric from 1 to |V| (number of nodes).
+#' 
+#' @param graph A directed graph.
+#' @param node_init A node.
+#' @return Vector of path costs to every node from \code{node_init}.
+#' 
+#' @format graph
+#' \describe{
+#'    \item{v1}{Vector of nodes for edges start positions.}
+#'    \item{v2}{Vector of nodes for edges end positions.}
+#'    \item{w}{Vector of edge weights.}
+#' }
+#' 
+#' @examples 
+#' dijkstra(wiki_graph, 1)
+#' dijkstra(wiki_graph, 3)
+#' 
+#' @export
+#' @source \url{https://en.wikipedia.org/wiki/Dijkstra's_algorithm}
+dijkstra <- function(graph, node_init) {
+    dijkstra_check_input(graph, node_init)
+
+    init <- dijkstra_initialize(graph, node_init)
+
+    return(dijkstra_distances(graph,
+                              init$unvisited,
+                              init$distances,
+                              init$previous))
 }
 
-dijkstra.check.input <- function(graph, node.init)
-{
-  stopifnot(is.data.frame(graph))
-  stopifnot(is.numeric(node.init))
-  
-  required.variables <- c("v1", "v2", "w")
-  for (variable in required.variables)
-  {
-    stopifnot(variable %in% names(graph))
-  }
-  
-  ## Make sure the node.init actually exists.
-  stopifnot(node.init %in% graph[, "v1"] || node.init %in% graph[, "v2"])
-}
+dijkstra_check_input <- function(graph, node_init) {
+    stopifnot(is.data.frame(graph))
+    stopifnot(is.numeric(node_init))
 
-dijkstra.initialize <- function(graph, node.init)
-{
-  nodes <- unique(c(graph[, "v1"], graph[, "v2"]))
-  node.unvisited <- nodes
-  node.distances <- rep(Inf, length(nodes))
-  node.distances[node.init] <- 0
-  node.previous <- rep(NA, length(nodes))
-  
-  return(list(unvisited=node.unvisited,
-              distances=node.distances,
-              previous=node.previous))
-}
-
-dijkstra.distances <- function(graph, node.unvisited, node.distances, node.previous)
-{
-  while (!dijkstra.vector.empty(node.unvisited))
-  {
-    node.current <- dijkstra.node.next(node.unvisited, node.distances)
-    
-    for (node.neighbor in dijkstra.node.neighbors(node.current, graph))
+    required_variables <- c("v1", "v2", "w")
+    for (variable in required_variables)
     {
-      node.distance <- node.distances[node.current] + dijkstra.node.distance(node.current,
-                                                                             node.neighbor,
-                                                                             graph)
-      
-      if (node.distance < node.distances[node.neighbor])
-      {
-        node.distances[node.neighbor] <- node.distance
-        node.previous[node.neighbor] <- node.current
-      }
+        stopifnot(variable %in% names(graph))
     }
-    
-    node.unvisited <- dijkstra.vector.remove(node.unvisited, node.current)
-  }
-  
-  return(node.distances)
+
+    ## Make sure the node_init actually exists.
+    stopifnot(node_init %in% graph[, "v1"] || node_init %in% graph[, "v2"])
 }
 
+dijkstra_initialize <- function(graph, node_init) {
+    nodes <- unique(c(graph[, "v1"], graph[, "v2"]))
+    node_unvisited <- nodes
+    node_distances <- rep(Inf, length(nodes))
+    node_distances[node_init] <- 0
+    node_previous <- rep(NA, length(nodes))
 
-dijkstra.vector.empty <- function(v)
-{
-  return(sum(v, na.rm=TRUE) == 0)
+    return(list(unvisited=node_unvisited,
+                distances=node_distances,
+                previous=node_previous))
 }
 
-dijkstra.vector.remove <- function(v, index)
-{
-  v[index] <- NA
-  return(v)
-}
-
-dijkstra.node.next <- function(nodes, distances)
-{
-  distance.min <- Inf
-  node.next <- NULL
-  
-  for (node in nodes)
-  {
-    if (!is.na(node) && distances[node] < distance.min)
+dijkstra_distances <- function(graph, node_unvisited, node_distances, node_previous) {
+    while (!dijkstra_vector_empty(node_unvisited))
     {
-      distance.min <- distances[node]
-      node.next <- node
+        node_current <- dijkstra_node_next(node_unvisited, node_distances)
+
+        for (node_neighbor in dijkstra_node_neighbors(node_current, graph))
+        {
+            node_distance <- node_distances[node_current] + dijkstra_node_distance(node_current,
+                                                                                   node_neighbor,
+                                                                                   graph)
+
+            if (node_distance < node_distances[node_neighbor])
+            {
+                node_distances[node_neighbor] <- node_distance
+                node_previous[node_neighbor] <- node_current
+            }
+        }
+
+        node_unvisited <- dijkstra_vector_remove(node_unvisited, node_current)
     }
-  }
-  
-  ## Could not find the next node.
-  stopifnot(!is.null(node.next))
-  
-  return(node.next)
+
+    return(node_distances)
 }
 
-dijkstra.node.neighbors <- function(node, graph)
-{
-  return(graph$v2[which(graph$v1 == node)])
+
+dijkstra_vector_empty <- function(v) {
+    return(sum(v, na.rm=TRUE) == 0)
 }
 
-dijkstra.node.distance <- function(from, to, graph)
-{
-  distance.index <- NA
-  
-  for (i in 1:length(graph$v1))
-  {
-    if (graph$v1[i] == from && graph$v2[i] == to)
+dijkstra_vector_remove <- function(v, index) {
+    v[index] <- NA
+    return(v)
+}
+
+dijkstra_node_next <- function(nodes, distances) {
+    distance_min <- Inf
+    node_next <- NULL
+
+    for (node in nodes)
     {
-      distance.index <- i
-      break
+        if (!is.na(node) && distances[node] < distance_min)
+        {
+            distance_min <- distances[node]
+            node_next <- node
+        }
     }
-  }
-  
-  ## Could not find an edge.
-  stopifnot(!is.na(distance.index))
-  
-  return(graph$w[distance.index])
+
+    ## Could not find the next node_
+    stopifnot(!is.null(node_next))
+
+    return(node_next)
 }
 
-wiki.graph <- data.frame(v1=c(1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,6,6,6),
-                         v2=c(2,3,6,1,3,4,1,2,4,6,2,3,5,4,6,1,3,5),
-                         w=c(7,9,14,7,10,15,9,10,11,2,15,11,6,6,9,14,2,9))
+dijkstra_node_neighbors <- function(node, graph) {
+    return(graph$v2[which(graph$v1 == node)])
+}
 
-dijkstra(wiki.graph, 1)
-dijkstra(wiki.graph, 3)
+dijkstra_node_distance <- function(from, to, graph) {
+    distance_index <- NA
+
+    for (i in 1:length(graph$v1))
+    {
+        if (graph$v1[i] == from && graph$v2[i] == to)
+        {
+            distance_index <- i
+            break
+        }
+    }
+
+    ## Could not find an edge.
+    stopifnot(!is.na(distance_index))
+
+    return(graph$w[distance_index])
+}
