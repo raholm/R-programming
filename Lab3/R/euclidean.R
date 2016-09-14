@@ -7,7 +7,8 @@
 #' @examples 
 #' euclidean(100, 1000)
 #' euclidean(1000, 100)
-#' 
+#'
+#' @export
 #' @source \url{https://en.wikipedia.org/wiki/Euclidean_algorithm}
 euclidean <- function(a, b) {
     euclidean_check_input(a, b)
