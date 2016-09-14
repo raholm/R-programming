@@ -1,4 +1,5 @@
 #' Computes the least path costs to all nodes in a directed graph from the initial node.
+#' It assumes the nodes are of type numeric from 1 to |V| (number of nodes).
 #' 
 #' @param graph A directed graph.
 #' @param node_init A node.
@@ -18,7 +19,6 @@
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Dijkstra's_algorithm}
 dijkstra <- function(graph, node_init) {
-    ## This function assumes the nodes start from 1 to |V|.
     dijkstra_check_input(graph, node_init)
 
     init <- dijkstra_initialize(graph, node_init)
