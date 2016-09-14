@@ -1,5 +1,5 @@
 library(Lab3)
-context("Euclidian")
+context("Euclidean")
 
 test_that("euclidian of invalid input is invalid", {
   expect_error(euclidian("invalid", 1000))
