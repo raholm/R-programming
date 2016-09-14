@@ -3,9 +3,6 @@
 .Rproj.user
 *.Rproj
 *.Rhistory
-<<<<<<< HEAD
-NAMESPACE
-=======
 Lab3/NAMESPACE
 Lab3/man/
->>>>>>> ca9492ac46af13281e032d2ee900c91ce8062626
+
