@@ -2,7 +2,7 @@
 % Please edit documentation in R/euclidean.R
 \name{euclidean}
 \alias{euclidean}
-\title{Finds the greatest common divisor of two integers by using the Euclidean algorithm.}
+\title{Euclidean Algorithm}
 \source{
 \url{https://en.wikipedia.org/wiki/Euclidean_algorithm}
 }
@@ -10,7 +10,9 @@
 euclidean(a, b)
 }
 \arguments{
-\item{\code{a}}{& \code{b} Both are positive integers which are supposed to find the GCD of them.}
+\item{\code{a}}{A positive integer.}
+
+\item{\code{b}}{A positive integer.}
 }
 \value{
 The greatest common divisor of \code{a} and \code{b}.
