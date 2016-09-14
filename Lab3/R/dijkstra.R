@@ -48,7 +48,7 @@ dijkstra_check_input <- function(graph, node_init) {
     stopifnot(nodes == 1:max(nodes))
 
     ## Make sure the node_init actually exists.
-    stopifnot(node_init %in% graph[, "v1"] || node_init %in% graph[, "v2"])
+    stopifnot(node_init %in% graph$v1 || node_init %in% graph$v2)
 }
 
 dijkstra_initialize <- function(graph, node_init) {
