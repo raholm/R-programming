@@ -1,3 +1,6 @@
+#' Euclidean Algorithm
+#'
+#' @description
 #' Finds the greatest common divisor of two integers using the Euclidean algorithm.
 #' 
 #' @param a A positive integer.
@@ -27,3 +30,4 @@ euclidean_check_input <- function(a, b) {
   stopifnot(is.numeric(a), length(a) == 1, a %% 1 == 0, a > 0)
   stopifnot(is.numeric(b), length(b) == 1, b %% 1 == 0, b > 0)
 }
+
