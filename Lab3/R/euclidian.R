@@ -14,8 +14,8 @@ euclidian <- function(a, b)
 
 euclidian.check.input <- function(a, b)
 {
-  stopifnot(is.numeric(a))
-  stopifnot(is.numeric(b))
+  stopifnot(is.numeric(a), length(a) == 1)
+  stopifnot(is.numeric(b), length(b) == 1)
 }
 
 euclidian(123612, 13892347912)
