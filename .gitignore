@@ -3,3 +3,5 @@
 .Rproj.user
 *.Rproj
 *.Rhistory
+NAMESPACE
+Lab3/man/
