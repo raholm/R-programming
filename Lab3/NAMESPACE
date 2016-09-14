@@ -2,3 +2,4 @@
 
 export(dijkstra)
 export(euclidean)
+export(wiki_graph)
