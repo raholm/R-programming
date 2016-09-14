@@ -1,4 +1,4 @@
-#' Implementation of Euclidean and Dijkstra algorithm
+#' Lab3
 #' 
 #' @description 
 #' Implementation of Euclidean algorithm: finds the greatest common

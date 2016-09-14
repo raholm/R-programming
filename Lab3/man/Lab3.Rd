@@ -4,7 +4,7 @@
 \name{Lab3}
 \alias{Lab3}
 \alias{Lab3-package}
-\title{Implementation of Euclidean and Dijkstra algorithm}
+\title{Lab3}
 \description{
 Implementation of Euclidean algorithm: finds the greatest common
 divisor of two positive integers.

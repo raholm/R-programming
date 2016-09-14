@@ -2,7 +2,7 @@
 % Please edit documentation in R/dijkstra.R
 \name{dijkstra}
 \alias{dijkstra}
-\title{Computes the least path costs to all nodes in a directed graph from the initial node}
+\title{Dijkstra Algorithm}
 \format{graph
 \describe{
    \item{v1}{Vector of nodes for edges start positions.}
@@ -24,6 +24,8 @@ dijkstra(graph, node_init)
 Vector of path costs to every node from \code{node_init}.
 }
 \description{
+Computes the least path costs to all nodes in a directed graph from the initial node.
+
 The nodes have to labeled from 1 to |V| (number of nodes in total)
 }
 \examples{
