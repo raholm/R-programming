@@ -3,8 +3,8 @@
 #' @description 
 #' Finds the greatest common divisor of two integers by using the Euclidean algorithm.
 #' 
-#' @param \code{a} A positive integer.
-#' @param \code{b} A positive integer.
+#' @param a A positive integer.
+#' @param b A positive integer.
 #' @return The greatest common divisor of \code{a} and \code{b}.
 #' 
 #' @examples 

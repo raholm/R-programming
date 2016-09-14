@@ -7,10 +7,10 @@
 \title{Implementation of Euclidean and Dijkstra algorithm}
 \description{
 Implementation of Euclidean algorithm: finds the greatest common
-divisor of two numbers. 
+divisor of two positive integers.
 
-Implementation of Dijkstra algorithm: finds the shortest
-paths within a directed graph.
+Implementation of Dijkstra algorithm: finds the least path costs
+within a directed graph.
 }
 \author{
 Rasmus Holm

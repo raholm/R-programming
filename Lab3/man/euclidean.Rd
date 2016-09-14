@@ -10,9 +10,9 @@
 euclidean(a, b)
 }
 \arguments{
-\item{\code{a}}{A positive integer.}
+\item{a}{A positive integer.}
 
-\item{\code{b}}{A positive integer.}
+\item{b}{A positive integer.}
 }
 \value{
 The greatest common divisor of \code{a} and \code{b}.
