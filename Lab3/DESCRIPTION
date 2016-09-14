@@ -12,3 +12,4 @@ Description: Implementation of Euclidian algorithm: finds the greatest common
     path within a directed graph
 License: NA
 RoxygenNote: 5.0.1
+Suggests: testthat
