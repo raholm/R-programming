@@ -1,4 +1,4 @@
-#' A data set containing the wiki graph.
+#' A data set containing the example directed graph which is shown in wiki website.
 #'
 #' @format A data frame with 3 vectors:
 #' \describe{
