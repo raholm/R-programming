@@ -3,7 +3,7 @@
 \docType{data}
 \name{wiki_graph}
 \alias{wiki_graph}
-\title{A data set containing the example directed graph which is shown in wiki website.}
+\title{Wiki Graph}
 \format{A data frame with 3 vectors:
 \describe{
   \item{v1}{Start nodes of the edges.}
@@ -17,7 +17,7 @@
 wiki_graph
 }
 \description{
-A data set containing the example directed graph which is shown in wiki website.
+A data set containing the directed graph example which is shown in wiki website.
 }
 \keyword{datasets}
 
