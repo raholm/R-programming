@@ -16,8 +16,7 @@
 euclidean <- function(a, b) {
     euclidean_check_input(a, b)
 
-    while (b != 0)
-    {
+    while (b != 0) {
         tmp <- b
         b <- a %% b
         a <- tmp

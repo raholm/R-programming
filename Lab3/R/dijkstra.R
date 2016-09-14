@@ -35,8 +35,7 @@ dijkstra_check_input <- function(graph, node_init) {
     stopifnot(is.numeric(node_init))
 
     required_variables <- c("v1", "v2", "w")
-    for (variable in required_variables)
-    {
+    for (variable in required_variables) {
         stopifnot(variable %in% names(graph))
     }
     
@@ -62,18 +61,15 @@ dijkstra_initialize <- function(graph, node_init) {
 }
 
 dijkstra_distances <- function(graph, node_unvisited, node_distances, node_previous) {
-    while (!dijkstra_vector_empty(node_unvisited))
-    {
+    while (!dijkstra_vector_empty(node_unvisited)) {
         node_current <- dijkstra_node_next(node_unvisited, node_distances)
 
-        for (node_neighbor in dijkstra_node_neighbors(node_current, graph))
-        {
+        for (node_neighbor in dijkstra_node_neighbors(node_current, graph)) {
             node_distance <- node_distances[node_current] + dijkstra_node_distance(node_current,
                                                                                    node_neighbor,
                                                                                    graph)
 
-            if (node_distance < node_distances[node_neighbor])
-            {
+            if (node_distance < node_distances[node_neighbor]) {
                 node_distances[node_neighbor] <- node_distance
                 node_previous[node_neighbor] <- node_current
             }
@@ -99,10 +95,8 @@ dijkstra_node_next <- function(nodes, distances) {
     distance_min <- Inf
     node_next <- NULL
 
-    for (node in nodes)
-    {
-        if (!is.na(node) && distances[node] < distance_min)
-        {
+    for (node in nodes) {
+        if (!is.na(node) && distances[node] < distance_min) {
             distance_min <- distances[node]
             node_next <- node
         }
@@ -121,10 +115,8 @@ dijkstra_node_neighbors <- function(node, graph) {
 dijkstra_node_distance <- function(from, to, graph) {
     distance_index <- NA
 
-    for (i in 1:length(graph$v1))
-    {
-        if (graph$v1[i] == from && graph$v2[i] == to)
-        {
+    for (i in 1:length(graph$v1)) {
+        if (graph$v1[i] == from && graph$v2[i] == to) {
             distance_index <- i
             break
         }
