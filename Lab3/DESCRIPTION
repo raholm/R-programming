@@ -11,6 +11,5 @@ Description: Implementation of Euclidian algorithm: finds the greatest common
     divisor of two numbers. Implementation of Dijkstra algorithm: finds the shortest
     paths within a directed graph.
 License: NA
-LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: testthat

@@ -26,4 +26,3 @@ euclidean_check_input <- function(a, b) {
   stopifnot(is.numeric(a), length(a) == 1, a %% 1 == 0, a > 0)
   stopifnot(is.numeric(b), length(b) == 1, b %% 1 == 0, b > 0)
 }
-
