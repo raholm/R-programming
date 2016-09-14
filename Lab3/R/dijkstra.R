@@ -1,3 +1,22 @@
+#' Computes the least path costs to all nodes in a directed graph from the initial node.
+#' 
+#' @param graph A directed graph.
+#' @param node_init A node.
+#' @return Vector of path costs to every node from \code{node_init}.
+#' 
+#' @format graph
+#' \describe{
+#'    \item{v1}{Vector of nodes for edges start positions.}
+#'    \item{v2}{Vector of nodes for edges end positions.}
+#'    \item{w}{Vector of edge weights.}
+#' }
+#' 
+#' @examples 
+#' dijkstra(wiki_graph, 1)
+#' dijkstra(wiki_graph, 3)
+#' 
+#' @export
+#' @source \url{https://en.wikipedia.org/wiki/Dijkstra's_algorithm}
 dijkstra <- function(graph, node_init) {
     ## This function assumes the nodes start from 1 to |V|.
     dijkstra_check_input(graph, node_init)
