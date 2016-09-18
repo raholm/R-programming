@@ -69,17 +69,3 @@
 ##           function(object, ...) {
 ##               object$print()
 ##           })
-
-## Testing...
-## test <- .linreg(c(1, 2, 3))
-## print(test)
-## test$coefficients
-
-## data(iris)
-## model <- lm(Petal.Width ~ Petal.Length, data=iris)
-## model
-## model$coefficients
-## model$residuals
-## model$fitted.value
-## predict(model)
-## summary(model)

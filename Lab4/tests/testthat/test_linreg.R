@@ -19,14 +19,3 @@ test_that("linreg of valid input is correct", {
     expect_equal(model.actual$resid(), model.expected$residuals)
     expect_equal(model.actual$pred(), predict(model.expected))
 })
-
-
-## data(iris)
-## model <- lm(Petal.Width ~ Petal.Length, data=iris)
-## model
-## model$coefficients
-## model$residuals
-## model$fitted.value
-## predict(model)
-## summary(model)
-
