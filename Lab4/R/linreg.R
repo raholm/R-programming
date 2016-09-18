@@ -19,6 +19,14 @@ linreg <- function(formula, data)
 
 linreg_check_input <- function(formula, data)
 {
-    
-}
+    stopifnot(length(all.vars(formula)) > 0)
+    stopifnot(is.data.frame(data))
 
+    ## Ensures that all variables in the formula
+    ## are present in the data frame
+    variables <- all.vars(formula)
+    for (variable in variables)
+    {
+        stopifnot(variable %in% names(data))
+    }
+}

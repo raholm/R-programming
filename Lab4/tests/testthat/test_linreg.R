@@ -4,9 +4,9 @@ context("linreg")
 test_that("linreg of invalid input is invalid", {
     data(iris)
 
-    expect_error(linreg(1, iris), "Formula has invalid input.")
-    expect_error(linreg(y ~ x, 1), "Data has invalid input.")
-    expect_error(linreg(y ~ x, iris), "Formula variables are not valid fields.")
+    expect_error(linreg(1, iris))
+    expect_error(linreg(y ~ x, 1))
+    expect_error(linreg(y ~ x, iris))
 })
 
 test_that("linreg of valid input is correct", {
@@ -29,3 +29,4 @@ test_that("linreg of valid input is correct", {
 ## model$fitted.value
 ## predict(model)
 ## summary(model)
+
