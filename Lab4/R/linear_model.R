@@ -59,14 +59,13 @@
         ))
 
 ## Template
-setGeneric("print", function(object, ...) standardGeneric("print"))
-setMethod(print, signature(object="LinearRegression"),
-          function(object, ...) {
-              object$print()
-          })
+## setGeneric("print", function(object, ...) standardGeneric("print"))
+## setMethod(print, signature(object="LinearRegression"),
+##           function(object, ...) {
+##               object$print()
+##           })
 
-
-
+## Testing...
 ## test <- .linreg(c(1, 2, 3))
 ## print(test)
 ## test$coefficients
