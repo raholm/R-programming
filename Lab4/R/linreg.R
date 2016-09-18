@@ -1,4 +1,4 @@
-#' Title here
+#' title here
 #'
 #' description here
 #'
@@ -21,3 +21,4 @@ linreg_check_input <- function(formula, data)
 {
     
 }
+
