@@ -14,7 +14,12 @@ linreg <- function(formula, data)
 {
     linreg_check_input(formula, data)
 
-    
+    ## Independent variable data
+    X <- model.matrix(object=formula, data=data)
+
+    ## Dependent variable data
+    y_variables <- all.vars(formula)[!(all.vars(formula) %in% colnames(X))]
+    y <- data[, y_variables]
 }
 
 linreg_check_input <- function(formula, data)
@@ -30,3 +35,4 @@ linreg_check_input <- function(formula, data)
         stopifnot(variable %in% names(data))
     }
 }
+
