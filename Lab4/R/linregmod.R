@@ -9,9 +9,9 @@
 #' examples here
 #'
 #' @export
+#' @name linregmod
 #' @source \url{https://stat.ethz.ch/R-manual/R-devel/library/methods/html/refClass.html}
-
-.linreg <- setRefClass("LinearRegression",
+.linreg <- setRefClass("LinearRegressionModel",
                        fields=list(
                            call="call",
                            coefficients="vector",
@@ -26,7 +26,7 @@
 ## Constructor and Destructor
 .linreg$methods(list(
             initialize = function(call, coefficients, residuals, fitted.values, ...) {
-                cat("Initialize: Linear Regression\n")
+                cat("Initialize: Linear Regression Model\n")
 
                 call <<- call
                 coefficients <<- coefficients
@@ -36,32 +36,32 @@
                 callSuper(...)
             },
             finalize = function() {
-                cat("Finalize: Linear Regression\n")
+                cat("Finalize: Linear Regression Model\n")
             }
         ))
 
 ## Generic Functions
 .linreg$methods(list(
             coef = function() {
-                cat("Coef: Linear Regression\n")
+                cat("Coef: Linear Regression Model\n")
                 return(coefficients)
             },
             resid = function() {
-                cat("Resid: Linear Regression\n")
+                cat("Resid: Linear Regression Model\n")
                 return(residuals)
             },
             pred = function() {
-                cat("Pred: Linear Regression\n")
+                cat("Pred: Linear Regression Model\n")
                 return(fitted.values)
             },
             summary = function() {
-                cat("Summary: Linear Regression\n")
+                cat("Summary: Linear Regression Model\n")
             },
             print = function() {
-                cat("Print: Linear Regression\n")
+                cat("Print: Linear Regression Model\n")
             },
             plot = function() {
-                cat("Plot: Linear Regression\n")
+                cat("Plot: Linear Regression Model\n")
             }
         ))
 
