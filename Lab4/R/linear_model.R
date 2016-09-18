@@ -12,22 +12,24 @@
 #' @source \url{https://stat.ethz.ch/R-manual/R-devel/library/methods/html/refClass.html}
 
 .linreg <- setRefClass("LinearRegression",
-                           fields=list(
-                               coefficients="vector",
-                               coefficients.variance="numeric",
-                               residuals="vector",
-                               fitted.values="vector",
-                               df="numeric",
-                               residuals.variance="numeric"
-                           ))
+                       fields=list(
+                           coefficients="vector",
+                           residuals="vector",
+                           fitted.values="vector"
+                           ## df="numeric",
+                           ## residuals.variance="numeric"
+                           ## coefficients.variance="numeric",
+                       ))
 
 
 ## Constructor and Destructor
 .linreg$methods(list(
-            initialize = function(coefficients, ...) {
+            initialize = function(coefficients, residuals, fitted.values, ...) {
                 cat("Initialize: Linear Regression\n")
 
                 coefficients <<- coefficients
+                residuals <<- residuals
+                fitted.values <<- fitted.values
 
                 callSuper(...)
             },
@@ -40,12 +42,15 @@
 .linreg$methods(list(
             coef = function() {
                 cat("Coef: Linear Regression\n")
+                return(coefficients)
             },
             resid = function() {
                 cat("Resid: Linear Regression\n")
+                return(residuals)
             },
             pred = function() {
                 cat("Pred: Linear Regression\n")
+                return(fitted.values)
             },
             summary = function() {
                 cat("Summary: Linear Regression\n")
