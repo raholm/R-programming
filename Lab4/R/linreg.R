@@ -14,6 +14,8 @@ linreg <- function(formula, data)
 {
     linreg_check_input(formula, data)
 
+    call <- match.call()
+
     X <- linreg_X(formula, data)
     y <- linreg_y(formula, data, X)
 
@@ -21,7 +23,8 @@ linreg <- function(formula, data)
     fitted_values <- linreg_fitted_values(X, coefficients)
     residuals <- linreg_residuals(y, fitted_values)
 
-    return(.linreg(coefficients=coefficients,
+    return(.linreg(call=call,
+                   coefficients=coefficients,
                    fitted.values=fitted_values,
                    residuals=residuals))
 }

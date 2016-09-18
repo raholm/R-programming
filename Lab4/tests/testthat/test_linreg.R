@@ -15,6 +15,7 @@ test_that("linreg of valid input is correct", {
     model.expected <- lm(Petal.Width ~ Petal.Length, data=iris)
     model.actual <- linreg(Petal.Width ~ Petal.Length, data=iris)
 
+    expect_equal(deparse(model.actual$call), "linreg(formula = Petal.Width ~ Petal.Length, data = iris)")
     expect_equal(model.actual$coef(), model.expected$coefficients)
     expect_equal(model.actual$resid(), model.expected$residuals)
     expect_equal(model.actual$pred(), predict(model.expected))

@@ -13,6 +13,7 @@
 
 .linreg <- setRefClass("LinearRegression",
                        fields=list(
+                           call="call",
                            coefficients="vector",
                            residuals="vector",
                            fitted.values="vector"
@@ -24,9 +25,10 @@
 
 ## Constructor and Destructor
 .linreg$methods(list(
-            initialize = function(coefficients, residuals, fitted.values, ...) {
+            initialize = function(call, coefficients, residuals, fitted.values, ...) {
                 cat("Initialize: Linear Regression\n")
 
+                call <<- call
                 coefficients <<- coefficients
                 residuals <<- residuals
                 fitted.values <<- fitted.values
