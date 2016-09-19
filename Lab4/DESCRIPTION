@@ -11,3 +11,7 @@ Description: Description here
 License: CC0
 RoxygenNote: 5.0.1
 Suggests: testthat
+Imports:
+    ggplot2 (>= 2.1.0),
+    methods
+

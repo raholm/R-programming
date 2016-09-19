@@ -2,7 +2,6 @@
 % Please edit documentation in R/package.R
 \docType{package}
 \name{Lab4}
-\alias{Lab4}
 \alias{Lab4-package}
 \title{Lab 4}
 \description{

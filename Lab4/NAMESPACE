@@ -3,3 +3,5 @@
 export(linreg)
 exportClasses(LinearRegressionModel)
 import(methods)
+importFrom(stats,model.matrix)
+importFrom(stats,pt)

@@ -8,4 +8,5 @@
 #'
 #' @docType package
 #' @name Lab4
+#' @aliases NULL
 NULL
