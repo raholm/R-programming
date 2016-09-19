@@ -99,6 +99,8 @@
                     geom_hline(yintercept=0, linetype="dotted", color="blue")
 
                 base::print(res_vs_fit_plot)
+
+                ## Wait for user input before continuing
                 readkey()
 
                 ## Scale-Location Plot ----------------------
