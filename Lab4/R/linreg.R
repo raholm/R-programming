@@ -14,12 +14,14 @@
 #' linreg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
 #' linreg(Petal.Width ~ Species, iris)
 #'
+#' @importFrom stats model.matrix
+#' @importFrom stats pt
+#'
+#' @name linreg
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
-#' @name linreg
 linreg <- function(formula, data)
 {
-    ?lm
     linreg_check_input(formula, data)
 
     call <- match.call()
@@ -42,11 +44,11 @@ linreg <- function(formula, data)
     coefficients$tval <- linreg_coefficients_t_value(coefficients$val, coefficients$var)
     coefficients$pval <- linreg_coefficients_p_value(coefficients$tval, df)
 
-    return(linregmod(call=call,
-                   coefficients=coefficients,
-                   fitted.values=fitted_values,
-                   residuals=residuals,
-                   df=df))
+    return(LinearRegressionModel(call=call,
+                                 coefficients=coefficients,
+                                 fitted.values=fitted_values,
+                                 residuals=residuals,
+                                 df=df))
 }
 
 linreg_check_input <- function(formula, data)
