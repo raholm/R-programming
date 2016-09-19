@@ -30,7 +30,7 @@ linreg <- function(formula, data)
     residuals$var <- linreg_residuals_variance(residuals$val, df)
 
     coefficients$var <- linreg_coefficients_variance(X, residuals$var)
-    coefficients$se <- linreg_coefficients_standard_error()
+    coefficients$se <- linreg_coefficients_standard_error(X, y, fitted_values, df)
     coefficients$tval <- linreg_coefficients_t_value()
     coefficients$pval <- linreg_coefficients_p_value()
 
@@ -78,16 +78,25 @@ linreg_coefficients <- function(X, y) {
     return(coefficients)
 }
 
-linreg_coefficients_variance <- function(...) {
+linreg_coefficients_variance <- function(X, residuals_variance) {
     ## Note: Use QR decomposition
     ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
+    coefficients_variance <- residuals_variance * solve(t(X) %*% X)
+    return(coefficients_variance)
 }
 
 linreg_coefficients_standard_error <- function(X, y, fitted_values, df) {
+    sse <- sum((y - fitted_values)^2) # Residual sum of square error
+    sigma_squared <- sse / df # Mean squared error
 
+    ## TODO: Rewrite and understand
+    variance_covariance_matrix <- sigma_squared * chol2inv(chol(t(X) %*% X))
+    standard_error <- sqrt(diag(variance_covariance_matrix))
+    names(standard_error) <- colnames(X)
+    return(standard_error)
 }
 
-linreg_coefficients_t_value <- function(...) {
+linreg_coefficients_t_value <- function(coefficients) {
 
 }
 
@@ -110,5 +119,6 @@ linreg_residuals <- function(y, fitted_values) {
 }
 
 linreg_residuals_variance <- function(residuals, df) {
-
+    residuals_variance <- (t(residuals) %*% residuals) / df
+    return(as.numeric(residuals_variance))
 }
