@@ -22,6 +22,8 @@
 #' @field fitted.values Object of class \code{"numeric"}. The fitted values of y using the model's parameters.
 #' @field df Object of class \code{"numeric"}. The number of degrees of freedom in the model.
 #'
+#' @method coef Returns the estimated parameters.
+#'
 #' @name linregmod
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
 linregmod <- setRefClass("LinearRegressionModel",
@@ -55,72 +57,78 @@ linregmod$methods(list(
 
 ## Generic Functions
 linregmod$methods(list(
-            coef = function() {
-                return(coefficients$val)
-            },
-            resid = function() {
-                return(residuals$val)
-            },
-            pred = function() {
-                return(fitted.values)
-            },
-            summary = function() {
-            },
-            print = function() {
-                ## Might wanna use strwrap.
-                format_number <- function(number, decimals) {
-                    formatted <- as.numeric(format(round(number, decimals), nsmall=decimals))
-                    names(formatted) <- names(number)
-                    return(formatted)
-                }
+              coef = function() {
+                  "Returns the estimated parameters."
+                  return(coefficients$val)
+              },
+              resid = function() {
+                  "Returns the residuals."
+                  return(residuals$val)
+              },
+              pred = function() {
+                  "Returns the fitted values."
+                  return(fitted.values)
+              },
+              summary = function() {
+                  "Shows a summary of the model."
+              },
+              print = function() {
+                  "Prints the model."
+                  ## Might wanna use strwrap.
+                  format_number <- function(number, decimals) {
+                      formatted <- as.numeric(format(round(number, decimals), nsmall=decimals))
+                      names(formatted) <- names(number)
+                      return(formatted)
+                  }
 
-                cat("\nCall:\n")
-                cat(call)
-                cat("\n\n")
-                cat("Coefficients:\n  ")
-                base::print(format_number(coef(), 4))
-            },
-            show = function() {
-                print()
-            },
-            plot = function() {
-                readkey <- function() {
-                    cat ("Press [enter] to continue")
-                    line <- readline()
-                }
+                  cat("\nCall:\n")
+                  cat(call)
+                  cat("\n\n")
+                  cat("Coefficients:\n  ")
+                  base::print(format_number(coef(), 4))
+              },
+              show = function() {
+                  print()
+              },
+              plot = function() {
+                  "Plots Residuals vs Fitted and Scale-Location."
+                  readkey <- function() {
+                      cat ("Press [enter] to continue")
+                      line <- readline()
+                  }
 
-                base_plot <- function(data, title, xlab, ylab) {
-                    return(ggplot(data=data) +
-                           ggtitle(title) +
-                           xlab(xlab) +
-                           ylab(ylab) +
-                           theme(plot.title=element_text(hjust=0.5)) +
-                           geom_point(aes(x=x, y=y)))
-                }
+                  base_plot <- function(data, title, xlab, ylab) {
+                      return(ggplot(data=data) +
+                             ggtitle(title) +
+                             xlab(xlab) +
+                             ylab(ylab) +
+                             theme(plot.title=element_text(hjust=0.5)) +
+                             geom_point(aes(x=x, y=y)))
+                  }
 
-                ## Residuals vs Fitted Plot -------------------
-                label.title <- "Residuals vs Fitted"
-                label.x <- paste("Fitted values", call, sep="\n")
-                label.y <- "Residuals"
+                  ## Residuals vs Fitted Plot -------------------
+                  label.title <- "Residuals vs Fitted"
+                  label.x <- paste("Fitted values", call, sep="\n")
+                  label.y <- "Residuals"
 
-                data <- data.frame(x=fitted.values, y=residuals$val)
+                  data <- data.frame(x=fitted.values, y=residuals$val)
 
-                res_vs_fit_plot <-  base_plot(data, label.title, label.x, label.y) +
-                    geom_hline(yintercept=0, linetype="dotted", color="blue")
+                  res_vs_fit_plot <-  base_plot(data, label.title, label.x, label.y) +
+                      geom_hline(yintercept=0, linetype="dotted", color="blue")
 
-                base::print(res_vs_fit_plot)
+                  base::print(res_vs_fit_plot)
 
-                ## Wait for user input before continuing
-                readkey()
+                  ## Wait for user input before continuing
+                  readkey()
 
-                ## Scale-Location Plot ----------------------
-                label.title <- "Scale-Location"
-                label.y <- expression(sqrt("Standardized residuals"))
+                  ## Scale-Location Plot ----------------------
+                  label.title <- "Scale-Location"
+                  label.y <- expression(sqrt("Standardized residuals"))
 
-                standardized_residuals <- abs(residuals$val / sd(residuals$val))
-                data <- data.frame(x=fitted.values, y=sqrt(standardized_residuals))
+                  standardized_residuals <- abs(residuals$val / sd(residuals$val))
+                  data <- data.frame(x=fitted.values, y=sqrt(standardized_residuals))
 
-                scale_location_plot <- base_plot(data, label.title, label.x, label.y)
-                base::print(scale_location_plot)
-            }
-        ))
+                  scale_location_plot <- base_plot(data, label.title, label.x, label.y)
+                  base::print(scale_location_plot)
+              }
+          ))
