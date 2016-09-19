@@ -21,7 +21,7 @@ test_that("linreg of valid input is correct", {
     model.expected <- lm(Petal.Width ~ Petal.Length, data=iris)
     model.actual <- linreg(Petal.Width ~ Petal.Length, data=iris)
 
-    expect_equal(deparse(model.actual$call), "linreg(formula = Petal.Width ~ Petal.Length, data = iris)")
+    expect_equal(model.actual$call, "linreg(formula = Petal.Width ~ Petal.Length, data = iris)")
     check_model_methods(model.actual, model.expected)
 
     ## Advanced Model
@@ -30,8 +30,7 @@ test_that("linreg of valid input is correct", {
 
     ## The string has been divided into multiple string due to its length.
     ## This puts it back to a single string.
-    call_string <- gsub(" +", " ", paste(deparse(model.actual$call), collapse=""))
-    expect_equal(call_string,
+    expect_equal(model.actual$call,
                  "linreg(formula = Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data = iris)")
     check_model_methods(model.actual, model.expected)
 
@@ -39,7 +38,7 @@ test_that("linreg of valid input is correct", {
     model.expected <- lm(Petal.Width ~ Species, data=iris)
     model.actual <- linreg(Petal.Width ~ Species, data=iris)
 
-    expect_equal(deparse(model.actual$call), "linreg(formula = Petal.Width ~ Species, data = iris)")
+    expect_equal(model.actual$call, "linreg(formula = Petal.Width ~ Species, data = iris)")
     check_model_methods(model.actual, model.expected)
 })
 

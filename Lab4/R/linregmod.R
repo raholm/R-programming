@@ -1,4 +1,4 @@
-#' title here
+#' Linear Regression Model
 #'
 #' description here
 #'
@@ -13,7 +13,7 @@
 #' @source \url{https://stat.ethz.ch/R-manual/R-devel/library/methods/html/refClass.html}
 .linreg <- setRefClass("LinearRegressionModel",
                        fields=list(
-                           call="call",
+                           call="character",
                            coefficients="list",
                            residuals="list",
                            fitted.values="vector",
@@ -27,9 +27,8 @@
 .linreg$methods(list(
             initialize = function(call, coefficients, residuals, fitted.values,
                                   df, ...) {
-                call <<- call
                 ## Extract the string representation of the call
-                call$str <<- gsub(" +", " ", paste(deparse(call), collapse=""))
+                call <<- gsub(" +", " ", paste(deparse(call), collapse=""))
 
                 coefficients <<- coefficients
                 residuals <<- residuals
@@ -65,7 +64,7 @@
                 }
 
                 cat("\nCall:\n")
-                cat(call$str)
+                cat(call)
                 cat("\n\n")
                 cat("Coefficients:\n  ")
                 base::print(format_number(coef(), 4))
@@ -90,7 +89,7 @@
 
                 ## Residuals vs Fitted Plot -------------------
                 label.title <- "Residuals vs Fitted"
-                label.x <- paste("Fitted values", call$str, sep="\n")
+                label.x <- paste("Fitted values", call, sep="\n")
                 label.y <- "Residuals"
 
                 data <- data.frame(x=fitted.values, y=residuals$val)
