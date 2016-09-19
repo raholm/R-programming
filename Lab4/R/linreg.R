@@ -61,7 +61,12 @@ linreg_X <- function(formula, data) {
 }
 
 linreg_y <- function(formula, data, X) {
-    y_variables <- all.vars(formula)[!(all.vars(formula) %in% colnames(X))]
+    ## This becomes wrong with qualitative variables
+    ## y_variables <- all.vars(formula)[!(all.vars(formula) %in% colnames(X))]
+
+    ## Limit the use to only one dependent variable
+    ## TODO: Fix this limitation
+    y_variables <- all.vars(formula)[1]
     y <- data[, y_variables]
     return(as.matrix(y))
 }
