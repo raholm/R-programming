@@ -21,21 +21,24 @@ linreg <- function(formula, data)
 
     df <- linreg_df(X)
 
-    coefficients <- linreg_coefficients(X, y)
-    fitted_values <- linreg_fitted_values(X, coefficients)
+    coefficients <- list()
+    coefficients$val <- linreg_coefficients(X, y)
+    fitted_values <- linreg_fitted_values(X, coefficients$val)
 
-    residuals <- linreg_residuals(y, fitted_values)
-    residuals_variance <- linreg_residual_variance(residuals, df)
+    residuals <- list()
+    residuals$val <- linreg_residuals(y, fitted_values)
+    residuals$var <- linreg_residuals_variance(residuals$val, df)
 
-    coefficients.var <- linreg_coefficients_variance(X, residuals_variance)
-    coefficients.se <- linreg_coefficients_standard_error(...)
-    coefficients.tval <- linreg_coefficients_t_value(...)
-    coefficients.pval <- linreg_coefficients_p_value(...)
+    coefficients$var <- linreg_coefficients_variance(X, residuals$var)
+    coefficients$se <- linreg_coefficients_standard_error()
+    coefficients$tval <- linreg_coefficients_t_value()
+    coefficients$pval <- linreg_coefficients_p_value()
 
     return(.linreg(call=call,
                    coefficients=coefficients,
                    fitted.values=fitted_values,
-                   residuals=residuals))
+                   residuals=residuals,
+                   df=df))
 }
 
 linreg_check_input <- function(formula, data)
@@ -63,7 +66,7 @@ linreg_y <- function(formula, data, X) {
 }
 
 linreg_df <- function(X) {
-    return(nrow(X) - ncol(X) - 1)
+    return(nrow(X) - ncol(X))
 }
 
 linreg_coefficients <- function(X, y) {
@@ -80,7 +83,7 @@ linreg_coefficients_variance <- function(...) {
     ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
 }
 
-linreg_coefficients_standard_error <- function(...) {
+linreg_coefficients_standard_error <- function(X, y, fitted_values, df) {
 
 }
 
@@ -104,4 +107,8 @@ linreg_residuals <- function(y, fitted_values) {
     residuals <- as.vector(residuals)
     names(residuals) <- 1:length(residuals)
     return(residuals)
+}
+
+linreg_residuals_variance <- function(residuals, df) {
+
 }

@@ -14,10 +14,10 @@
 .linreg <- setRefClass("LinearRegressionModel",
                        fields=list(
                            call="call",
-                           coefficients="vector",
-                           residuals="vector",
-                           fitted.values="vector"
-                           ## df="numeric",
+                           coefficients="list",
+                           residuals="list",
+                           fitted.values="vector",
+                           df="numeric"
                            ## residuals.variance="numeric"
                            ## coefficients.variance="numeric",
                        ))
@@ -25,13 +25,15 @@
 
 ## Constructor and Destructor
 .linreg$methods(list(
-            initialize = function(call, coefficients, residuals, fitted.values, ...) {
+            initialize = function(call, coefficients, residuals, fitted.values,
+                                  df, ...) {
                 cat("Initialize: Linear Regression Model\n")
 
                 call <<- call
                 coefficients <<- coefficients
                 residuals <<- residuals
                 fitted.values <<- fitted.values
+                df <<- df
 
                 callSuper(...)
             },
@@ -44,11 +46,11 @@
 .linreg$methods(list(
             coef = function() {
                 cat("Coef: Linear Regression Model\n")
-                return(coefficients)
+                return(coefficients$val)
             },
             resid = function() {
                 cat("Resid: Linear Regression Model\n")
-                return(residuals)
+                return(residuals$val)
             },
             pred = function() {
                 cat("Pred: Linear Regression Model\n")

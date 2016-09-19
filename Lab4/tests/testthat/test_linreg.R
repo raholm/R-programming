@@ -19,7 +19,7 @@ test_that("linreg of valid input is correct", {
     expect_equal(model.actual$coef(), model.expected$coefficients)
     expect_equal(model.actual$resid(), model.expected$residuals)
     expect_equal(model.actual$pred(), predict(model.expected))
-    expect_equal(model.actual$df, model.expected$df.residuals)
+    expect_equal(model.actual$df, model.expected$df.residual)
 })
 
 test_that("linreg coefficient statistics are correct", {
@@ -29,8 +29,8 @@ test_that("linreg coefficient statistics are correct", {
     coefficients <- summary(model.expected)$coefficients
     model.actual <- linreg(Petal.Width ~ Petal.Length, data=iris)
 
-    expect_equal(model.actual$coefficients, coefficients[, 1])
-    expect_equal(model.actual$coefficients.se, coefficients[, 2])
-    expect_equal(model.actual$coefficients.tval, coefficients[, 3])
-    expect_equal(model.actual$coefficients.pval, coefficients[, 4])
+    expect_equal(model.actual$coefficients$val, coefficients[, 1])
+    expect_equal(model.actual$coefficients$se, coefficients[, 2])
+    expect_equal(model.actual$coefficients$tval, coefficients[, 3])
+    expect_equal(model.actual$coefficients$pval, coefficients[, 4])
 })
