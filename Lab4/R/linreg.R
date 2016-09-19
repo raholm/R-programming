@@ -38,8 +38,6 @@ linreg <- function(formula, data)
                    residuals=residuals))
 }
 
-?pt
-
 linreg_check_input <- function(formula, data)
 {
     stopifnot(length(all.vars(formula)) > 0)
