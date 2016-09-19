@@ -83,7 +83,7 @@ linreg_coefficients <- function(X, y) {
 
 linreg_coefficients_variance <- function(X, residuals_variance) {
     ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
-    coefficients_variance <- residuals_variance * linreg_inverse_QR_decomposition(X)
+    coefficients_variance <- residuals_variance * linreg_inverse_QR_decomposition(t(X) %*% X)
     coefficients_variance <- as.vector(diag(coefficients_variance))
     names(coefficients_variance) <- colnames(X)
     return(coefficients_variance)
@@ -123,5 +123,5 @@ linreg_residuals_variance <- function(residuals, df) {
 }
 
 linreg_inverse_QR_decomposition <- function(X) {
-    return(qr.solve(qr(t(X) %*% X)))
+    return(qr.solve(qr(X)))
 }
