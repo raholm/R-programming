@@ -18,6 +18,10 @@ test_that("linreg of valid input is correct (simple model)", {
     expect_equal(model.actual$resid(), model.expected$residuals)
     expect_equal(model.actual$pred(), predict(model.expected))
     expect_equal(model.actual$df, model.expected$df.residual)
+
+    print.expected <- evaluate_promise(print(model.expected))$output
+    print.actual <- evaluate_promise(model.actual$print())$output
+    expect_equal(print.actual, print.expected)
 })
 
 test_that("linreg of valid input is correct (advanced model)", {
@@ -33,6 +37,10 @@ test_that("linreg of valid input is correct (advanced model)", {
     expect_equal(model.actual$resid(), model.expected$residuals)
     expect_equal(model.actual$pred(), predict(model.expected))
     expect_equal(model.actual$df, model.expected$df.residual)
+
+    print.expected <- evaluate_promise(print(model.expected))$output
+    print.actual <- evaluate_promise(model.actual$print())$output
+    expect_equal(print.actual, print.expected)
 })
 
 test_that("linreg coefficient statistics are correct (simple model)", {
@@ -55,5 +63,4 @@ test_that("linreg coefficient statistics are correct (advanced model)", {
     expect_equal(model.actual$coefficients$se, coefficients[, 2])
     expect_equal(model.actual$coefficients$tval, coefficients[, 3])
     expect_equal(model.actual$coefficients$pval, coefficients[, 4])
-
 })
