@@ -30,7 +30,7 @@ linreg <- function(formula, data)
     residuals$var <- linreg_residuals_variance(residuals$val, df)
 
     coefficients$var <- linreg_coefficients_variance(X, residuals$var)
-    coefficients$se <- linreg_coefficients_standard_error(X, y, fitted_values, df)
+    coefficients$se <- linreg_coefficients_standard_error(X, residuals$var)
     coefficients$tval <- linreg_coefficients_t_value()
     coefficients$pval <- linreg_coefficients_p_value()
 
@@ -70,12 +70,14 @@ linreg_df <- function(X) {
 }
 
 linreg_coefficients <- function(X, y) {
-    ## TODO: Rewrite using QR decomposition
     ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
-    coefficients <- solve(t(X) %*% X) %*% t(X) %*% y
-    coefficients <- as.vector(coefficients)
-    names(coefficients) <- colnames(X)
-    return(coefficients)
+    qr.X <- qr(X)
+    b <- t(qr.Q(qr.X)) %*% y
+    R <- qr.R(qr.X)
+    beta <- backsolve(R, b)
+    beta <- as.vector(beta)
+    names(beta) <- colnames(X)
+    return(beta)
 }
 
 linreg_coefficients_variance <- function(X, residuals_variance) {
@@ -85,12 +87,8 @@ linreg_coefficients_variance <- function(X, residuals_variance) {
     return(coefficients_variance)
 }
 
-linreg_coefficients_standard_error <- function(X, y, fitted_values, df) {
-    sse <- sum((y - fitted_values)^2) # Residual sum of square error
-    sigma_squared <- sse / df # Mean squared error
-
-    ## TODO: Rewrite and understand
-    variance_covariance_matrix <- sigma_squared * chol2inv(chol(t(X) %*% X))
+linreg_coefficients_standard_error <- function(X, residuals_variance) {
+    variance_covariance_matrix <- residuals_variance * solve(t(X) %*% X)
     standard_error <- sqrt(diag(variance_covariance_matrix))
     names(standard_error) <- colnames(X)
     return(standard_error)
