@@ -1,18 +1,24 @@
-#' title here
+#' Linear Regression
 #'
-#' description here
+#' 'linreg' is used to fit linear regression models.
 #'
-#' @param formula description
-#' @param data description
-#' @return
+#' @usage
+#' linreg(formula, data)
+#'
+#' @param formula an object of class 'formula'. Describes the model to be fitted.
+#' @param data a data frame containing the variables in the model.
+#' @return The fitted model of class \code{"LinearRegressionModel"}.
 #'
 #' @examples
-#' examples here
+#' linreg(formula = Petal.Width ~ Petal.Length, data=iris)
+#' linreg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
+#' linreg(Petal.Width ~ Species, iris)
 #'
 #' @export
-#' @source \url{}
+#' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
 linreg <- function(formula, data)
 {
+    ?lm
     linreg_check_input(formula, data)
 
     call <- match.call()
