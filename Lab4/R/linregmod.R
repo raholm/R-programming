@@ -27,8 +27,6 @@
 .linreg$methods(list(
             initialize = function(call, coefficients, residuals, fitted.values,
                                   df, ...) {
-                cat("Initialize: Linear Regression Model\n")
-
                 call <<- call
                 coefficients <<- coefficients
                 residuals <<- residuals
@@ -38,7 +36,7 @@
                 callSuper(...)
             },
             finalize = function() {
-                cat("Finalize: Linear Regression Model\n")
+
             }
         ))
 
@@ -56,6 +54,7 @@
             summary = function() {
             },
             print = function() {
+                ## Might wanna use strwrap.
                 callstr <- function() {
                        return(gsub(" +", " ", paste(deparse(call), collapse="")))
                 }
