@@ -4,7 +4,7 @@
 \name{linregmod}
 \alias{.linreg}
 \alias{linregmod}
-\title{title here}
+\title{Linear Regression Model}
 \source{
 \url{https://stat.ethz.ch/R-manual/R-devel/library/methods/html/refClass.html}
 }

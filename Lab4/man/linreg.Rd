@@ -2,24 +2,28 @@
 % Please edit documentation in R/linreg.R
 \name{linreg}
 \alias{linreg}
-\title{title here}
+\title{Linear Regression}
 \source{
-\url{}
+\url{https://en.wikipedia.org/wiki/Linear_regression}
 }
 \usage{
 linreg(formula, data)
 }
 \arguments{
-\item{param}{description}
+\item{formula}{an object of class 'formula'. Describes the model to be fitted.}
+
+\item{data}{a data frame containing the variables in the model.}
 }
 \value{
-
+The fitted model of class \code{"LinearRegressionModel"}.
 }
 \description{
-description here
+'linreg' is used to fit linear regression models.
 }
 \examples{
-examples here
+linreg(formula = Petal.Width ~ Petal.Length, data=iris)
+linreg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
+linreg(Petal.Width ~ Species, iris)
 
 }
 
