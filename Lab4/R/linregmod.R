@@ -11,39 +11,39 @@
 #' @export
 #' @name linregmod
 #' @source \url{https://stat.ethz.ch/R-manual/R-devel/library/methods/html/refClass.html}
-.linreg <- setRefClass("LinearRegressionModel",
-                       fields=list(
-                           call="character",
-                           coefficients="list",
-                           residuals="list",
-                           fitted.values="vector",
-                           df="numeric"
-                           ## residuals.variance="numeric"
-                           ## coefficients.variance="numeric",
-                       ))
+linregmod <- setRefClass("LinearRegressionModel",
+                         fields=list(
+                             call="character",
+                             coefficients="list",
+                             residuals="list",
+                             fitted.values="vector",
+                             df="numeric"
+                             ## residuals.variance="numeric"
+                             ## coefficients.variance="numeric",
+                         ))
 
 
 ## Constructor and Destructor
-.linreg$methods(list(
-            initialize = function(call, coefficients, residuals, fitted.values,
-                                  df, ...) {
-                ## Extract the string representation of the call
-                call <<- gsub(" +", " ", paste(deparse(call), collapse=""))
+linregmod$methods(list(
+              initialize = function(call, coefficients, residuals, fitted.values,
+                                    df, ...) {
+                  ## Extract the string representation of the call
+                  call <<- gsub(" +", " ", paste(deparse(call), collapse=""))
 
-                coefficients <<- coefficients
-                residuals <<- residuals
-                fitted.values <<- fitted.values
-                df <<- df
+                  coefficients <<- coefficients
+                  residuals <<- residuals
+                  fitted.values <<- fitted.values
+                  df <<- df
 
-                callSuper(...)
-            },
-            finalize = function() {
+                  callSuper(...)
+              },
+              finalize = function() {
 
-            }
-        ))
+              }
+          ))
 
 ## Generic Functions
-.linreg$methods(list(
+linregmod$methods(list(
             coef = function() {
                 return(coefficients$val)
             },

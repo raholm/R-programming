@@ -5,7 +5,7 @@
 #' @usage
 #' linreg(formula, data)
 #'
-#' @param formula an object of class 'formula'. Describes the model to be fitted.
+#' @param formula an object of class \code{formula}. Describes the model to be fitted.
 #' @param data a data frame containing the variables in the model.
 #' @return The fitted model of class \code{"LinearRegressionModel"}.
 #'
@@ -16,6 +16,7 @@
 #'
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
+#' @name linreg
 linreg <- function(formula, data)
 {
     ?lm
@@ -41,7 +42,7 @@ linreg <- function(formula, data)
     coefficients$tval <- linreg_coefficients_t_value(coefficients$val, coefficients$var)
     coefficients$pval <- linreg_coefficients_p_value(coefficients$tval, df)
 
-    return(.linreg(call=call,
+    return(linregmod(call=call,
                    coefficients=coefficients,
                    fitted.values=fitted_values,
                    residuals=residuals,
