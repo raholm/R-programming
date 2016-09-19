@@ -2,3 +2,4 @@
 
 export(linreg)
 exportClasses(LinearRegressionModel)
+import(methods)

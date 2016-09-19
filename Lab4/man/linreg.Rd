@@ -10,7 +10,7 @@
 linreg(formula, data)
 }
 \arguments{
-\item{formula}{an object of class 'formula'. Describes the model to be fitted.}
+\item{formula}{an object of class \code{formula}. Describes the model to be fitted.}
 
 \item{data}{a data frame containing the variables in the model.}
 }
