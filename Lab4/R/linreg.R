@@ -2,7 +2,8 @@
 #'
 #' description here
 #'
-#' @param param description
+#' @param formula description
+#' @param data description
 #' @return
 #'
 #' @examples
@@ -32,7 +33,7 @@ linreg <- function(formula, data)
     coefficients$var <- linreg_coefficients_variance(X, residuals$var)
     coefficients$se <- linreg_coefficients_standard_error(coefficients$var)
     coefficients$tval <- linreg_coefficients_t_value(coefficients$val, coefficients$var)
-    coefficients$pval <- linreg_coefficients_p_value()
+    coefficients$pval <- linreg_coefficients_p_value(coefficients$tval, df)
 
     return(.linreg(call=call,
                    coefficients=coefficients,
@@ -97,8 +98,9 @@ linreg_coefficients_t_value <- function(coefficients, coefficients_variance) {
     return(coefficients_t_value)
 }
 
-linreg_coefficients_p_value <- function(...) {
-
+linreg_coefficients_p_value <- function(t_values, df) {
+    p_value <- pt(-abs(t_values), df)
+    return(p_value)
 }
 
 linreg_fitted_values <- function(X, coefficients) {
