@@ -31,7 +31,7 @@ linreg <- function(formula, data)
 
     coefficients$var <- linreg_coefficients_variance(X, residuals$var)
     coefficients$se <- linreg_coefficients_standard_error(X, residuals$var)
-    coefficients$tval <- linreg_coefficients_t_value()
+    coefficients$tval <- linreg_coefficients_t_value(coefficients$val, coefficients$var)
     coefficients$pval <- linreg_coefficients_p_value()
 
     return(.linreg(call=call,
@@ -81,21 +81,23 @@ linreg_coefficients <- function(X, y) {
 }
 
 linreg_coefficients_variance <- function(X, residuals_variance) {
-    ## Note: Use QR decomposition
     ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
-    coefficients_variance <- residuals_variance * solve(t(X) %*% X)
+    coefficients_variance <- residuals_variance * linreg_inverse_QR_decomposition(X)
+    coefficients_variance <- as.vector(diag(coefficients_variance))
+    names(coefficients_variance) <- colnames(X)
     return(coefficients_variance)
 }
 
 linreg_coefficients_standard_error <- function(X, residuals_variance) {
-    variance_covariance_matrix <- residuals_variance * solve(t(X) %*% X)
-    standard_error <- sqrt(diag(variance_covariance_matrix))
+    variance_covariance_matrix <- residuals_variance * linreg_inverse_QR_decomposition(X)
+    standard_error <- as.vector(sqrt(diag(variance_covariance_matrix)))
     names(standard_error) <- colnames(X)
     return(standard_error)
 }
 
-linreg_coefficients_t_value <- function(coefficients) {
-
+linreg_coefficients_t_value <- function(coefficients, coefficients_variance) {
+    coefficients_t_value <- coefficients / sqrt(coefficients_variance)
+    return(coefficients_t_value)
 }
 
 linreg_coefficients_p_value <- function(...) {
@@ -119,4 +121,8 @@ linreg_residuals <- function(y, fitted_values) {
 linreg_residuals_variance <- function(residuals, df) {
     residuals_variance <- (t(residuals) %*% residuals) / df
     return(as.numeric(residuals_variance))
+}
+
+linreg_inverse_QR_decomposition <- function(X) {
+    return(qr.solve(qr(t(X) %*% X)))
 }
