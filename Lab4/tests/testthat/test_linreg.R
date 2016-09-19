@@ -9,18 +9,22 @@ test_that("linreg of invalid input is invalid", {
     expect_error(linreg(y ~ x, iris))
 })
 
-test_that("linreg of valid input is correct (simple model)", {
+test_that("linreg of valid input is correct", {
+    check_model_methods <- function(actual, expected) {
+        expect_equal(actual$coef(), expected$coefficients)
+        expect_equal(actual$resid(),expected$residuals)
+        expect_equal(actual$pred(), predict(model.expected))
+        expect_equal(actual$df, expected$df.residual)
+    }
+
+    ## Simple Model
     model.expected <- lm(Petal.Width ~ Petal.Length, data=iris)
     model.actual <- linreg(Petal.Width ~ Petal.Length, data=iris)
 
     expect_equal(deparse(model.actual$call), "linreg(formula = Petal.Width ~ Petal.Length, data = iris)")
-    expect_equal(model.actual$coef(), model.expected$coefficients)
-    expect_equal(model.actual$resid(), model.expected$residuals)
-    expect_equal(model.actual$pred(), predict(model.expected))
-    expect_equal(model.actual$df, model.expected$df.residual)
-})
+    check_model_methods(model.actual, model.expected)
 
-test_that("linreg of valid input is correct (advanced model)", {
+    ## Advanced Model
     model.expected <- lm(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
     model.actual <- linreg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
 
@@ -29,30 +33,38 @@ test_that("linreg of valid input is correct (advanced model)", {
     call_string <- gsub(" +", " ", paste(deparse(model.actual$call), collapse=""))
     expect_equal(call_string,
                  "linreg(formula = Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data = iris)")
-    expect_equal(model.actual$coef(), model.expected$coefficients)
-    expect_equal(model.actual$resid(), model.expected$residuals)
-    expect_equal(model.actual$pred(), predict(model.expected))
-    expect_equal(model.actual$df, model.expected$df.residual)
+    check_model_methods(model.actual, model.expected)
+
+    ## Qualitative Model
+    model.expected <- lm(Petal.Width ~ Species, data=iris)
+    model.actual <- linreg(Petal.Width ~ Species, data=iris)
+
+    expect_equal(deparse(model.actual$call), "linreg(formula = Petal.Width ~ Species, data = iris)")
+    check_model_methods(model.actual, model.expected)
 })
 
-test_that("linreg coefficient statistics are correct (simple model)", {
+test_that("linreg coefficient statistics are correct", {
+    check_coefficient_statistics <- function(actual, expected) {
+        coefficients <- summary(expected)$coefficients
+
+        expect_equal(actual$coefficients$val, coefficients[, 1])
+        expect_equal(actual$coefficients$se, coefficients[, 2])
+        expect_equal(actual$coefficients$tval, coefficients[, 3])
+        expect_equal(actual$coefficients$pval, coefficients[, 4])
+    }
+
+    ## Simple Model
     model.expected <- lm(Petal.Width ~ Petal.Length, data=iris)
-    coefficients <- summary(model.expected)$coefficients
     model.actual <- linreg(Petal.Width ~ Petal.Length, data=iris)
+    check_coefficient_statistics(model.actual, model.expected)
 
-    expect_equal(model.actual$coefficients$val, coefficients[, 1])
-    expect_equal(model.actual$coefficients$se, coefficients[, 2])
-    expect_equal(model.actual$coefficients$tval, coefficients[, 3])
-    expect_equal(model.actual$coefficients$pval, coefficients[, 4])
-})
-
-test_that("linreg coefficient statistics are correct (advanced model)", {
+    ## Advanced Model
     model.expected <- lm(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
-    coefficients <- summary(model.expected)$coefficients
     model.actual <- linreg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
+    check_coefficient_statistics(model.actual, model.expected)
 
-    expect_equal(model.actual$coefficients$val, coefficients[, 1])
-    expect_equal(model.actual$coefficients$se, coefficients[, 2])
-    expect_equal(model.actual$coefficients$tval, coefficients[, 3])
-    expect_equal(model.actual$coefficients$pval, coefficients[, 4])
+    ## Qualitative Model
+    model.expected <- lm(Petal.Width ~ Species, data=iris)
+    model.actual <- linreg(Petal.Width ~ Species, data=iris)
+    check_coefficient_statistics(model.actual, model.expected)
 })
