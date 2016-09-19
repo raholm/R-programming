@@ -30,7 +30,7 @@ linreg <- function(formula, data)
     residuals$var <- linreg_residuals_variance(residuals$val, df)
 
     coefficients$var <- linreg_coefficients_variance(X, residuals$var)
-    coefficients$se <- linreg_coefficients_standard_error(X, residuals$var)
+    coefficients$se <- linreg_coefficients_standard_error(coefficients$var)
     coefficients$tval <- linreg_coefficients_t_value(coefficients$val, coefficients$var)
     coefficients$pval <- linreg_coefficients_p_value()
 
@@ -88,11 +88,8 @@ linreg_coefficients_variance <- function(X, residuals_variance) {
     return(coefficients_variance)
 }
 
-linreg_coefficients_standard_error <- function(X, residuals_variance) {
-    variance_covariance_matrix <- residuals_variance * linreg_inverse_QR_decomposition(X)
-    standard_error <- as.vector(sqrt(diag(variance_covariance_matrix)))
-    names(standard_error) <- colnames(X)
-    return(standard_error)
+linreg_coefficients_standard_error <- function(coefficients_variance) {
+    return(sqrt(coefficients_variance))
 }
 
 linreg_coefficients_t_value <- function(coefficients, coefficients_variance) {
