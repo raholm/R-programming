@@ -68,6 +68,7 @@ linreg_df <- function(X) {
 
 linreg_coefficients <- function(X, y) {
     ## TODO: Rewrite using QR decomposition
+    ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
     coefficients <- solve(t(X) %*% X) %*% t(X) %*% y
     coefficients <- as.vector(coefficients)
     names(coefficients) <- colnames(X)
@@ -75,7 +76,8 @@ linreg_coefficients <- function(X, y) {
 }
 
 linreg_coefficients_variance <- function(...) {
-
+    ## Note: Use QR decomposition
+    ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
 }
 
 linreg_coefficients_standard_error <- function(...) {
