@@ -99,7 +99,7 @@ linreg_coefficients_t_value <- function(coefficients, coefficients_variance) {
 }
 
 linreg_coefficients_p_value <- function(t_values, df) {
-    p_value <- pt(-abs(t_values), df)
+    p_value <- 2 * pt(-abs(t_values), df)
     return(p_value)
 }
 
