@@ -19,15 +19,26 @@ linreg <- function(formula, data)
     X <- linreg_X(formula, data)
     y <- linreg_y(formula, data, X)
 
+    df <- linreg_df(X)
+
     coefficients <- linreg_coefficients(X, y)
     fitted_values <- linreg_fitted_values(X, coefficients)
+
     residuals <- linreg_residuals(y, fitted_values)
+    residuals_variance <- linreg_residual_variance(residuals, df)
+
+    coefficients.var <- linreg_coefficients_variance(X, residuals_variance)
+    coefficients.se <- linreg_coefficients_standard_error(...)
+    coefficients.tval <- linreg_coefficients_t_value(...)
+    coefficients.pval <- linreg_coefficients_p_value(...)
 
     return(.linreg(call=call,
                    coefficients=coefficients,
                    fitted.values=fitted_values,
                    residuals=residuals))
 }
+
+?pt
 
 linreg_check_input <- function(formula, data)
 {
@@ -53,12 +64,32 @@ linreg_y <- function(formula, data, X) {
     return(as.matrix(y))
 }
 
+linreg_df <- function(X) {
+    return(nrow(X) - ncol(X) - 1)
+}
+
 linreg_coefficients <- function(X, y) {
     ## TODO: Rewrite using QR decomposition
     coefficients <- solve(t(X) %*% X) %*% t(X) %*% y
     coefficients <- as.vector(coefficients)
     names(coefficients) <- colnames(X)
     return(coefficients)
+}
+
+linreg_coefficients_variance <- function(...) {
+
+}
+
+linreg_coefficients_standard_error <- function(...) {
+
+}
+
+linreg_coefficients_t_value <- function(...) {
+
+}
+
+linreg_coefficients_p_value <- function(...) {
+
 }
 
 linreg_fitted_values <- function(X, coefficients) {
