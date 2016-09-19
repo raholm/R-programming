@@ -45,31 +45,36 @@
 ## Generic Functions
 .linreg$methods(list(
             coef = function() {
-                cat("Coef: Linear Regression Model\n")
                 return(coefficients$val)
             },
             resid = function() {
-                cat("Resid: Linear Regression Model\n")
                 return(residuals$val)
             },
             pred = function() {
-                cat("Pred: Linear Regression Model\n")
                 return(fitted.values)
             },
             summary = function() {
-                cat("Summary: Linear Regression Model\n")
             },
             print = function() {
-                cat("Print: Linear Regression Model\n")
+                callstr <- function() {
+                       return(gsub(" +", " ", paste(deparse(call), collapse="")))
+                }
+
+                format_number <- function(number, decimals) {
+                    formatted <- as.numeric(format(round(number, decimals), nsmall=decimals))
+                    names(formatted) <- names(number)
+                    return(formatted)
+                }
+
+                cat("\nCall:\n")
+                cat(callstr())
+                cat("\n\n")
+                cat("Coefficients:\n  ")
+                base::print(format_number(coef(), 4))
+            },
+            show = function() {
+                print()
             },
             plot = function() {
-                cat("Plot: Linear Regression Model\n")
             }
         ))
-
-## Template
-## setGeneric("print", function(object, ...) standardGeneric("print"))
-## setMethod(print, signature(object="LinearRegression"),
-##           function(object, ...) {
-##               object$print()
-##           })
