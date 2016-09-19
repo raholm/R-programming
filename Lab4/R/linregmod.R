@@ -28,6 +28,9 @@
             initialize = function(call, coefficients, residuals, fitted.values,
                                   df, ...) {
                 call <<- call
+                ## Extract the string representation of the call
+                call$str <<- gsub(" +", " ", paste(deparse(call), collapse=""))
+
                 coefficients <<- coefficients
                 residuals <<- residuals
                 fitted.values <<- fitted.values
@@ -55,10 +58,6 @@
             },
             print = function() {
                 ## Might wanna use strwrap.
-                callstr <- function() {
-                       return(gsub(" +", " ", paste(deparse(call), collapse="")))
-                }
-
                 format_number <- function(number, decimals) {
                     formatted <- as.numeric(format(round(number, decimals), nsmall=decimals))
                     names(formatted) <- names(number)
@@ -66,7 +65,7 @@
                 }
 
                 cat("\nCall:\n")
-                cat(callstr())
+                cat(call$str)
                 cat("\n\n")
                 cat("Coefficients:\n  ")
                 base::print(format_number(coef(), 4))
@@ -75,5 +74,41 @@
                 print()
             },
             plot = function() {
+                readkey <- function() {
+                    cat ("Press [enter] to continue")
+                    line <- readline()
+                }
+
+                base_plot <- function(data, title, xlab, ylab) {
+                    return(ggplot(data=data) +
+                           ggtitle(title) +
+                           xlab(xlab) +
+                           ylab(ylab) +
+                           theme(plot.title=element_text(hjust=0.5)) +
+                           geom_point(aes(x=x, y=y)))
+                }
+
+                ## Residuals vs Fitted Plot -------------------
+                label.title <- "Residuals vs Fitted"
+                label.x <- paste("Fitted values", call$str, sep="\n")
+                label.y <- "Residuals"
+
+                data <- data.frame(x=fitted.values, y=residuals$val)
+
+                res_vs_fit_plot <-  base_plot(data, label.title, label.x, label.y) +
+                    geom_hline(yintercept=0, linetype="dotted", color="blue")
+
+                base::print(res_vs_fit_plot)
+                readkey()
+
+                ## Scale-Location Plot ----------------------
+                label.title <- "Scale-Location"
+                label.y <- expression(sqrt("Standardized residuals"))
+
+                standardized_residuals <- abs(residuals$val / sd(residuals$val))
+                data <- data.frame(x=fitted.values, y=sqrt(standardized_residuals))
+
+                scale_location_plot <- base_plot(data, label.title, label.x, label.y)
+                base::print(scale_location_plot)
             }
         ))
