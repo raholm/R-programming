@@ -2,6 +2,9 @@
 #'
 #' All the internal functions used in this package
 #' (DO NOT EXPORT)
+#'
+#' @import ggplot2
+#' @importFrom stats quantile sd
 .format_number <- function(number, decimals, ...) {
     formatted <- as.numeric(format(round(number, decimals), nsmall=decimals, ...))
     names(formatted) <- names(number)
@@ -32,7 +35,7 @@
     .summary.call(object, ...)
     .summary.resid(object, ...)
     .summary.coef(object, ...)
-    .summary.df(object, ....)
+    .summary.df(object, ...)
     return(invisible())
 }
 
@@ -159,7 +162,6 @@
            geom_text(data=outliers, aes(x=x, y=y, label=rownames(outliers)),
                      hjust=0, nudge_x = 0.05))
 }
-
 
 .outliers <- function(data, count) {
     return(order(abs(data$y), decreasing=TRUE)[1:count])

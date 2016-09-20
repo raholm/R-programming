@@ -20,7 +20,6 @@
 #' @field df  The number of degrees of freedom in the model.
 #'
 #' @import methods
-#' @import ggplot2
 #'
 #' @name LinearRegressionModel
 #' @aliases linregmod
