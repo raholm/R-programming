@@ -14,6 +14,20 @@
     return(invisible())
 }
 
+.initialize <- function(object, call, coefficients,
+                        residuals, fitted.values,
+                        df, ...) {
+    ## Extract the string representation of the call
+    object$call <- gsub(" +", " ", paste(deparse(call), collapse=""))
+
+    object$coefficients <- coefficients
+    object$residuals <- residuals
+    object$fitted.values <- fitted.values
+    object$df <- df
+
+    return(invisible())
+}
+
 .summary <- function(object, ...) {
     .summary.call(object, ...)
     .summary.resid(object, ...)

@@ -38,14 +38,7 @@ LinearRegressionModel <- setRefClass("LinearRegressionModel",
 LinearRegressionModel$methods(list(
                           initialize = function(call, coefficients, residuals, fitted.values,
                                                 df, ...) {
-                              ## Extract the string representation of the call
-                              call <<- gsub(" +", " ", paste(deparse(call), collapse=""))
-
-                              coefficients <<- coefficients
-                              residuals <<- residuals
-                              fitted.values <<- fitted.values
-                              df <<- df
-
+                              .initialize(.self, call, coefficients, residuals, fitted.values, df, ...)
                               callSuper(...)
                           },
                           finalize = function() {
