@@ -102,6 +102,7 @@ LinearRegressionModel$methods(list(
                               base_plot <- function(data, title, xlab, ylab) {
                                   outliers <- data[outliers(data, 3), ]
 
+                                  ## TODO: Is the smoothing method correct?
                                   return(ggplot() +
                                          ggtitle(title) +
                                          xlab(xlab) +
