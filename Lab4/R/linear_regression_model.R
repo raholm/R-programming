@@ -19,113 +19,126 @@
 #' @field fitted.values Object of class \code{"numeric"}. The fitted values of y using the model's parameters.
 #' @field df Object of class \code{"numeric"}. The number of degrees of freedom in the model.
 #'
-#' @import methods
+#' @import ggplot2
+#'
 #' @name LinearRegressionModel
+#' @aliases linregmod
 #' @exportClass LinearRegressionModel
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
 LinearRegressionModel <- setRefClass("LinearRegressionModel",
-                         fields=list(
-                             call="character",
-                             coefficients="list",
-                             residuals="list",
-                             fitted.values="numeric",
-                             df="numeric"
-                         ))
-
+                                     fields=list(
+                                         call="character",
+                                         coefficients="list",
+                                         residuals="list",
+                                         fitted.values="numeric",
+                                         df="numeric"
+                                     ))
 
 ## Constructor and Destructor
 LinearRegressionModel$methods(list(
-              initialize = function(call, coefficients, residuals, fitted.values,
-                                    df, ...) {
-                  ## Extract the string representation of the call
-                  call <<- gsub(" +", " ", paste(deparse(call), collapse=""))
+                          initialize = function(call, coefficients, residuals, fitted.values,
+                                                df, ...) {
+                              ## Extract the string representation of the call
+                              call <<- gsub(" +", " ", paste(deparse(call), collapse=""))
 
-                  coefficients <<- coefficients
-                  residuals <<- residuals
-                  fitted.values <<- fitted.values
-                  df <<- df
+                              coefficients <<- coefficients
+                              residuals <<- residuals
+                              fitted.values <<- fitted.values
+                              df <<- df
 
-                  callSuper(...)
-              },
-              finalize = function() {
+                              callSuper(...)
+                          },
+                          finalize = function() {
 
-              }
-          ))
+                          }
+                      ))
 
-## Generic Functions
+## Methods
 LinearRegressionModel$methods(list(
-              coef = function() {
-                  "Returns the estimated parameters."
-                  return(coefficients$val)
-              },
-              resid = function() {
-                  "Returns the residuals."
-                  return(residuals$val)
-              },
-              pred = function() {
-                  "Returns the fitted values."
-                  return(fitted.values)
-              },
-              summary = function() {
-                  "Shows a summary of the model."
-              },
-              print = function() {
-                  "Prints the model."
-                  ## Might wanna use strwrap.
-                  format_number <- function(number, decimals) {
-                      formatted <- as.numeric(format(round(number, decimals), nsmall=decimals))
-                      names(formatted) <- names(number)
-                      return(formatted)
-                  }
+                          coef = function() {
+                              "Returns the estimated parameters."
+                              return(coefficients$val)
+                          },
+                          resid = function() {
+                              "Returns the residuals."
+                              return(residuals$val)
+                          },
+                          pred = function() {
+                              "Returns the fitted values."
+                              return(fitted.values)
+                          },
+                          summary = function() {
+                              "Shows a summary of the model."
+                          },
+                          print = function() {
+                              "Prints the model."
+                              ## Might wanna use strwrap.
+                              format_number <- function(number, decimals) {
+                                  formatted <- as.numeric(format(round(number, decimals), nsmall=decimals))
+                                  names(formatted) <- names(number)
+                                  return(formatted)
+                              }
 
-                  cat("\nCall:\n")
-                  cat(call)
-                  cat("\n\n")
-                  cat("Coefficients:\n  ")
-                  base::print(format_number(coef(), 4))
-              },
-              show = function() {
-                  print()
-              },
-              plot = function() {
-                  "Plots Residuals vs Fitted and Scale-Location."
-                  readkey <- function() {
-                      cat ("Press [enter] to continue")
-                      line <- readline()
-                  }
+                              cat("\nCall:\n")
+                              cat(call)
+                              cat("\n\n")
+                              cat("Coefficients:\n  ")
+                              base::print(format_number(coef(), 4))
+                          },
+                          show = function() {
+                              print()
+                          },
+                          plot = function() {
+                              "Plots Residuals vs Fitted and Scale-Location."
+                              readkey <- function() {
+                                  cat ("Press [enter] to continue")
+                                  line <- readline()
+                              }
 
-                  base_plot <- function(data, title, xlab, ylab) {
-                      return(ggplot(data=data) +
-                             ggtitle(title) +
-                             xlab(xlab) +
-                             ylab(ylab) +
-                             theme(plot.title=element_text(hjust=0.5)) +
-                             geom_point(aes(x=x, y=y)))
-                  }
+                              outliers <- function(data, count) {
+                                  return(order(abs(data$y), decreasing=TRUE)[1:count])
+                              }
 
-                  ## Residuals vs Fitted Plot -------------------
-                  label.title <- "Residuals vs Fitted"
-                  label.x <- paste("Fitted values", call, sep="\n")
-                  label.y <- "Residuals"
+                              base_plot <- function(data, title, xlab, ylab) {
+                                  outliers <- data[outliers(data, 3), ]
 
-                  data <- data.frame(x=fitted.values, y=residuals$val)
+                                  return(ggplot() +
+                                         ggtitle(title) +
+                                         xlab(xlab) +
+                                         ylab(ylab) +
+                                         theme(plot.title=element_text(hjust=0.5)) +
+                                         geom_point(data=data, aes(x=x, y=y)) +
+                                         geom_smooth(data=data, aes(x=x, y=y), method="loess",
+                                                     color="red", se=FALSE) +
+                                         geom_text(data=outliers, aes(x=x, y=y, label=rownames(outliers)),
+                                                   hjust=0, nudge_x = 0.05))
+                              }
 
-                  res_vs_fit_plot <-  base_plot(data, label.title, label.x, label.y) +
-                      geom_hline(yintercept=0, linetype="dotted", color="blue")
+                              ## Residuals vs Fitted Plot -------------------
+                              label.title <- "Residuals vs Fitted"
+                              label.x <- paste("Fitted values", call, sep="\n")
+                              label.y <- "Residuals"
 
-                  base::print(res_vs_fit_plot)
+                              data <- data.frame(x=fitted.values, y=residuals$val)
 
-                  ## Wait for user input before continuing
-                  readkey()
+                              res_vs_fit_plot <-  base_plot(data, label.title, label.x, label.y) +
+                                  geom_hline(yintercept=0, linetype="dotted", color="blue")
 
-                  ## Scale-Location Plot ----------------------
-                  label.title <- "Scale-Location"
-                  label.y <- expression(sqrt("Standardized residuals"))
+                              suppressWarnings(base::print(res_vs_fit_plot))
 
-                  standardized_residuals <- abs(residuals$val / sd(residuals$val))
-                  data <- data.frame(x=fitted.values, y=sqrt(standardized_residuals))
+                              ## Wait for user input before continuing
+                              readkey()
 
-                  scale_location_plot <- base_plot(data, label.title, label.x, label.y)
-                  base::print(scale_location_plot)
-              }
-          ))
+                              ## Scale-Location Plot ----------------------
+                              label.title <- "Scale-Location"
+                              label.y <- expression(sqrt("Standardized residuals"))
+
+                              standardized_residuals <- abs(residuals$val / sd(residuals$val))
+                              data <- data.frame(x=fitted.values, y=sqrt(standardized_residuals))
+
+                              scale_location_plot <- base_plot(data, label.title, label.x, label.y) +
+                                  scale_y_continuous(limits=c(0, max(abs(data$y))))
+
+                              suppressWarnings(base::print(scale_location_plot))
+                          }
+                      ))
