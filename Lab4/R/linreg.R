@@ -89,10 +89,10 @@ linreg_coefficients <- function(X, y) {
     qr.X <- qr(X)
     b <- t(qr.Q(qr.X)) %*% y
     R <- qr.R(qr.X)
-    beta <- backsolve(R, b)
-    beta <- as.vector(beta)
-    names(beta) <- colnames(X)
-    return(beta)
+    coefficients <- backsolve(R, b)
+    coefficients <- as.vector(coefficients)
+    names(coefficients) <- colnames(X)
+    return(coefficients)
 }
 
 linreg_coefficients_variance <- function(X, residuals_variance) {
