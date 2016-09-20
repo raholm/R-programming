@@ -2,10 +2,11 @@
 % Please edit documentation in R/package.R
 \docType{package}
 \name{Lab4}
+\alias{Lab4}
 \alias{Lab4-package}
 \title{Lab 4}
 \description{
-Description here
+Implementation of Linear Regression and a Reference Class to store linear regression models.
 }
 \author{
 Rasmus Holm

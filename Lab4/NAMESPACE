@@ -2,6 +2,6 @@
 
 export(linreg)
 exportClasses(LinearRegressionModel)
-import(methods)
+import(ggplot2)
 importFrom(stats,model.matrix)
 importFrom(stats,pt)
