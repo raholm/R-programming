@@ -69,18 +69,13 @@ LinearRegressionModel$methods(list(
                           },
                           summary = function() {
                               "Shows a summary of the model."
-                              format_number <- function(number, decimals, ...) {
-                                  formatted <- as.numeric(format(round(number, decimals), nsmall=decimals, ...))
-                                  names(formatted) <- names(number)
-                                  return(formatted)
-                              }
 
-                              min <- format_number(min(residuals$val), 4)
-                              quartile1 <- format_number(quantile(residuals$val)[2], 4)
-                              median <- format_number(median(residuals$val), 4)
-                              quartile3 <- format_number(quantile(residuals$val)[4], 4)
-                              max <- format_number(max(residuals$val), 4)
-                              se <- format_number(sqrt(residuals$var), 4)
+                              min <- .format_number(min(residuals$val), 4)
+                              quartile1 <- .format_number(quantile(residuals$val)[2], 4)
+                              median <- .format_number(median(residuals$val), 4)
+                              quartile3 <- .format_number(quantile(residuals$val)[4], 4)
+                              max <- .format_number(max(residuals$val), 4)
+                              se <- .format_number(sqrt(residuals$var), 4)
                               names <- c("min", "1Q", "median", "3Q", "max")
 
                               resid_statistics <- c(min, quartile1, median, quartile3, max)
@@ -88,9 +83,9 @@ LinearRegressionModel$methods(list(
 
                               rownames <- names(coefficients$val)
                               colnames <- c("Estimate", "Std. Error", "t value", "p value")
-                              coef_statistics <- matrix(c(format_number(coefficients$val, 4),
-                                                          format_number(coefficients$se, 4),
-                                                          format_number(coefficients$tval, 4),
+                              coef_statistics <- matrix(c(.format_number(coefficients$val, 4),
+                                                          .format_number(coefficients$se, 4),
+                                                          .format_number(coefficients$tval, 4),
                                                           coefficients$pval),
                                                         byrow=FALSE,
                                                         nrow=length(coefficients$val),
@@ -112,29 +107,19 @@ LinearRegressionModel$methods(list(
                           },
                           print = function() {
                               "Prints the model."
-                              ## Might wanna use strwrap.
-                              format_number <- function(number, decimals) {
-                                  formatted <- as.numeric(format(round(number, decimals), nsmall=decimals))
-                                  names(formatted) <- names(number)
-                                  return(formatted)
-                              }
 
+                              ## Might wanna use strwrap.
                               cat("\nCall:\n")
                               cat(call)
                               cat("\n\n")
                               cat("Coefficients:\n  ")
-                              base::print(format_number(coef(), 4))
+                              base::print(.format_number(coef(), 4))
                           },
                           show = function() {
                               print()
                           },
                           plot = function() {
                               "Plots Residuals vs Fitted and Scale-Location."
-                              readkey <- function() {
-                                  cat ("Press [enter] to continue")
-                                  line <- readline()
-                              }
-
                               outliers <- function(data, count) {
                                   return(order(abs(data$y), decreasing=TRUE)[1:count])
                               }
@@ -168,7 +153,7 @@ LinearRegressionModel$methods(list(
                               suppressWarnings(base::print(res_vs_fit_plot))
 
                               ## Wait for user input before continuing
-                              readkey()
+                              .readkey()
 
                               ## Scale-Location Plot ----------------------
                               label.title <- "Scale-Location"
