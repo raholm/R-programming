@@ -10,7 +10,10 @@ Author: Rasmus Holm [aut, cre],
 Maintainer: Rasmus Holm <rasho258@student.liu.se>
 License: CC0
 RoxygenNote: 5.0.1
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
 Imports:
     ggplot2 (>= 2.1.0),
     methods
+VignetteBuilder: knitr
