@@ -3,6 +3,7 @@
 \docType{class}
 \name{LinearRegressionModel}
 \alias{LinearRegressionModel}
+\alias{linregmod}
 \title{A Reference Class to represent linear regression models.}
 \source{
 \url{https://en.wikipedia.org/wiki/Linear_regression}

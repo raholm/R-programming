@@ -1,6 +1,6 @@
 #' Lab 4
 #' 
-#' Description here
+#' Implementation of Linear Regression and a Reference Class to store linear regression models.
 #' 
 #' @author Rasmus Holm
 #' @author Zhendong Wang
@@ -8,5 +8,4 @@
 #'
 #' @docType package
 #' @name Lab4
-#' @aliases NULL
 NULL
