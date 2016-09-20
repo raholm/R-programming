@@ -5,6 +5,7 @@
 #'
 #' @import ggplot2
 #' @importFrom stats quantile sd
+## Helper Functions ------------------------------------------------------------
 .format_number <- function(number, decimals, ...) {
     formatted <- as.numeric(format(round(number, decimals), nsmall=decimals, ...))
     names(formatted) <- names(number)
@@ -17,6 +18,7 @@
     return(invisible())
 }
 
+## Initialization --------------------------------------------------------------
 .initialize <- function(object, call, coefficients,
                         residuals, fitted.values,
                         df, ...) {
@@ -31,6 +33,7 @@
     return(invisible())
 }
 
+## Summary ---------------------------------------------------------------------
 .summary <- function(object, ...) {
     .summary.call(object, ...)
     .summary.resid(object, ...)
@@ -97,6 +100,7 @@
     return(invisible())
 }
 
+## Print -----------------------------------------------------------------------
 .print <- function(object, ...) {
     ## Might wanna use strwrap.
     cat("\nCall:\n")
@@ -108,6 +112,7 @@
     return(invisible())
 }
 
+## Plot ------------------------------------------------------------------------
 .plot <- function(object, ...) {
     .plot.resid_vs_fit(object, ...)
 
