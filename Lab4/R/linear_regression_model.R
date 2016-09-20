@@ -5,19 +5,19 @@
 #' @field call Object of class \code{"character"}. A string representation of the calling code.
 #' @field coefficients Object of class \code{"list"}. A list containing information about the estimated coefficients.
 #' \describe{
-#' \item{\code{val}:}{Object of class \code{"numeric"}. The estimated coefficients.}
-#' \item{\code{se}:}{Object of class \code{"numeric"}. The standard errors of the coefficients.}
-#' \item{\code{var}:}{Object of class \code{"numeric"}. The variance of the coefficients.}
-#' \item{\code{tval}:}{Object of class \code{"numeric"}. The t-values of the the coefficients.}
-#' \item{\code{pval}:}{Object of class \code{"numeric"}. The p-values of the coefficients.}
+#' \item{\code{val}:}{The estimated coefficients.}
+#' \item{\code{se}:}{The standard errors of the coefficients.}
+#' \item{\code{var}:}{The variance of the coefficients.}
+#' \item{\code{tval}:}{The t values of the the coefficients.}
+#' \item{\code{pval}:}{The p values of the coefficients.}
 #' }
 #' @field residuals Ojbect of class \code{"list"}. A list containing information about the residuals.
 #' \describe{
-#' \item{\code{val}:}{Object of class \code{"numeric"}. The residuals.}
-#' \item{\code{var}:}{Object of class \code{"numeric"}. The variance of the residuals.}
+#' \item{\code{val}:}{The residuals.}
+#' \item{\code{var}:}{The variance of the residuals.}
 #' }
-#' @field fitted.values Object of class \code{"numeric"}. The fitted values of y using the model's coefficients.
-#' @field df Object of class \code{"numeric"}. The number of degrees of freedom in the model.
+#' @field fitted.values  The fitted values of y using the model's coefficients.
+#' @field df  The number of degrees of freedom in the model.
 #'
 #' @import methods
 #' @import ggplot2
@@ -25,7 +25,6 @@
 #' @name LinearRegressionModel
 #' @aliases linregmod
 #' @exportClass LinearRegressionModel
-#' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
 LinearRegressionModel <- setRefClass("LinearRegressionModel",
                                      fields=list(
                                          call="character",
@@ -70,103 +69,17 @@ LinearRegressionModel$methods(list(
                           },
                           summary = function() {
                               "Shows a summary of the model."
-
-                              min <- .format_number(min(residuals$val), 4)
-                              quartile1 <- .format_number(quantile(residuals$val)[2], 4)
-                              median <- .format_number(median(residuals$val), 4)
-                              quartile3 <- .format_number(quantile(residuals$val)[4], 4)
-                              max <- .format_number(max(residuals$val), 4)
-                              se <- .format_number(sqrt(residuals$var), 4)
-                              names <- c("min", "1Q", "median", "3Q", "max")
-
-                              resid_statistics <- c(min, quartile1, median, quartile3, max)
-                              names(resid_statistics) <- names
-
-                              rownames <- names(coefficients$val)
-                              colnames <- c("Estimate", "Std. Error", "t value", "p value")
-                              coef_statistics <- matrix(c(.format_number(coefficients$val, 4),
-                                                          .format_number(coefficients$se, 4),
-                                                          .format_number(coefficients$tval, 4),
-                                                          coefficients$pval),
-                                                        byrow=FALSE,
-                                                        nrow=length(coefficients$val),
-                                                        dimnames=list(rownames, colnames))
-
-                              cat("\nCall:\n")
-                              cat(call)
-                              cat("\n\n")
-                              cat("Residuals:\n")
-                              base::print(resid_statistics)
-                              cat("\n")
-                              cat("Coefficients:\n")
-                              base::print(coef_statistics)
-                              cat("\nResidual standard error: ")
-                              cat(se)
-                              cat(" on ")
-                              cat(df)
-                              cat(" degrees of freedom\n\n")
+                              .summary(.self)
                           },
                           print = function() {
                               "Prints the model."
-
-                              ## Might wanna use strwrap.
-                              cat("\nCall:\n")
-                              cat(call)
-                              cat("\n\n")
-                              cat("Coefficients:\n  ")
-                              base::print(.format_number(coef(), 4))
-                              cat("\n")
+                              .print(.self)
                           },
                           show = function() {
                               print()
                           },
                           plot = function() {
                               "Plots Residuals vs Fitted and Scale-Location."
-                              outliers <- function(data, count) {
-                                  return(order(abs(data$y), decreasing=TRUE)[1:count])
-                              }
-
-                              base_plot <- function(data, title, xlab, ylab) {
-                                  outliers <- data[outliers(data, 3), ]
-
-                                  ## TODO: Is the smoothing method correct?
-                                  return(ggplot() +
-                                         ggtitle(title) +
-                                         xlab(xlab) +
-                                         ylab(ylab) +
-                                         theme(plot.title=element_text(hjust=0.5)) +
-                                         geom_point(data=data, aes(x=x, y=y)) +
-                                         geom_smooth(data=data, aes(x=x, y=y), method="loess",
-                                                     color="red", se=FALSE) +
-                                         geom_text(data=outliers, aes(x=x, y=y, label=rownames(outliers)),
-                                                   hjust=0, nudge_x = 0.05))
-                              }
-
-                              ## Residuals vs Fitted Plot -------------------
-                              label.title <- "Residuals vs Fitted"
-                              label.x <- paste("Fitted values", call, sep="\n")
-                              label.y <- "Residuals"
-
-                              data <- data.frame(x=fitted.values, y=residuals$val)
-
-                              res_vs_fit_plot <-  base_plot(data, label.title, label.x, label.y) +
-                                  geom_hline(yintercept=0, linetype="dotted", color="blue")
-
-                              suppressWarnings(base::print(res_vs_fit_plot))
-
-                              ## Wait for user input before continuing
-                              .readkey()
-
-                              ## Scale-Location Plot ----------------------
-                              label.title <- "Scale-Location"
-                              label.y <- expression(sqrt("Standardized residuals"))
-
-                              standardized_residuals <- abs(residuals$val / sd(residuals$val))
-                              data <- data.frame(x=fitted.values, y=sqrt(standardized_residuals))
-
-                              scale_location_plot <- base_plot(data, label.title, label.x, label.y) +
-                                  scale_y_continuous(limits=c(0, max(abs(data$y))))
-
-                              suppressWarnings(base::print(scale_location_plot))
+                              .plot(.self)
                           }
                       ))
