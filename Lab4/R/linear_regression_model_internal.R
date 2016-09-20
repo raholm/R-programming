@@ -156,10 +156,10 @@
            xlab(xlab) +
            ylab(ylab) +
            theme(plot.title=element_text(hjust=0.5)) +
-           geom_point(data=data, aes(x=x, y=y)) +
-           geom_smooth(data=data, aes(x=x, y=y), method="loess",
+           geom_point(data=data, aes_string(x="x", y="y")) +
+           geom_smooth(data=data, aes_string(x="x", y="y"), method="loess",
                        color="red", se=FALSE) +
-           geom_text(data=outliers, aes(x=x, y=y, label=rownames(outliers)),
+           geom_text(data=outliers, aes_string(x="x", y="y", label="rownames(outliers)"),
                      hjust=0, nudge_x = 0.05))
 }
 
