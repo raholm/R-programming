@@ -19,6 +19,7 @@
 #' @field fitted.values Object of class \code{"numeric"}. The fitted values of y using the model's coefficients.
 #' @field df Object of class \code{"numeric"}. The number of degrees of freedom in the model.
 #'
+#' @import methods
 #' @import ggplot2
 #'
 #' @name LinearRegressionModel
@@ -56,7 +57,7 @@ LinearRegressionModel$methods(list(
 ## Methods
 LinearRegressionModel$methods(list(
                           coef = function() {
-                              "Returns the estimated parameters."
+                              "Returns the estimated coefficients."
                               return(coefficients$val)
                           },
                           resid = function() {
@@ -114,6 +115,7 @@ LinearRegressionModel$methods(list(
                               cat("\n\n")
                               cat("Coefficients:\n  ")
                               base::print(.format_number(coef(), 4))
+                              cat("\n")
                           },
                           show = function() {
                               print()

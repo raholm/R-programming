@@ -1,8 +1,6 @@
 library(Lab4)
 context("linreg")
 
-data(iris)
-
 test_that("linreg of invalid input is invalid", {
     expect_error(linreg(1, iris))
     expect_error(linreg(y ~ x, 1))

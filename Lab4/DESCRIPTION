@@ -1,16 +1,16 @@
 Package: Lab4
 Type: Package
-Title: Title here
-Description: Description here
+Title: Linear Regression
+Description: Computes linear regression models.
 Version: 0.1
 Date: 2016-09-18
 Author: Rasmus Holm [aut, cre],
-    Zhendong Wang [aut, cre],
-    Karolina Ziomek [aut, cre]
+        Zhendong Wang [aut, cre],
+        Karolina Ziomek [aut, cre]
 Maintainer: Rasmus Holm <rasho258@student.liu.se>
 License: CC0
 RoxygenNote: 5.0.1
 Suggests: testthat
 Imports:
-    ggplot2 (>= 2.1.0)
-
+    ggplot2 (>= 2.1.0),
+    methods
