@@ -6,6 +6,8 @@ test_that("linreg of invalid input is invalid", {
     expect_error(linreg(y ~ x, 1))
     # The variables x, y does not exist in iris.
     expect_error(linreg(y ~ x, iris))
+    expect_error(linreg(formula=y ~ x))
+    expect_error(data=iris)
 })
 
 test_that("linreg of valid input is correct", {
