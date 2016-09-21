@@ -160,7 +160,8 @@
            ylab(ylab) +
            theme_bw() +
            theme(plot.title=element_text(hjust=0.5),
-                 plot.background = element_rect(fill = "#54D8E0")) +
+                 plot.background = element_rect(fill = "#54D8E0"),
+                 panel.grid.minor = element_blank()) +
            geom_point(data=data, aes_string(x="x", y="y")) +
            geom_smooth(data=data, aes_string(x="x", y="y"), method="loess",
                        color="red", se=FALSE) +
