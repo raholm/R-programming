@@ -17,7 +17,6 @@
 #' @importFrom stats model.matrix
 #' @importFrom stats pt
 #'
-#' @name linreg
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
 linreg <- function(formula, data)

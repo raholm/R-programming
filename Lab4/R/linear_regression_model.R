@@ -21,7 +21,6 @@
 #'
 #' @import methods
 #'
-#' @name LinearRegressionModel
 #' @aliases linregmod
 #' @exportClass LinearRegressionModel
 LinearRegressionModel <- setRefClass("LinearRegressionModel",

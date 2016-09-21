@@ -18,7 +18,7 @@ linreg(formula, data)
 The fitted model of class \code{"LinearRegressionModel"}.
 }
 \description{
-'linreg' is used to fit linear regression models.
+linreg is used to fit linear regression models.
 }
 \examples{
 linreg(formula = Petal.Width ~ Petal.Length, data=iris)
