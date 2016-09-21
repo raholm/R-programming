@@ -1,6 +1,6 @@
 #' Linear Regression
 #'
-#' 'linreg' is used to fit linear regression models.
+#' linreg is used to fit linear regression models.
 #'
 #' @usage
 #' linreg(formula, data)
@@ -70,9 +70,6 @@ linreg_X <- function(formula, data) {
 }
 
 linreg_y <- function(formula, data, X) {
-    ## This becomes wrong with qualitative variables
-    ## y_variables <- all.vars(formula)[!(all.vars(formula) %in% colnames(X))]
-
     ## Limit the use to only one dependent variable
     ## TODO: Fix this limitation
     y_variables <- all.vars(formula)[1]
@@ -96,7 +93,6 @@ linreg_coefficients <- function(X, y) {
 }
 
 linreg_coefficients_variance <- function(X, residuals_variance) {
-    ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
     coefficients_variance <- residuals_variance * linreg_inverse_QR_decomposition(t(X) %*% X)
     coefficients_variance <- as.vector(diag(coefficients_variance))
     names(coefficients_variance) <- colnames(X)
