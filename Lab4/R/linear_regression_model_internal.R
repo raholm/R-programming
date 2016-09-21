@@ -153,7 +153,7 @@
 }
 
 .plot.base <- function(data, title, xlab, ylab) {
-    outliers <- data[.outliers(data, 3), ]
+    outliers <- .outliers(data, 3)
     return(ggplot() +
            ggtitle(title) +
            xlab(xlab) +
@@ -166,9 +166,9 @@
            geom_smooth(data=data, aes_string(x="x", y="y"), method="loess",
                        color="red", se=FALSE) +
            geom_text(data=outliers, aes_string(x="x", y="y", label="rownames(outliers)"),
-                     hjust=0, nudge_x = 0.05))
+                     hjust=0, nudge_x = 0.05, check_overlap=TRUE))
 }
 
 .outliers <- function(data, count) {
-    return(order(abs(data$y), decreasing=TRUE)[1:count])
+    return(data[order(abs(data$y), decreasing=TRUE)[1:count], ])
 }
