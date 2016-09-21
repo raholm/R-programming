@@ -15,5 +15,7 @@ Suggests: testthat,
     rmarkdown
 Imports:
     ggplot2 (>= 2.1.0),
-    methods
+    methods,
+    png,
+    grid
 VignetteBuilder: knitr
