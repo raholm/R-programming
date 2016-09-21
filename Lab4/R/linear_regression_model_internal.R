@@ -154,14 +154,14 @@
 
 .plot.base <- function(data, title, xlab, ylab) {
     outliers <- data[.outliers(data, 3), ]
-
+    
     ## TODO: Is the smoothing method correct?
     return(ggplot() +
            ggtitle(title) +
            xlab(xlab) +
            ylab(ylab) +
            theme(plot.title=element_text(hjust=0.5)) +
-           
+           theme_bw()+
            theme(plot.background = element_rect(fill = "#54D8E0"))+
            geom_point(data=data, aes_string(x="x", y="y")) +
            geom_smooth(data=data, aes_string(x="x", y="y"), method="loess",
