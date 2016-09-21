@@ -4,6 +4,7 @@ context("linreg")
 test_that("linreg of invalid input is invalid", {
     expect_error(linreg(1, iris))
     expect_error(linreg(y ~ x, 1))
+    # The variables x, y does not exist in iris.
     expect_error(linreg(y ~ x, iris))
 })
 
