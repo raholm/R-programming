@@ -38,9 +38,6 @@ LinearRegressionModel$methods(list(
                                                 df, ...) {
                               .initialize(.self, call, coefficients, residuals, fitted.values, df, ...)
                               callSuper(...)
-                          },
-                          finalize = function() {
-
                           }
                       ))
 
