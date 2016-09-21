@@ -1,0 +1,63 @@
+---
+title: "Lab 4"
+author: "Rasmus Holm"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lab4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+# Linear Regression Test
+
+## Loading the data set
+We will use the iris data set to perform our testing which is a famous data set containing information about flowers.
+
+```{r}
+library(Lab4)
+library(datasets)
+
+data <- datasets::iris
+```
+
+## Perform linear regression
+In order to perform linear regression, we use the linreg function which takes a formula describing the model and a data frame.
+
+```{r}
+model <- linreg(formula = Petal.Length ~ Petal.Width, data=data)
+```
+
+The returning object is a Reference Class of type "LinearRegressionModel" that contains all the information about the linear model. It provides methods to investigate the model and its parameters.
+
+```{r}
+# Shows the coefficients that were estimated
+model$coef()
+# Shows the residuals.
+head(model$resid())
+# Shows the fitted values.
+head(model$pred())
+```
+
+The class object also have methods to show detailed view of the model.
+```{r}
+# Shows how the linreg function was called and the coefficients.
+model$print()
+# Shows a detailed summary of the residuals and coefficients with related statistics.
+model$summary()
+```
+
+To get a better understanding to whether the model is linear or not, the model has a method for plotting "fitted vs residuals" and "scale-location" plots. Go [here](http://data.library.virginia.edu/diagnostic-plots) for more information about the plots.
+
+```{r, fig.show='hold', fig.width=6, fig.height=5, fig.align='center'}
+model$plot()
+```
+
+In order to plot the fitted line to the data, you can use the regular plot functionality in R.
+```{r, fig.show='hold', fig.width=6, fig.height=5, fig.align='center'}
+plot(x=data$Petal.Width, y=data$Petal.Length, main="Fitted Regression Line")
+abline(model$coef())
+```
