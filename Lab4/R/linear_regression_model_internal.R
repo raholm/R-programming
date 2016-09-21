@@ -114,12 +114,16 @@
 
 ## Plot ------------------------------------------------------------------------
 .plot <- function(object, ...) {
-    .plot.resid_vs_fit(object, ...)
+    plot1 <- .plot.resid_vs_fit(object, ...)
+    plot2 <- .plot.scale_location(object, ...)
 
-    ## Wait for user input before continuing
+    suppressWarnings(base::print(plot1))
+
+    ## ## Wait for user input before continuing
     .readkey()
 
-    .plot.scale_location(object, ...)
+    suppressWarnings(base::print(plot2))
+
     return(invisible())
 }
 
@@ -132,9 +136,7 @@
 
     res_vs_fit_plot <-  .plot.base(data, label.title, label.x, label.y) +
         geom_hline(yintercept=0, linetype="dotted", color="blue")
-
-    suppressWarnings(base::print(res_vs_fit_plot))
-    return(invisible())
+    return(res_vs_fit_plot)
 }
 
 .plot.scale_location <- function(object, ...) {
@@ -147,9 +149,7 @@
 
     scale_location_plot <- .plot.base(data, label.title, label.x, label.y) +
         scale_y_continuous(limits=c(0, max(abs(data$y))))
-
-    suppressWarnings(base::print(scale_location_plot))
-    return(invisible())
+    return(scale_location_plot)
 }
 
 .plot.base <- function(data, title, xlab, ylab) {
