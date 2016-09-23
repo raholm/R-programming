@@ -11,7 +11,7 @@
 #' \item{\code{tval}:}{The t values of the the coefficients.}
 #' \item{\code{pval}:}{The p values of the coefficients.}
 #' }
-#' @field residuals Ojbect of class \code{"list"}. A list containing information about the residuals.
+#' @field residuals Object of class \code{"list"}. A list containing information about the residuals.
 #' \describe{
 #' \item{\code{val}:}{The residuals.}
 #' \item{\code{var}:}{The variance of the residuals.}
