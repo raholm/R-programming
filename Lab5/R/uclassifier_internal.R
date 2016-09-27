@@ -27,6 +27,7 @@ Input : c('TEXT1', 'TEXT2')
 Output : list(texts=c('TEXT1', 'TEXT2'))
 The same for the other valid text inputs
 "
+.check.text_input(text)
 return(text)
 }
 
@@ -40,7 +41,8 @@ The same for the other valid text inputs
 
 (Use jsonlite library)
 "
-return(text)
+formatted_text <- .format.text_input(text)
+return(formatted_text)
 }
 
 .check.class_input <- function(class) {
