@@ -5,7 +5,7 @@
 #'
 #' @import httr
 #' @import jsonlite
-
+## Helper Functions -------------------------------------------------------------
 .check.text_input <- function(text) {
 "
 Valid inputs should look like this:
@@ -56,4 +56,34 @@ data.frame(class='CLASS')
 data.frame(class=c('CLASS1', 'CLASS2'))
 "
 return(invisible())
+}
+
+## Read Methods -----------------------------------------------------------------
+.get_information <- function(object, ...) {
+
+}
+
+## Write Methods ----------------------------------------------------------------
+.create <- function(object, ...) {
+
+}
+
+.remove <- function(object, ...) {
+
+}
+
+.add_class <- function(object, class, ...) {
+    .check.class_input(class)
+}
+
+.remove_class <- function(object, class, ...) {
+    .check.class_input(class)
+}
+
+.train <- function(object, text, class, ...) {
+
+}
+
+.untrain <- function(object, text, class, ...) {
+
 }
