@@ -4,6 +4,7 @@
 #' (DO NOT EXPORT)
 #'
 #' @import httr
+#' @import jsonlite
 
 .check.text_input <- function(text) {
 }
