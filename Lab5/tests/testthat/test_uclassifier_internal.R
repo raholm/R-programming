@@ -84,4 +84,8 @@ test_that("Removing classes from the cache works properly", {
     expect_equal(classifier$cache$class, "class2")
     .cache.remove_class(classifier, c("class1", "class2"))
     expect_equal(classifier$cache$class, NULL)
+
+    .cache.add_class(classifier, c("class1", "class2", "class3", "class4"))
+    .cache.remove_class(classifier, c("class1", "class4"))
+    expect_equal(classifier$cache$class, c("class2", "class3"))
 })
