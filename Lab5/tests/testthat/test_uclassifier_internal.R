@@ -11,31 +11,37 @@ test_that("Invalid text input is invalid", {
 test_that("Valid text input is correctly formatted", {
     expect_equal(.format.text_input("THIS IS A TEST"),
                  list(texts="THIS IS A TEST"))
-    expect_equal(.format.text_input(list(texts="THIS IS A TEST")),
+    expect_equal(.format.text_input(list(text="THIS IS A TEST")),
                  list(texts="THIS IS A TEST"))
-    expect_equal(.format.text_input(data.frame(texts="THIS IS A TEST")),
+    expect_equal(.format.text_input(data.frame(text="THIS IS A TEST")),
                  list(texts="THIS IS A TEST"))
 
     expect_equal(.format.text_input(c("THIS IS A TEST1", "THIS IS A TEST2")),
                  list(texts=c("THIS IS A TEST1", "THIS IS A TEST2")))
-    expect_equal(.format.text_input(list(texts=c("THIS IS A TEST1", "THIS IS A TEST2"))),
+    expect_equal(.format.text_input(list(text=c("THIS IS A TEST1", "THIS IS A TEST2"))),
                  list(texts=c("THIS IS A TEST1", "THIS IS A TEST2")))
-    expect_equal(.format.text_input(data.frame(texts=c("THIS IS A TEST1", "THIS IS A TEST2"))),
+    expect_equal(.format.text_input(data.frame(text=c("THIS IS A TEST1", "THIS IS A TEST2"))),
                  list(texts=c("THIS IS A TEST1", "THIS IS A TEST2")))
 })
 
 test_that("Valid text input is correctly parsed to JSON", {
     expect_equal(.to_json.text_input("THIS IS A TEST"),
                  toJSON(list(texts="THIS IS A TEST")))
-    expect_equal(.to_json.text_input(list(texts="THIS IS A TEST")),
+    expect_equal(.to_json.text_input(list(text="THIS IS A TEST")),
                  toJSON(list(texts="THIS IS A TEST")))
-    expect_equal(.to_json.text_input(data.frame(texts="THIS IS A TEST")),
+    expect_equal(.to_json.text_input(data.frame(text="THIS IS A TEST")),
                  toJSON(list(texts="THIS IS A TEST")))
 
     expect_equal(.to_json.text_input(c("THIS IS A TEST1", "THIS IS A TEST2")),
                  toJSON(list(texts=c("THIS IS A TEST1", "THIS IS A TEST2"))))
-    expect_equal(.to_json.text_input(list(texts=c("THIS IS A TEST1", "THIS IS A TEST2"))),
+    expect_equal(.to_json.text_input(list(text=c("THIS IS A TEST1", "THIS IS A TEST2"))),
                  toJSON(list(texts=c("THIS IS A TEST1", "THIS IS A TEST2"))))
-    expect_equal(.to_json.text_input(data.frame(texts=c("THIS IS A TEST1", "THIS IS A TEST2"))),
+    expect_equal(.to_json.text_input(data.frame(text=c("THIS IS A TEST1", "THIS IS A TEST2"))),
                  toJSON(list(texts=c("THIS IS A TEST1", "THIS IS A TEST2"))))
+})
+
+test_that("Invalid class name is invalid", {
+    expect_error(.check.class_input(1))
+    expect_error(.check.class_input(list("INVALID CLASS")))
+    expect_error(.check.class_input(data.frame("INVALID CLASS")))
 })
