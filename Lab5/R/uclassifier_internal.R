@@ -5,21 +5,22 @@
 #'
 #' @import httr
 #' @import jsonlite
+#'
 ## Helper Functions -------------------------------------------------------------
 .base_url <- function() {
     return("https://api.uclassify.com/v1/")
 }
 
-.GET_request <- function(url, body, token, ...) {
-    return(GET(url, body,
+.GET_request <- function(url, content, token, ...) {
+    return(GET(url, body=content,
                add_headers(Authorization=paste("Token", token)),
-               body_type_json(), ...))
+               content_type_json(), ...))
 }
 
-.POST_request <- function(url, body, token, ...) {
-    return(POST(url, body,
+.POST_request <- function(url, content, token, ...) {
+    return(POST(url, body=content,
                 add_headers(Authorization=paste("Token", token)),
-                body_type_json(), ...))
+                content_type_json(), ...))
 }
 
 .check.text_input <- function(text) {
@@ -128,7 +129,7 @@ return(class)
 .get_information <- function(object, ...) {
     "base_url/username/classifier_name"
     url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), sep="")
-    return(.GET_request(url, "", object$read_token))
+    return(.GET_request(url, NULL, object$read_token))
 }
 
 ## Write Methods ----------------------------------------------------------------
