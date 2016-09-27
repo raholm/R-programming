@@ -116,6 +116,14 @@ return(class)
     return(invisible())
 }
 
+## Initialization ---------------------------------------------------------------
+.initialization <- function(object, classifier_name, username, read_token, write_token) {
+    object$classifier_name <- classifier_name
+    object$username <- username
+    object$read_token <- read_token
+    object$write_token <- write_token
+}
+
 ## Read Methods -----------------------------------------------------------------
 .get_information <- function(object, ...) {
     "base_url/username/classifier_name"
