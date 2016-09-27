@@ -58,6 +58,47 @@ data.frame(class=c('CLASS1', 'CLASS2'))
 return(invisible())
 }
 
+.format.class_input <- function(class) {
+"
+Input : 'CLASS'
+Output : 'CLASS'
+Input : c('CLASS1', 'CLASS2')
+Output : c('CLASS1', 'CLASS2')
+Input : list(class='CLASS')
+Output : 'CLASS'
+Input : list(class=c('CLASS1', 'CLASS2')
+Output : c('CLASS1', 'CLASS2')
+Same with other valid inputs.
+"
+.check.class_input(class)
+return(class)
+}
+
+.cache.add_class <- function(object, class) {
+    if (!("class" %in% names(object$cache))) {
+        object$cache$class <- class
+    } else {
+        if (!(class %in% object$cache$class)) {
+            object$cache$class <- c(object$cache$class, class)
+        }
+    }
+    return(invisible())
+}
+
+.cache.remove_class <- function(object, class) {
+    if (!("class" %in% names(object$cache))) {
+        return(invisible())
+    }
+
+    if (length(object$cache$class) == 1 && object$cache$class == class) {
+        object$cache$class <- NULL
+    } else {
+        object$cache$class <- object$cache$class[-which(object$cache$class == class)]
+    }
+
+    return(invisible())
+}
+
 ## Read Methods -----------------------------------------------------------------
 .get_information <- function(object, ...) {
 
@@ -73,11 +114,27 @@ return(invisible())
 }
 
 .add_class <- function(object, class, ...) {
-    .check.class_input(class)
+    formatted_class <- .format.class_input(class)
+
+    for (class in formatted_class) {
+        if (!(.class_exists(object, class))) {
+            .cache.add_class(object, class)
+        }
+    }
+
+    return(invisible())
 }
 
 .remove_class <- function(object, class, ...) {
-    .check.class_input(class)
+    formatted_class <- .format.class_input(class)
+
+    for (class in formatted_class) {
+        if (.class_exists(object, class)) {
+            .cache.remove_class(object, class)
+        }
+    }
+
+    return(invisible())
 }
 
 .train <- function(object, text, class, ...) {

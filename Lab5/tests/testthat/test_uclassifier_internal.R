@@ -40,8 +40,18 @@ test_that("Valid text input is correctly parsed to JSON", {
                  toJSON(list(texts=c("TEST1", "TEST2"))))
 })
 
-test_that("Invalid class name is invalid", {
+test_that("Invalid class input is invalid", {
     expect_error(.check.class_input(1))
     expect_error(.check.class_input(list("INVALID CLASS")))
     expect_error(.check.class_input(data.frame("INVALID CLASS")))
+})
+
+test_that("Valid class input is correctly formatted", {
+    expect_equal(.format.class_input("CLASS"), "CLASS")
+    expect_equal(.format.class_input(list(class="CLASS")), "CLASS")
+    expect_equal(.format.class_input(data.frame(class="CLASS")), "CLASS")
+
+    expect_equal(.format.class_input(c("CLASS1", "CLASS2")), c("CLASS1", "CLASS2"))
+    expect_equal(.format.class_input(list(class=c("CLASS1", "CLASS2"))), c("CLASS1", "CLASS2"))
+    expect_equal(.format.class_input(data.frame(class=c("CLASS1", "CLASS2"))), c("CLASS1", "CLASS2"))
 })
