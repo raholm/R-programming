@@ -56,7 +56,7 @@ test_that("Valid class input is correctly formatted", {
     expect_equal(.format.class_input(data.frame(class=c("CLASS1", "CLASS2"))), c("CLASS1", "CLASS2"))
 })
 
-test_that("Adding classes works properly", {
+test_that("Adding classes to the cache works properly", {
     classifier <- UClassifier("Test", "Test", "Test", "Test")
 
     .cache.add_class(classifier, "class1")
@@ -72,16 +72,14 @@ test_that("Adding classes works properly", {
     expect_equal(classifier$cache$class, c("class1", "class2", "class3", "class4"))
 })
 
-test_that("Removing classes works properly", {
+test_that("Removing classes from the cache works properly", {
     classifier <- UClassifier("Test", "Test", "Test", "Test")
 
     .cache.add_class(classifier, "class1")
-    expect_equal(classifier$cache$class, "class1")
     .cache.remove_class(classifier, "class1")
     expect_equal(classifier$cache$class, NULL)
 
     .cache.add_class(classifier, c("class1", "class2"))
-    expect_equal(classifier$cache$class, c("class1", "class2"))
     .cache.remove_class(classifier, "class1")
     expect_equal(classifier$cache$class, "class2")
     .cache.remove_class(classifier, c("class1", "class2"))
