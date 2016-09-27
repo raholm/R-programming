@@ -29,18 +29,18 @@ UClassifier$methods(list(
 
 ## Write Calls
 UClassifier$methods(list(
-                add_class=function(class_name) {
-                    "Cache the class_name"
+                add_class=function(class) {
+                    "Cache the class"
                 },
-                remove_class=function(class_name) {
-                    "Don't forget to remove the class_name from the cache"
+                remove_class=function(class) {
+                    "Don't forget to remove the class from the cache"
                 },
-                train=function(text, class_name) {
-                    "Check that class_name exists using the cache in order to reduce the number of API calls."
+                train=function(text, class) {
+                    "Check that class exists using the cache in order to reduce the number of API calls."
                     "Text input should look like this: list(texts=c(\"text 1 to process", "text 2 to process\"))"
                 },
-                untrain=function(text, class_name) {
-                    "Check that class_name exists using the cache in order to reduce the number of API calls."
+                untrain=function(text, class) {
+                    "Check that class exists using the cache in order to reduce the number of API calls."
                     "Text input should look like this: list(texts=c(\"text 1 to process", "text 2 to process\"))"
                 }
             ))

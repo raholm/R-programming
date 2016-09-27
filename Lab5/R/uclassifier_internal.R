@@ -15,3 +15,5 @@
 .to_json.text_input <- function(text) {
 }
 
+.check.class_input <- function(class) {
+}
