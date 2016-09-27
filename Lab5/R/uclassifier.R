@@ -17,6 +17,7 @@ UClassifier$methods(list(
 ## Read Calls
 UClassifier$methods(list(
                 get_information=function() {
+                    return(.get_information(.self))
                 },
                 classify=function(text) {
                 },

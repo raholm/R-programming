@@ -6,6 +6,22 @@
 #' @import httr
 #' @import jsonlite
 ## Helper Functions -------------------------------------------------------------
+.base_url <- function() {
+    return("https://api.uclassify.com/v1/")
+}
+
+.GET_request <- function(url, body, token, ...) {
+    return(GET(url, body,
+               add_headers(Authorization=paste("Token", token)),
+               body_type_json(), ...))
+}
+
+.POST_request <- function(url, body, token, ...) {
+    return(POST(url, body,
+                add_headers(Authorization=paste("Token", token)),
+                body_type_json(), ...))
+}
+
 .check.text_input <- function(text) {
 "
 Valid inputs should look like this:
@@ -82,6 +98,7 @@ return(class)
             object$cache$class <- c(object$cache$class, class)
         }
     }
+
     return(invisible())
 }
 
@@ -101,7 +118,9 @@ return(class)
 
 ## Read Methods -----------------------------------------------------------------
 .get_information <- function(object, ...) {
-
+    "base_url/username/classifier_name"
+    url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), sep="")
+    return(.GET_request(url, "", object$read_token))
 }
 
 ## Write Methods ----------------------------------------------------------------
