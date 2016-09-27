@@ -9,38 +9,45 @@
 .check.text_input <- function(text) {
 "
 Valid inputs should look like this:
-'VALID'
-c('VALID1', 'VALID2')
-list(text='VALID')
-list(text=c('VALID1', 'VALID2'))
-data.frame(text='VALID')
-data.frame(text=c('VALID1', 'VALID2'))
+'TEXT'
+c('TEXT1', 'TEXT2')
+list(text='TEXT')
+list(text=c('TEXT1', 'TEXT2'))
+data.frame(text='TEXT')
+data.frame(text=c('TEXT1', 'TEXT2'))
 "
 }
 
 .format.text_input <- function(text) {
+"
+Input : 'TEXT'
+Output : list(texts='TEXT')
+Input : c('TEXT1', 'TEXT2')
+Output : list(texts=c('TEXT1', 'TEXT2'))
+The same for the other valid text inputs
+"
 }
 
 .to_json.text_input <- function(text) {
 "
-Input : 'VALID'
-Output : {'texts':['VALID']}
-Input : c('VALID1', 'VALID2')
-Output : {'texts':['VALID1', 'VALID2']}
-The same for list and data.frame
+Input : 'TEXT'
+Output : {'texts':['TEXT']}
+Input : c('TEXT1', 'TEXT2')
+Output : {'texts':['TEXT1', 'TEXT2']}
+The same for the other valid text inputs
 
-(USE jsonlite library)
+(Use jsonlite library)
 "
 }
 
 .check.class_input <- function(class) {
 "
 Valid inputs should look like this:
-'VALID'
-c('VALID1', 'VALID2')
-list(class='VALID')
-list(class=c('VALID1', 'VALID2'))
-data.frame(class='VALID')
-data.frame(class=c('VALID1', 'VALID2'))
+'CLASS'
+c('CLASS1', 'CLASS2')
+list(class='CLASS')
+list(class=c('CLASS1', 'CLASS2'))
+data.frame(class='CLASS')
+data.frame(class=c('CLASS1', 'CLASS2'))
 "
 }
