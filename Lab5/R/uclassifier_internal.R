@@ -117,7 +117,7 @@ return(class)
 }
 
 ## Initialization ---------------------------------------------------------------
-.initialization <- function(object, classifier_name, username, read_token, write_token) {
+.initialize <- function(object, classifier_name, username, read_token, write_token) {
     object$classifier_name <- classifier_name
     object$username <- username
     object$read_token <- read_token

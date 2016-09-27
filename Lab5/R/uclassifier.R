@@ -7,6 +7,7 @@
 #' @field read_token Object of class \code{"character"}. Your read token to access the API.
 #' @field write_token Object of class \code{"character"}. Your write token to access the API.
 #'
+#' @export UClassifier
 #' @exportClass UClassifier
 #'
 #' @source \url{https://uclassify.com/docs}
