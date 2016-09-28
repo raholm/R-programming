@@ -162,6 +162,13 @@ Same with other valid inputs.
 .get_information <- function(object, ...) {
     if (object$cache$dirty) {
         response <- .API.get_information(object)
+
+        if (!(.is_OK_response(response))) {
+            msg <- object$cache$APImessage
+            .warn(msg)
+            return(NULL)
+        }
+
         object$cache$information <- .response_content_to_df(response)
         object$cache$dirty <- FALSE
     }
@@ -172,7 +179,10 @@ Same with other valid inputs.
 .API.get_information <- function(object, ...) {
     "base_url/username/classifier_name"
     url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), sep="")
-    return(.GET_request(url, NULL, object$read_token))
+    response <- .GET_request(url, NULL, object$read_token)
+
+    .add_response_message(object, response)
+    return(response)
 }
 
 .classify <- function(object, text, ...) {
@@ -180,7 +190,6 @@ Same with other valid inputs.
     result <- NULL
 
     if (!(.is_OK_response(response))) {
-        .add_response_message(object, response)
         msg <- object$cache$APImessage
         .warn(msg)
     } else {
@@ -196,7 +205,7 @@ Same with other valid inputs.
     response <- .POST_request(url, content, object$read_token)
 
     .add_response_message(object, response)
-    return(.is_OK_response(response))
+    return(response)
 }
 
 .get_keywords <- function(object, text, ...) {
@@ -204,7 +213,6 @@ Same with other valid inputs.
     result <- NULL
 
     if (!(.is_OK_response(response))) {
-        .add_response_message(object, response)
         msg <- object$cache$APImessage
         .warn(msg)
     } else {
@@ -217,8 +225,10 @@ Same with other valid inputs.
 .API.get_keywords <- function(object, text, ...) {
     url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), "/keywords", sep="")
     content <- .to_json.text_input(text)
-    return(.POST_request(url, content, object$read_token))
+    response <- .POST_request(url, content, object$read_token)
 
+    .add_response_message(object, response)
+    return(response)
 }
 
 ## Write Methods ----------------------------------------------------------------
