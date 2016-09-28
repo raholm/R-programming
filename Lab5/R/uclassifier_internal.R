@@ -176,18 +176,42 @@ Same with other valid inputs.
 }
 
 .classify <- function(object, text, ...) {
-    text <- .to_json.text_input(text)
+    if(!(.API.classify(object, text))) {
+        msg <- object$cache$APImessage
+        .warn(msg)
+    }
+}
+
+.API.classify <- function(object, text, ...) {
+    url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), "/classify", sep="")
+    content <- .to_json.text_input(text)
+    response <- .POST_request(url, content, object$read_token)
+
+    .add_response_message(object, response)
+    return(.is_OK_response(response))
 }
 
 .get_keywords <- function(object, text, ...) {
-    text <- .to_json.text_input(text)
+    if(!(.API.get_keywords(object, text))) {
+        msg <- object$cache$APImessage
+        .warn(msg)
+    }
+}
+
+.API.get_keywords <- function(object, text, ...) {
+    url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), "/keywords", sep="")
+    content <- .to_json.text_input(text)
+    response <- .POST_request(url, content, object$read_token)
+
+    .add_response_message(object, response)
+    return(.is_OK_response(response))
 }
 
 ## Write Methods ----------------------------------------------------------------
 .create_classifier <- function(object, ...) {
     if (!(.API.classifier_exists(object))) {
         url <- paste(.base_url(), "me/", sep="")
-        content <- toJSON(list(classifierName=object$classifier_name))
+        content <- toJSON(list(classifierName=object$classifier_name), auto_unbox=TRUE)
         response <- .POST_request(url, content, object$write_token)
 
         if (!(.is_OK_response(response))) {
