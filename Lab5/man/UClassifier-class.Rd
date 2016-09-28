@@ -14,12 +14,12 @@ UClassifier is a text classifier that uses the rest-API provided by uclassify.co
 \section{Fields}{
 
 \describe{
-\item{\code{classifier_name}}{Object of class \code{"character"}. The name of the classifier.}
+\item{\code{classifier_name}}{The name of the classifier.}
 
-\item{\code{username}}{Object of class \code{"character"}. Your username on the website.}
+\item{\code{username}}{Your username on the website.}
 
-\item{\code{read_token}}{Object of class \code{"character"}. Your read token to access the API.}
+\item{\code{read_token}}{Your read token to access the API.}
 
-\item{\code{write_token}}{Object of class \code{"character"}. Your write token to access the API.}
+\item{\code{write_token}}{Your write token to access the API.}
 }}
 

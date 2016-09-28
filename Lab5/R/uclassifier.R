@@ -2,10 +2,10 @@
 #'
 #' UClassifier is a text classifier that uses the rest-API provided by uclassify.com
 #'
-#' @field classifier_name Object of class \code{"character"}. The name of the classifier.
-#' @field username Object of class \code{"character"}. Your username on the website.
-#' @field read_token Object of class \code{"character"}. Your read token to access the API.
-#' @field write_token Object of class \code{"character"}. Your write token to access the API.
+#' @field classifier_name The name of the classifier.
+#' @field username Your username on the website.
+#' @field read_token Your read token to access the API.
+#' @field write_token  Your write token to access the API.
 #'
 #' @export UClassifier
 #' @exportClass UClassifier
