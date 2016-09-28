@@ -11,9 +11,17 @@
     return("https://api.uclassify.com/v1/")
 }
 
-.response_to_df <- function(response, ...) {
+.response_content_to_df <- function(response, ...) {
     df <- do.call("rbind", lapply(content(response), data.frame))
     return(df)
+}
+
+.class_exists <- function(object, class, ...) {
+    if (is.null(object$cache$information)){
+        return(FALSE)
+    }
+
+    return(class %in% object$cache$information$className)
 }
 
 .GET_request <- function(url, content, token, ...) {
@@ -74,7 +82,7 @@ The same for the other valid text inputs
 }
 
 .check.class_input <- function(class) {
-    "
+"
 Valid inputs should look like this:
 'CLASS'
 c('CLASS1', 'CLASS2')
@@ -125,12 +133,7 @@ Same with other valid inputs.
 }
 
 .cache.initialize <- function(object, ...) {
-    information <- object$get_information()
-
-    for (class in information$className) {
-        .cache.add_class(object, class)
-    }
-
+    object$get_information()
     return(invisible())
 }
 
@@ -138,7 +141,7 @@ Same with other valid inputs.
 .get_information <- function(object, ...) {
     if (object$cache$dirty) {
         response <- .API.get_information(object)
-        object$cache$information <- .response_to_df(response)
+        object$cache$information <- .response_content_to_df(response)
         object$cache$dirty <- FALSE
     }
 
@@ -149,6 +152,13 @@ Same with other valid inputs.
     "base_url/username/classifier_name"
     url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), sep="")
     return(.GET_request(url, NULL, object$read_token))
+}
+
+.classify <- function(object, ...) {
+}
+
+.get_keywords <- function(object, ...) {
+
 }
 
 ## Write Methods ----------------------------------------------------------------
@@ -183,9 +193,13 @@ Same with other valid inputs.
     formatted_class <- .format.class_input(class)
 
     for (class in formatted_class) {
+        cat(class)
         if (!(.class_exists(object, class))) {
-            .cache.add_class(object, class)
-            response <- .API.add_class(object, class)
+            if (!(.API.add_class(object, class))) {
+                warning(object$cache$message)
+            } else {
+                .cache.add_class(object, class)
+            }
         }
     }
 
@@ -193,11 +207,12 @@ Same with other valid inputs.
 }
 
 .cache.add_class <- function(object, class) {
-    if (!("class" %in% names(object$cache))) {
-        object$cache$class <- class
+    if (!("information" %in% names(object$cache))) {
+        object$cache$information <- data.frame(className=class, uniqueFeatures=0, totalCount=0)
     } else {
-        if (!(class %in% object$cache$class)) {
-            object$cache$class <- c(object$cache$class, class)
+        if (!(class %in% object$cache$information$className)) {
+            class <- data.frame(className=class, uniqueFeatures=0, totalCount=0)
+            object$cache$information <- rbind(object$cache$information, class)
         }
     }
 
@@ -210,14 +225,10 @@ Same with other valid inputs.
     response <- .POST_request(url, content, object$write_token)
 
     if (!(.is_OK_response(response))) {
-        warning(content(response)$message)
-    } else {
-        ## This is a lazy approach
-        ## It would be better to add the class directly to the cache$information as well
-        object$cache$dirty <- TRUE
+        object$cache$APImessage <- content(response)$message
     }
 
-    return(invisible())
+    return(.is_OK_response(response))
 }
 
 
@@ -226,8 +237,11 @@ Same with other valid inputs.
 
     for (class in formatted_class) {
         if (.class_exists(object, class)) {
-            .cache.remove_class(object, class)
-            .API.remove_class(object, class)
+            if (!(.API.remove_class(object, class))) {
+                warning(object$cache$APImessage)
+            } else {
+                .cache.remove_class(object, class)
+            }
         }
     }
 
@@ -235,14 +249,14 @@ Same with other valid inputs.
 }
 
 .cache.remove_class <- function(object, class) {
-    if (!("class" %in% names(object$cache))) {
+    if (!("information" %in% names(object$cache))) {
         return(invisible())
     }
 
-    if (length(object$cache$class) == 1 && object$cache$class == class) {
-        object$cache$class <- NULL
+    if (nrow(object$cache$information) == 1 && object$cache$information$className == class) {
+        object$cache$information <- NULL
     } else {
-        object$cache$class <- object$cache$class[-which(object$cache$class == class)]
+        object$cache$information <- object$cache$information[-which(object$cache$information$className == class), ]
     }
 
     return(invisible())
@@ -253,14 +267,10 @@ Same with other valid inputs.
     reponse <- .POST_request(url, NULL, object$write_token)
 
     if (!(.is_OK_response(response))) {
-        warning(content(response)$message)
-    } else {
-        ## This is a lazy approach
-        ## It would be better to remove the class directly to the cache$information as well
-        object$cache$dirty <- TRUE
+        object$cache$APImessage <- content(response)$message
     }
 
-    return(invisible())
+    return(.is_OK_response(response))
 }
 
 
