@@ -11,6 +11,11 @@
     return("https://api.uclassify.com/v1/")
 }
 
+.response_to_df <- function(response, ...) {
+    df <- do.call("rbind", lapply(content(response), data.frame))
+    return(df)
+}
+
 .GET_request <- function(url, content, token, ...) {
     return(GET(url, body=content,
                add_headers(Authorization=paste("Token", token)),
@@ -97,13 +102,13 @@ Same with other valid inputs.
     return(class)
 }
 
-.classifier_exists <- function(object) {
-    response <- object$get_information()
+.API.classifier_exists <- function(object) {
+    response <- .API.get_information(object)
     return(.is_OK_response(response))
 }
 
 .is_OK_response <- function(response) {
-    status_code <- content(response)$statusCode
+    status_code <- response$status_code
     return(status_code >= 200 && status_code < 300)
 }
 
@@ -113,12 +118,34 @@ Same with other valid inputs.
     object$username <- username
     object$read_token <- read_token
     object$write_token <- write_token
+    object$cache$dirty <- TRUE
 
     .create_classifier(object)
+    .cache.initialize(object)
+}
+
+.cache.initialize <- function(object, ...) {
+    information <- object$get_information()
+
+    for (class in information$className) {
+        .cache.add_class(object, class)
+    }
+
+    return(invisible())
 }
 
 ## Read Methods -----------------------------------------------------------------
 .get_information <- function(object, ...) {
+    if (object$cache$dirty) {
+        response <- .API.get_information(object)
+        object$cache$information <- .response_to_df(response)
+        object$cache$dirty <- FALSE
+    }
+
+    return(cache$information)
+}
+
+.API.get_information <- function(object, ...) {
     "base_url/username/classifier_name"
     url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), sep="")
     return(.GET_request(url, NULL, object$read_token))
@@ -126,7 +153,7 @@ Same with other valid inputs.
 
 ## Write Methods ----------------------------------------------------------------
 .create_classifier <- function(object, ...) {
-    if (!(.classifier_exists(object))) {
+    if (!(.API.classifier_exists(object))) {
         url <- paste(.base_url(), "me/", sep="")
         content <- toJSON(list(classifierName=object$classifier_name))
         response <- .POST_request(url, content, object$write_token)
@@ -140,7 +167,7 @@ Same with other valid inputs.
 }
 
 .remove_classifier <- function(object, ...) {
-    if (.classifier_exists(object)) {
+    if (.API.classifier_exists(object)) {
         url <- paste(.base_url(), "me/", object$classifier_name, sep="")
         response <- .DELETE_request(url, object$write_token)
 
@@ -184,6 +211,10 @@ Same with other valid inputs.
 
     if (!(.is_OK_response(response))) {
         warning(content(response)$message)
+    } else {
+        ## This is a lazy approach
+        ## It would be better to add the class directly to the cache$information as well
+        object$cache$dirty <- TRUE
     }
 
     return(invisible())
@@ -223,6 +254,10 @@ Same with other valid inputs.
 
     if (!(.is_OK_response(response))) {
         warning(content(response)$message)
+    } else {
+        ## This is a lazy approach
+        ## It would be better to remove the class directly to the cache$information as well
+        object$cache$dirty <- TRUE
     }
 
     return(invisible())
