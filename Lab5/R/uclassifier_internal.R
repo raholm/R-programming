@@ -232,11 +232,16 @@ Same with other valid inputs.
 
 .API.add_class <- function(object, class, ...) {
     url <- paste(.base_url(), "me/", object$classifier_name, "/addClass", sep="")
-    content <- toJSON(list(className=class))
+    content <- toJSON(list(className=class), auto_unbox=TRUE)
     response <- .POST_request(url, content, object$write_token)
 
     if (!(.is_OK_response(response))) {
         object$cache$APImessage <- content(response)$message
+
+        ## Seems to be some inconsistency with the API
+        if (is.null(object$cache$APImessage)) {
+            object$cache$APImessage <- content(response)$Message
+        }
     }
 
     return(.is_OK_response(response))
@@ -276,10 +281,15 @@ Same with other valid inputs.
 
 .API.remove_class <- function(object, class, ...) {
     url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), sep="")
-    reponse <- .POST_request(url, NULL, object$write_token)
+    response <- .DELETE_request(url, object$write_token)
 
     if (!(.is_OK_response(response))) {
         object$cache$APImessage <- content(response)$message
+
+        ## Seems to be some inconsistency with the API
+        if (is.null(object$cache$APImessage)) {
+            object$cache$APImessage <- content(response)$Message
+        }
     }
 
     return(.is_OK_response(response))
