@@ -297,9 +297,47 @@ Same with other valid inputs.
 
 
 .train <- function(object, text, class, ...) {
+    formatted_text <- .format.text_input(text)
+    formatted_class <- .format.class_input(class)
 
+    stopifnot(length(formatted_text$texts) == length(formatted_class))
+
+    classes <- unique(formatted_class)
+
+    for (class in classes) {
+        texts <- formatted_text$texts[which(formatted_class == class)]
+
+        .API.train(object, texts, class)
+    }
+}
+
+.API.train <- function(object, text, class, ...) {
+    url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), "/train", sep="")
+    cat(url)
+    content <- .to_json.text_input(text)
+
+    ## response <- .POST_request(url, content, object$write_token)
 }
 
 .untrain <- function(object, text, class, ...) {
+    formatted_text <- .format.text_input(text)
+    formatted_class <- .format.class_input(class)
 
+    stopifnot(length(formatted_text$texts) == length(formatted_class))
+
+    classes <- unique(formatted_class)
+
+    for (class in classes) {
+        texts <- formatted_text$texts[which(formatted_class == class)]
+
+        .API.untrain(object, texts, class)
+    }
+}
+
+.API.untrain <- function(object, text, class, ...) {
+    url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), "/untrain", sep="")
+    cat(url)
+    content <- .to_json.text_input(text)
+
+    ## response <- .POST(url, content, object$write_token)
 }
