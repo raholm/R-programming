@@ -34,10 +34,10 @@ UClassifier$methods(list(
                     return(.get_information(.self))
                 },
                 classify = function(text) {
-                    .classify(.self, text)
+                    return(.classify(.self, text))
                 },
                 get_keywords = function(text) {
-                    .get_keywords(.self, text)
+                    return(.get_keywords(.self, text))
                 }
             ))
 
@@ -45,14 +45,18 @@ UClassifier$methods(list(
 UClassifier$methods(list(
                 add_class = function(class) {
                     .add_class(.self, class)
+                    return(invisible())
                 },
                 remove_class = function(class) {
                     .remove_class(.self, class)
+                    return(invisible())
                 },
                 train = function(text, class) {
-                   .train(.self, text, class)
+                    .train(.self, text, class)
+                    return(invisible())
                 },
                 untrain = function(text, class) {
                     .untrain(.self, text, class)
+                    return(invisible())
                 }
             ))

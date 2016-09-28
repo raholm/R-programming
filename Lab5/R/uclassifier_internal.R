@@ -176,10 +176,18 @@ Same with other valid inputs.
 }
 
 .classify <- function(object, text, ...) {
-    if(!(.API.classify(object, text))) {
+    response <- .API.classify(object, text)
+    result <- NULL
+
+    if (!(.is_OK_response(response))) {
+        .add_response_message(object, response)
         msg <- object$cache$APImessage
         .warn(msg)
+    } else {
+        result <- .response_content_to_df(response)
     }
+
+    return(result)
 }
 
 .API.classify <- function(object, text, ...) {
@@ -192,19 +200,25 @@ Same with other valid inputs.
 }
 
 .get_keywords <- function(object, text, ...) {
-    if(!(.API.get_keywords(object, text))) {
+    response <- .API.get_keywords(object, text)
+    result <- NULL
+
+    if (!(.is_OK_response(response))) {
+        .add_response_message(object, response)
         msg <- object$cache$APImessage
         .warn(msg)
+    } else {
+        result <- .response_content_to_df(response)
     }
+
+    return(result)
 }
 
 .API.get_keywords <- function(object, text, ...) {
     url <- paste(.base_url(), paste(object$username, object$classifier_name, sep="/"), "/keywords", sep="")
     content <- .to_json.text_input(text)
-    response <- .POST_request(url, content, object$read_token)
+    return(.POST_request(url, content, object$read_token))
 
-    .add_response_message(object, response)
-    return(.is_OK_response(response))
 }
 
 ## Write Methods ----------------------------------------------------------------
