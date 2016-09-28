@@ -97,32 +97,6 @@ Same with other valid inputs.
     return(class)
 }
 
-.cache.add_class <- function(object, class) {
-    if (!("class" %in% names(object$cache))) {
-        object$cache$class <- class
-    } else {
-        if (!(class %in% object$cache$class)) {
-            object$cache$class <- c(object$cache$class, class)
-        }
-    }
-
-    return(invisible())
-}
-
-.cache.remove_class <- function(object, class) {
-    if (!("class" %in% names(object$cache))) {
-        return(invisible())
-    }
-
-    if (length(object$cache$class) == 1 && object$cache$class == class) {
-        object$cache$class <- NULL
-    } else {
-        object$cache$class <- object$cache$class[-which(object$cache$class == class)]
-    }
-
-    return(invisible())
-}
-
 .classifier_exists <- function(object) {
     response <- object$get_information()
     return(.is_OK_response(response))
@@ -167,7 +141,7 @@ Same with other valid inputs.
 
 .remove_classifier <- function(object, ...) {
     if (.classifier_exists(object)) {
-        url <- paste(.base_url(), paste("me", object$classifier_name, sep="/"), sep="")
+        url <- paste(.base_url(), "me/", object$classifier_name, sep="")
         response <- .DELETE_request(url, object$write_token)
 
         if (!(.is_OK_response(response))) {
@@ -184,11 +158,37 @@ Same with other valid inputs.
     for (class in formatted_class) {
         if (!(.class_exists(object, class))) {
             .cache.add_class(object, class)
+            response <- .API.add_class(object, class)
         }
     }
 
     return(invisible())
 }
+
+.cache.add_class <- function(object, class) {
+    if (!("class" %in% names(object$cache))) {
+        object$cache$class <- class
+    } else {
+        if (!(class %in% object$cache$class)) {
+            object$cache$class <- c(object$cache$class, class)
+        }
+    }
+
+    return(invisible())
+}
+
+.API.add_class <- function(object, class, ...) {
+    url <- paste(.base_url(), "me/", object$classifier_name, "/addClass", sep="")
+    content <- toJSON(list(className=class))
+    response <- .POST_request(url, content, object$write_token)
+
+    if (!(.is_OK_response(response))) {
+        warning(content(response)$message)
+    }
+
+    return(invisible())
+}
+
 
 .remove_class <- function(object, class, ...) {
     formatted_class <- .format.class_input(class)
@@ -196,11 +196,38 @@ Same with other valid inputs.
     for (class in formatted_class) {
         if (.class_exists(object, class)) {
             .cache.remove_class(object, class)
+            .API.remove_class(object, class)
         }
     }
 
     return(invisible())
 }
+
+.cache.remove_class <- function(object, class) {
+    if (!("class" %in% names(object$cache))) {
+        return(invisible())
+    }
+
+    if (length(object$cache$class) == 1 && object$cache$class == class) {
+        object$cache$class <- NULL
+    } else {
+        object$cache$class <- object$cache$class[-which(object$cache$class == class)]
+    }
+
+    return(invisible())
+}
+
+.API.remove_class <- function(object, class, ...) {
+    url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), sep="")
+    reponse <- .POST_request(url, NULL, object$write_token)
+
+    if (!(.is_OK_response(response))) {
+        warning(content(response)$message)
+    }
+
+    return(invisible())
+}
+
 
 .train <- function(object, text, class, ...) {
 
