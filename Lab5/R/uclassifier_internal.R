@@ -24,6 +24,14 @@
     return(class %in% object$cache$information$className)
 }
 
+.warn <- function(msg) {
+    op <- options("warn")
+    on.exit(options(op))
+    options(warn=1)
+    warning(msg)
+    return(invisible())
+}
+
 .GET_request <- function(url, content, token, ...) {
     return(GET(url, body=content,
                add_headers(Authorization=paste("Token", token)),
@@ -82,7 +90,7 @@ The same for the other valid text inputs
 }
 
 .check.class_input <- function(class) {
-"
+    "
 Valid inputs should look like this:
 'CLASS'
 c('CLASS1', 'CLASS2')
@@ -126,6 +134,8 @@ Same with other valid inputs.
     object$username <- username
     object$read_token <- read_token
     object$write_token <- write_token
+
+    object$cache <- list()
     object$cache$dirty <- TRUE
 
     .create_classifier(object)
@@ -133,7 +143,7 @@ Same with other valid inputs.
 }
 
 .cache.initialize <- function(object, ...) {
-    object$get_information()
+    .get_information(object)
     return(invisible())
 }
 
@@ -145,7 +155,7 @@ Same with other valid inputs.
         object$cache$dirty <- FALSE
     }
 
-    return(cache$information)
+    return(object$cache$information)
 }
 
 .API.get_information <- function(object, ...) {
@@ -154,11 +164,12 @@ Same with other valid inputs.
     return(.GET_request(url, NULL, object$read_token))
 }
 
-.classify <- function(object, ...) {
+.classify <- function(object, text, ...) {
+    text <- .to_json.text_input(text)
 }
 
-.get_keywords <- function(object, ...) {
-
+.get_keywords <- function(object, text, ...) {
+    text <- .to_json.text_input(text)
 }
 
 ## Write Methods ----------------------------------------------------------------
@@ -193,10 +204,10 @@ Same with other valid inputs.
     formatted_class <- .format.class_input(class)
 
     for (class in formatted_class) {
-        cat(class)
         if (!(.class_exists(object, class))) {
             if (!(.API.add_class(object, class))) {
-                warning(object$cache$message)
+                msg <- object$cache$APImessage
+                .warn(msg)
             } else {
                 .cache.add_class(object, class)
             }
@@ -238,7 +249,8 @@ Same with other valid inputs.
     for (class in formatted_class) {
         if (.class_exists(object, class)) {
             if (!(.API.remove_class(object, class))) {
-                warning(object$cache$APImessage)
+                msg <- object$cache$APImessage
+                .warn(msg)
             } else {
                 .cache.remove_class(object, class)
             }
