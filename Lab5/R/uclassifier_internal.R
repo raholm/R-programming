@@ -16,6 +16,17 @@
     return(df)
 }
 
+.add_response_message <- function(object, response, ...) {
+    if (!(.is_OK_response(response))) {
+        object$cache$APImessage <- content(response)$message
+
+        ## Seems to be some inconsistency with the API
+        if (is.null(object$cache$APImessage)) {
+            object$cache$APImessage <- content(response)$Message
+        }
+    }
+}
+
 .class_exists <- function(object, class, ...) {
     if (is.null(object$cache$information)){
         return(FALSE)
@@ -51,7 +62,7 @@
 }
 
 .check.text_input <- function(text) {
-    "
+"
 Valid inputs should look like this:
 'TEXT'
 c('TEXT1', 'TEXT2')
@@ -72,7 +83,7 @@ Output : list(texts=c('TEXT1', 'TEXT2'))
 The same for the other valid text inputs
 "
     .check.text_input(text)
-    return(text)
+    return(list(texts=text))
 }
 
 .to_json.text_input <- function(text) {
@@ -86,7 +97,7 @@ The same for the other valid text inputs
 (Use jsonlite library)
 "
     formatted_text <- .format.text_input(text)
-    return(formatted_text)
+    return(toJSON(formatted_text))
 }
 
 .check.class_input <- function(class) {
@@ -235,15 +246,7 @@ Same with other valid inputs.
     content <- toJSON(list(className=class), auto_unbox=TRUE)
     response <- .POST_request(url, content, object$write_token)
 
-    if (!(.is_OK_response(response))) {
-        object$cache$APImessage <- content(response)$message
-
-        ## Seems to be some inconsistency with the API
-        if (is.null(object$cache$APImessage)) {
-            object$cache$APImessage <- content(response)$Message
-        }
-    }
-
+    .add_response_message(object, response)
     return(.is_OK_response(response))
 }
 
@@ -283,43 +286,38 @@ Same with other valid inputs.
     url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), sep="")
     response <- .DELETE_request(url, object$write_token)
 
-    if (!(.is_OK_response(response))) {
-        object$cache$APImessage <- content(response)$message
-
-        ## Seems to be some inconsistency with the API
-        if (is.null(object$cache$APImessage)) {
-            object$cache$APImessage <- content(response)$Message
-        }
-    }
-
+    .add_response_message(object, response)
     return(.is_OK_response(response))
 }
 
 
 .train <- function(object, text, class, ...) {
-    formatted_text <- .format.text_input(text)
-    formatted_class <- .format.class_input(class)
-
-    stopifnot(length(formatted_text$texts) == length(formatted_class))
-
-    classes <- unique(formatted_class)
-
-    for (class in classes) {
-        texts <- formatted_text$texts[which(formatted_class == class)]
-
-        .API.train(object, texts, class)
-    }
+    .train_untrain_template(object, text, class, .API.train)
 }
 
 .API.train <- function(object, text, class, ...) {
     url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), "/train", sep="")
-    cat(url)
     content <- .to_json.text_input(text)
+    response <- .POST_request(url, content, object$write_token)
 
-    ## response <- .POST_request(url, content, object$write_token)
+    .add_response_message(object, response)
+    return(.is_OK_response(response))
 }
 
 .untrain <- function(object, text, class, ...) {
+    .train_untrain_template(object, text, class, .API.untrain)
+}
+
+.API.untrain <- function(object, text, class, ...) {
+    url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), "/untrain", sep="")
+    content <- .to_json.text_input(text)
+    response <- .POST_request(url, content, object$write_token)
+
+    .add_response_message(object, response)
+    return(.is_OK_response(response))
+}
+
+.train_untrain_template <- function(object, text, class, func, ...) {
     formatted_text <- .format.text_input(text)
     formatted_class <- .format.class_input(class)
 
@@ -328,16 +326,19 @@ Same with other valid inputs.
     classes <- unique(formatted_class)
 
     for (class in classes) {
-        texts <- formatted_text$texts[which(formatted_class == class)]
+        if (!(.class_exists(object, class))) {
+            msg <- paste(class, "does not exist.", sep=" ")
+            .warn(msg)
+            next
+        }
 
-        .API.untrain(object, texts, class)
+        text <- formatted_text$texts[which(formatted_class == class)]
+
+        if (!(func(object, text, class))) {
+            msg <- object$cache$APImessage
+            .warn(msg)
+        } else {
+            object$cache$dirty <- TRUE
+        }
     }
-}
-
-.API.untrain <- function(object, text, class, ...) {
-    url <- paste(.base_url(), "me/", paste(object$classifier_name, class, sep="/"), "/untrain", sep="")
-    cat(url)
-    content <- .to_json.text_input(text)
-
-    ## response <- .POST(url, content, object$write_token)
 }
