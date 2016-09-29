@@ -61,7 +61,6 @@
                   content_type_json(), ...))
 }
 
-.check.text_input <- function(text) {
 "
 Valid inputs should look like this:
 'TEXT'
@@ -71,23 +70,40 @@ list(text=c('TEXT1', 'TEXT2'))
 data.frame(text='TEXT')
 data.frame(text=c('TEXT1', 'TEXT2'))
 "
+.check.text_input <- function(text) {
+    valid <- FALSE
+
+    if ("text" %in% names(text) && is.character(text$text)){
+        valid <- TRUE
+    } else if(is.character(text)) {
+        valid <- TRUE
+    }
+
+    if (!valid) {
+        stop("Invalid text input.")
+    }
+
     return(invisible())
 }
 
-.format.text_input <- function(text) {
-    "
+"
 Input : 'TEXT'
 Output : list(texts='TEXT')
 Input : c('TEXT1', 'TEXT2')
 Output : list(texts=c('TEXT1', 'TEXT2'))
 The same for the other valid text inputs
 "
+.format.text_input <- function(text) {
     .check.text_input(text)
+
+    if ("text" %in% names(text)) {
+        text <- text$text
+    }
+
     return(list(texts=text))
 }
 
-.to_json.text_input <- function(text) {
-    "
+"
 Input : 'TEXT'
 Output : {'texts':['TEXT']}
 Input : c('TEXT1', 'TEXT2')
@@ -96,12 +112,13 @@ The same for the other valid text inputs
 
 (Use jsonlite library)
 "
+.to_json.text_input <- function(text) {
     formatted_text <- .format.text_input(text)
     return(toJSON(formatted_text))
 }
 
-.check.class_input <- function(class) {
-    "
+
+"
 Valid inputs should look like this:
 'CLASS'
 c('CLASS1', 'CLASS2')
@@ -110,11 +127,23 @@ list(class=c('CLASS1', 'CLASS2'))
 data.frame(class='CLASS')
 data.frame(class=c('CLASS1', 'CLASS2'))
 "
+.check.class_input <- function(class) {
+    valid <- FALSE
+
+    if ("class" %in% names(class) && is.character(class$class)){
+        valid <- TRUE
+    } else if(is.character(class)) {
+        valid <- TRUE
+    }
+
+    if (!valid) {
+        stop("Invalid class input.")
+    }
+
     return(invisible())
 }
 
-.format.class_input <- function(class) {
-    "
+"
 Input : 'CLASS'
 Output : 'CLASS'
 Input : c('CLASS1', 'CLASS2')
@@ -125,7 +154,14 @@ Input : list(class=c('CLASS1', 'CLASS2')
 Output : c('CLASS1', 'CLASS2')
 Same with other valid inputs.
 "
+.format.class_input <- function(class) {
+
     .check.class_input(class)
+
+    if ("class" %in% names(class)) {
+        class <- class$class
+    }
+
     return(class)
 }
 
