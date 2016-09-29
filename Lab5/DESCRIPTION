@@ -11,8 +11,11 @@ Description: A wrapper around the rest-API provided by uclassify.com that makes 
 License: CC0
 LazyData: true
 RoxygenNote: 5.0.1
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
 Imports:
     jsonlite (>= 1.0),
     httr (>= 1.2.1),
     methods
+VignetteBuilder: knitr

@@ -1,0 +1,109 @@
+---
+title: "Lab 5"
+author: "Rasmus Holm"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lab 5}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Classification example using UClassifier
+
+This vignette shows how to use the UClassifier which is a wrapper around the rest-API provided by uclassify. The rest-API documentation can be found at the uclassify.com website and you need to create an account in order to use the classifier.
+
+## Data
+
+The first thing you need is data to classify. This package includes 'test_tweets' which is a data set of classified twitter tweets. The data can be loaded as follows:
+
+```{r, echo=TRUE}
+library(Lab5)
+
+data("test_tweets")
+```
+
+
+## Training
+
+The first step in training your classifier is to actually create it. Here I used environment variables to hide my private information. The username correspond to the username you registered with on uclassify.com and the read/write tokens can be in your account settings under 'Api keys'.
+
+```{r, echo=TRUE, eval=FALSE}
+## This creates the classifier with name 'VignetteClassifier' on uclassify.com's server.
+classifier <- UClassifier(classifier_name="VignetteClassifier",
+                          username=Sys.getenv("UCLASSIFY_USERNAME"),
+                          read_token=Sys.getenv("UCLASSIFY_READ_TOKEN"),
+                          write_token=Sys.getenv("UCLASSIFY_WRITE_TOKEN"))
+```
+
+Then it is time to train our classifier. The first step is to preprocess the text and here I am using the tm library to do the work.
+
+```{r, echo=TRUE, message=FALSE, eval=FALSE}
+library(Lab5)
+library(tm)
+
+data("test_tweets")
+
+## Preprocessing the text
+corpus <- VCorpus(VectorSource(test_tweets$text))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removeWords, stopwords("english"))
+
+## Add the preprocessed text to our data set
+test_tweets$processed_text <- sapply(corpus[1:nrow(test_tweets)], as.character)
+## Add a field for the class of the tweets based on
+## the polarity that are already in the data set
+test_tweets$class <- as.character(factor(test_tweets$polarity, levels=c(0, 2, 4),
+                                         labels=c("negative", "neutral", "positive")))
+```
+
+With the data set ready for classification, I can use the classifier I created previously. Before it is possible to train it, it is required to add classes for the classifier to recognize. In this case our classes are 'negative', 'neutral', and 'positive' so lets add them before training.
+
+```{r, echo=TRUE, eval=FALSE}
+classifier$add_class(c("negative", "neutral", "positive"))
+
+classifier$train(test_tweets$processed_text, test_tweets$class)
+```
+
+It is possible to remove classes and untrain your classifier if you have made any mistakes. Here is an example:
+
+```{r, echo=TRUE, eval=FALSE}
+neutral_indexes <- which(test_tweets$class == "neutral")
+
+classifier$untrain(test_tweets$processed_text[neutral_indexes],
+                   test_tweets$class[neutral_indexes])
+
+classifier$remove_class(c("neutral"))
+```
+
+In this example it is redundant to untrain but I hope the point come across anyway.
+
+## Classification
+
+When the classifier has been trained, it is time to put it to test. I will use a few randomly selected tweets from the data set.
+
+```{r, echo=TRUE, eval=FALSE}
+indexes <- sample(1:nrow(test_tweets), 5, replace=F)
+
+classifier$classify(test_tweets$processed_text[indexes])
+```
+
+## Keywords
+
+It is also possible to find in which class a certain word is the most influential.
+
+```{r, echo=TRUE, eval=FALSE}
+words <- "strong helpful awesome bad terrible sure"
+
+classifier$get_keywords(words)
+```
+
+## Remove your classifier
+
+The package also provides a function for deleting your classifier if you so desire.
+
+```{r, echo=TRUE, eval=FALSE}
+remove_classifier(classifier)
+```
