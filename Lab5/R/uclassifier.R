@@ -68,9 +68,13 @@ UClassifier$methods(list(
 #'
 #' Function for delete your classifier
 #'
-#' @field classifier The UClassifier to delete.
+#' @usage
+#' remove_classifier(classifier)
+#'
+#' @param classifier The UClassifier to delete.
 #'
 #' @export
 remove_classifier <- function(classifier) {
-  .remove_classifier(classifier)
+    .remove_classifier(classifier)
+    return(invisible())
 }

@@ -6,12 +6,10 @@
 \usage{
 remove_classifier(classifier)
 }
+\arguments{
+\item{classifier}{The UClassifier to delete.}
+}
 \description{
 Function for delete your classifier
 }
-\section{Fields}{
-
-\describe{
-\item{\code{classifier}}{The UClassifier to delete.}
-}}
 

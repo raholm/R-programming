@@ -23,7 +23,6 @@ library(Lab5)
 data("test_tweets")
 ```
 
-
 ## Training
 
 The first step in training your classifier is to actually create it. Here I used environment variables to hide my private information. The username correspond to the username you registered with on uclassify.com and the read/write tokens can be in your account settings under 'Api keys'.
