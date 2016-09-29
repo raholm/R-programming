@@ -12,7 +12,7 @@
 }
 
 .response_content_to_df <- function(response, ...) {
-    df <- do.call("rbind", lapply(content(response), data.frame))
+    df <- do.call("rbind", lapply(content(response), data.frame, stringsAsFactors=FALSE))
     return(df)
 }
 
@@ -314,10 +314,12 @@ Same with other valid inputs.
 
 .cache.add_class <- function(object, class) {
     if (!("information" %in% names(object$cache))) {
-        object$cache$information <- data.frame(className=class, uniqueFeatures=0, totalCount=0)
+        object$cache$information <- data.frame(className=class, uniqueFeatures=0, totalCount=0,
+                                               stringsAsFactors=FALSE)
     } else {
         if (!(class %in% object$cache$information$className)) {
-            class <- data.frame(className=class, uniqueFeatures=0, totalCount=0)
+            class <- data.frame(className=class, uniqueFeatures=0, totalCount=0,
+                                stringsAsFactors=FALSE)
             object$cache$information <- rbind(object$cache$information, class)
         }
     }
