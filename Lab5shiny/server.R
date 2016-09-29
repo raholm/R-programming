@@ -25,5 +25,3 @@ shinyServer(function(input, output) {
                   colors=brewer.pal(8, "Dark2"))
   })
 })
-
-?runGitHub
