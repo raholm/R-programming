@@ -13,7 +13,7 @@ test_that("Creating/Removing a classifier works properly", {
 
     expect_equal(.API.classifier_exists(classifier), TRUE)
 
-    .remove_classifier(classifier)
+    remove_classifier(classifier)
     expect_equal(.API.classifier_exists(classifier), FALSE)
 })
 
@@ -48,7 +48,7 @@ test_that("Adding/Removing classes works properly", {
     
     expect_equal(classifier$get_information()$className, NULL)
     
-    .remove_classifier(classifier)
+    remove_classifier(classifier)
 })
 
 test_that("Train/Untrain works properly", {
@@ -79,7 +79,7 @@ test_that("Train/Untrain works properly", {
     expect_equal(information$uniqueFeatures, c(0, 0))
     expect_equal(information$totalCount, c(0, 0))
     
-    .remove_classifier(classifier)
+    remove_classifier(classifier)
 })
 
 test_that("Classify works properly", {
@@ -104,7 +104,7 @@ test_that("Classify works properly", {
     expect_true(classify$classification.p[1] > classify$classification.p.1[1])
     expect_true(classify$classification.p[2] < classify$classification.p.1[2])
     
-    .remove_classifier(classifier)    
+    remove_classifier(classifier)
 })
 
 test_that("Get Keywords works properly", {
@@ -128,5 +128,5 @@ test_that("Get Keywords works properly", {
     expect_true(keywords$keyword.2 == "class1" && keywords$className.2 == "class1" && keywords$p.2 > 0.5)
     expect_true(keywords$keyword.3 == "test" && keywords$className.3 == "class2" && keywords$p.3 > 0.5)
     
-    .remove_classifier(classifier)    
+    remove_classifier(classifier)
 })
