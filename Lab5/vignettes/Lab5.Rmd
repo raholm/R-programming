@@ -44,9 +44,10 @@ library(tm)
 data("test_tweets")
 
 ## Preprocessing the text
-corpus <- VCorpus(VectorSource(test_tweets$text))
+corpus <- Corpus(VectorSource(test_tweets$text))
 corpus <- tm_map(corpus, removePunctuation)
 corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeNumbers)
 corpus <- tm_map(corpus, content_transformer(tolower))
 corpus <- tm_map(corpus, removeWords, stopwords("english"))
 
