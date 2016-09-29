@@ -62,3 +62,15 @@ UClassifier$methods(list(
                     return(invisible())
                 }
             ))
+
+
+#' Delete Classifier
+#'
+#' Function for delete your classifier
+#'
+#' @field classifier The UClassifier to delete.
+#'
+#' @export
+remove_classifier <- function(classifier) {
+  .remove_classifier(classifier)
+}

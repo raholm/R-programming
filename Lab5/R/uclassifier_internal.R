@@ -283,6 +283,8 @@ Same with other valid inputs.
 }
 
 .remove_classifier <- function(object, ...) {
+    stopifnot(class(object) == "UClassifier")
+
     if (.API.classifier_exists(object)) {
         url <- paste(.base_url(), "me/", object$classifier_name, sep="")
         response <- .DELETE_request(url, object$write_token)
