@@ -61,15 +61,6 @@
                   content_type_json(), ...))
 }
 
-"
-Valid inputs should look like this:
-'TEXT'
-c('TEXT1', 'TEXT2')
-list(text='TEXT')
-list(text=c('TEXT1', 'TEXT2'))
-data.frame(text='TEXT')
-data.frame(text=c('TEXT1', 'TEXT2'))
-"
 .check.text_input <- function(text) {
     valid <- FALSE
 
@@ -86,13 +77,6 @@ data.frame(text=c('TEXT1', 'TEXT2'))
     return(invisible())
 }
 
-"
-Input : 'TEXT'
-Output : list(texts='TEXT')
-Input : c('TEXT1', 'TEXT2')
-Output : list(texts=c('TEXT1', 'TEXT2'))
-The same for the other valid text inputs
-"
 .format.text_input <- function(text) {
     .check.text_input(text)
 
@@ -103,30 +87,12 @@ The same for the other valid text inputs
     return(list(texts=text))
 }
 
-"
-Input : 'TEXT'
-Output : {'texts':['TEXT']}
-Input : c('TEXT1', 'TEXT2')
-Output : {'texts':['TEXT1', 'TEXT2']}
-The same for the other valid text inputs
-
-(Use jsonlite library)
-"
 .to_json.text_input <- function(text) {
     formatted_text <- .format.text_input(text)
     return(toJSON(formatted_text))
 }
 
 
-"
-Valid inputs should look like this:
-'CLASS'
-c('CLASS1', 'CLASS2')
-list(class='CLASS')
-list(class=c('CLASS1', 'CLASS2'))
-data.frame(class='CLASS')
-data.frame(class=c('CLASS1', 'CLASS2'))
-"
 .check.class_input <- function(class) {
     valid <- FALSE
 
@@ -143,17 +109,6 @@ data.frame(class=c('CLASS1', 'CLASS2'))
     return(invisible())
 }
 
-"
-Input : 'CLASS'
-Output : 'CLASS'
-Input : c('CLASS1', 'CLASS2')
-Output : c('CLASS1', 'CLASS2')
-Input : list(class='CLASS')
-Output : 'CLASS'
-Input : list(class=c('CLASS1', 'CLASS2')
-Output : c('CLASS1', 'CLASS2')
-Same with other valid inputs.
-"
 .format.class_input <- function(class) {
 
     .check.class_input(class)
