@@ -12,6 +12,7 @@ License: CC0
 LazyData: true
 RoxygenNote: 5.0.1
 Suggests: testthat
-imports:
+Imports:
     jsonlite (>= 1.0),
-    httr (>= 1.2.1)
+    httr (>= 1.2.1),
+    methods

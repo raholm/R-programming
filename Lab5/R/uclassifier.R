@@ -7,6 +7,8 @@
 #' @field read_token Your read token to access the API.
 #' @field write_token  Your write token to access the API.
 #'
+#' @import methods
+#'
 #' @export UClassifier
 #' @exportClass UClassifier
 #'
