@@ -57,10 +57,10 @@ test_that("Valid class input is correctly formatted", {
 })
 
 TestClassifier <- setRefClass("TestClassifier",
-                              fields=list(cache="list"),
+                              fields=list(cache="ANY"),
                               methods=list(
                                   initialize = function(cache) {
-                                      cache <- cache
+                                      cache <<- cache
                                   }
                               ))
 
