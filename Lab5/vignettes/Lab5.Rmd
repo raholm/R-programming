@@ -11,11 +11,11 @@ vignette: >
 
 # Classification example using UClassifier
 
-This vignette shows how to use the UClassifier which is a wrapper around the rest-API provided by uclassify. The rest-API documentation can be found at the uclassify.com website and you need to create an account in order to use the classifier.
+This vignette shows how to use the UClassifier which is a wrapper around the rest-API provided by \url{uclassify.com}. The rest-API documentation can be found at their website and you need to create an account in order to use the classifier.
 
 ## Data
 
-The first thing you need is data to classify. This package includes 'test_tweets' which is a data set of classified twitter tweets. The data can be loaded as follows:
+The first thing you need is data to classify. This package includes 'test_tweets' which is a data set of classified twitter tweets taken from \url{http://help.sentiment140.com/for-students}. The data can be loaded as follows:
 
 ```{r, echo=TRUE}
 library(Lab5)
@@ -23,19 +23,9 @@ library(Lab5)
 data("test_tweets")
 ```
 
-## Training
+## Data Preprocessing
 
-The first step in training your classifier is to actually create it. Here I used environment variables to hide my private information. The username correspond to the username you registered with on uclassify.com and the read/write tokens can be in your account settings under 'Api keys'.
-
-```{r, echo=TRUE, eval=FALSE}
-## This creates the classifier with name 'VignetteClassifier' on uclassify.com's server.
-classifier <- UClassifier(classifier_name="VignetteClassifier",
-                          username=Sys.getenv("UCLASSIFY_USERNAME"),
-                          read_token=Sys.getenv("UCLASSIFY_READ_TOKEN"),
-                          write_token=Sys.getenv("UCLASSIFY_WRITE_TOKEN"))
-```
-
-Then it is time to train our classifier. The first step is to preprocess the text and here I am using the tm library to do the work.
+In order to use textual data, you usually do some processing beforehand. I this case I use the tm library to do some standard operations.
 
 ```{r, echo=TRUE, message=FALSE, eval=FALSE}
 library(Lab5)
@@ -59,7 +49,20 @@ test_tweets$class <- as.character(factor(test_tweets$polarity, levels=c(0, 2, 4)
                                          labels=c("negative", "neutral", "positive")))
 ```
 
-With the data set ready for classification, I can use the classifier I created previously. Before it is possible to train it, it is required to add classes for the classifier to recognize. In this case our classes are 'negative', 'neutral', and 'positive' so lets add them before training.
+## Training
+
+The first step in training your classifier is to actually create it. Here I used environment variables to hide my private information. The username correspond to the username you registered with on uclassify.com and the read/write tokens can be found in your account settings under 'Api keys'.
+
+```{r, echo=TRUE, eval=FALSE}
+## This creates the classifier with name 'VignetteClassifier' on uclassify.com's server.
+classifier <- UClassifier(classifier_name="VignetteClassifier",
+                          username=Sys.getenv("UCLASSIFY_USERNAME"),
+                          read_token=Sys.getenv("UCLASSIFY_READ_TOKEN"),
+                          write_token=Sys.getenv("UCLASSIFY_WRITE_TOKEN"))
+```
+
+
+With the data set ready for classification from previous step, I can use the classifier that was created. Before it is possible to train it, it is required to add classes for the classifier to recognize. In this case our classes are 'negative', 'neutral', and 'positive' so lets add them before training.
 
 ```{r, echo=TRUE, eval=FALSE}
 classifier$add_class(c("negative", "neutral", "positive"))
