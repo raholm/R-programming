@@ -1,4 +1,5 @@
 knapsack_brute_force <- function(x, W) {
+    ## TODO: Check input
     n <- nrow(x)
 
     best_value <- -Inf
@@ -29,6 +30,54 @@ knapsack_brute_force <- function(x, W) {
 }
 
 knapsack_dynamic <- function(x, W) {
+    ## TODO: Check input
+    n <- nrow(x)
+    table <- matrix(data=0, nrow=n+1, ncol=W+1)
+    keep <- matrix(data=0, nrow=n+1, ncol=W+1)
+
+    for (item in 1:n) {
+        for (capacity in 1:W) {
+            capacity_index <- capacity + 1
+
+            if (x$w[item] > capacity) {
+                table[item + 1, capacity_index] <- table[item, capacity_index]
+            } else {
+                value_without_current_item <- table[item, capacity_index]
+                value_with_current_item <- x$v[item] + table[item, capacity_index - x$w[item]]
+
+                table[item + 1, capacity_index] <- max(value_without_current_item,
+                                                       value_with_current_item)
+            }
+        }
+    }
+
+    best_value <- as.integer(table[nrow(table), ncol(table)] + 0.5)
+    best_choice <- knapsack_dynamic.best_choice(x, table)
+    best_weight <- sum(x$v[best_choice])
+
+    return(list(value=best_value, weight=best_weight, elements=best_choice))
+}
+
+knapsack_dynamic.best_choice <- function(x, table) {
+    item <- nrow(table)
+    capacity <- ncol(table) - 1
+
+    best_choice <- c()
+
+    while (capacity > 0) {
+        if (table[item, capacity] != table[item - 1, capacity]) {
+            best_choice <- c(best_choice, item - 1)
+            capacity <- capacity - x$w[item - 1]
+        }
+
+        item <- item - 1
+
+        if (item <= 1) {
+            break
+        }
+    }
+
+    return(sort(best_choice))
 }
 
 knapsack_greedy <- function(x, W) {
