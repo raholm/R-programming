@@ -1,0 +1,15 @@
+Package: Lab6
+Type: Package
+Title: Title
+Version: 1.0
+Date: 2016-09-27
+Author: Rasmus Holm [aut, cre],
+    Zhendong Wang [aut, cre],
+    Karolina Ziomek [aut, cre]
+Maintainer: Rasmus Holm <rasho258@student.liu.se>
+Description: Description
+License: CC0
+LazyData: true
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
