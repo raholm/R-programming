@@ -40,8 +40,8 @@ Rcpp::List knapsack_brute_force_cpp(const Rcpp::DataFrame& x, unsigned W) {
 
     for (unsigned k = 0; k < n; ++k) {
       if (bitstring.at(k)) {
-        current_weight += weights[k];
         current_value += values[k];
+        current_weight += weights[k];
       }
     }
 
