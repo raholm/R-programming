@@ -1,18 +1,8 @@
-#include <Rcpp.h>
+#include "knapsack.h"
+
 #include <math.h>
-#include <vector>
 #include <limits>
 
-// Brute Force
-Rcpp::List knapsack_brute_force_cpp(const Rcpp::DataFrame& x, unsigned W);
-std::vector<bool> create_bitstring(const std::vector<bool>& bistring);
-Rcpp::IntegerVector get_elements(const std::vector<bool>& bitstring);
-
-// Dynamic
-Rcpp::List knapsack_dynamic_cpp(const Rcpp::DataFrame& x, unsigned W);
-
-// Greedy
-Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W);
 
 // Brute Force Implementation ---------------------------------------------------
 // [[Rcpp::export]]
@@ -85,9 +75,27 @@ Rcpp::IntegerVector get_elements(const std::vector<bool>& bitstring) {
 }
 
 // Dynamic Implementation -------------------------------------------------------
+// [[Rcpp::export]]
 Rcpp::List knapsack_dynamic_cpp(const Rcpp::DataFrame& x, unsigned W) {
+  // TODO: Implement
+  double best_value = 0.0;
+  unsigned best_weight = 0;
+  Rcpp::IntegerVector elements;
+
+  return Rcpp::List::create(Rcpp::Named("value", int(best_value + 0.5)),
+                            Rcpp::Named("weight", best_weight),
+                            Rcpp::Named("elements", elements));
 }
 
 // Greedy Implementation --------------------------------------------------------
+// [[Rcpp::export]]
 Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W) {
+  // TODO: Implement
+  double best_value = 0.0;
+  unsigned best_weight = 0;
+  Rcpp::IntegerVector elements;
+
+  return Rcpp::List::create(Rcpp::Named("value", int(best_value + 0.5)),
+                            Rcpp::Named("weight", best_weight),
+                            Rcpp::Named("elements", elements));
 }

@@ -17,3 +17,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// knapsack_dynamic_cpp
+Rcpp::List knapsack_dynamic_cpp(const Rcpp::DataFrame& x, unsigned W);
+RcppExport SEXP Lab6_knapsack_dynamic_cpp(SEXP xSEXP, SEXP WSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::DataFrame& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type W(WSEXP);
+    rcpp_result_gen = Rcpp::wrap(knapsack_dynamic_cpp(x, W));
+    return rcpp_result_gen;
+END_RCPP
+}
+// knapsack_greedy_cpp
+Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W);
+RcppExport SEXP Lab6_knapsack_greedy_cpp(SEXP xSEXP, SEXP WSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::DataFrame& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type W(WSEXP);
+    rcpp_result_gen = Rcpp::wrap(knapsack_greedy_cpp(x, W));
+    return rcpp_result_gen;
+END_RCPP
+}

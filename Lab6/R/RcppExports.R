@@ -5,3 +5,11 @@ knapsack_brute_force_cpp <- function(x, W) {
     .Call('Lab6_knapsack_brute_force_cpp', PACKAGE = 'Lab6', x, W)
 }
 
+knapsack_dynamic_cpp <- function(x, W) {
+    .Call('Lab6_knapsack_dynamic_cpp', PACKAGE = 'Lab6', x, W)
+}
+
+knapsack_greedy_cpp <- function(x, W) {
+    .Call('Lab6_knapsack_greedy_cpp', PACKAGE = 'Lab6', x, W)
+}
+
