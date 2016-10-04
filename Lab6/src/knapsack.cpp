@@ -54,7 +54,7 @@ Rcpp::List knapsack_brute_force_cpp(const Rcpp::DataFrame& x, unsigned W) {
 
   Rcpp::IntegerVector elements = get_elements(best_choice);
 
-  return Rcpp::List::create(Rcpp::Named("value", int(best_value)),
+  return Rcpp::List::create(Rcpp::Named("value", int(best_value + 0.5)),
                             Rcpp::Named("weight", best_weight),
                             Rcpp::Named("elements", elements));
 }

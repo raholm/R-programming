@@ -1,9 +1,14 @@
+#' Knapsack Brute Force
+#'
+#' Solves 0-1 knapsack problem using brute force.
+#'
+#' @export
 knapsack_brute_force <- function(x, W, fast=FALSE) {
     ## TODO: Check input
     if (fast) {
        result <- knapsack_brute_force_cpp(x, W)
     } else {
-        result <- knapsack_brute_force_R(x, W)
+       result <- knapsack_brute_force_R(x, W)
     }
 
     return(result)
@@ -87,7 +92,7 @@ knapsack_dynamic.best_choice <- function(x, table) {
 }
 
 knapsack_greedy <- function(x, W) {
-    # TODO: Check input
+    ## TODO: Check input
     n <- nrow(x)
     ordered_items <- order(x$v / x$w, decreasing=TRUE)
 
