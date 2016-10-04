@@ -64,21 +64,42 @@ knapsack_dynamic.best_choice <- function(x, table) {
 
     best_choice <- c()
 
-    while (capacity > 0) {
+    while (capacity > 0 && item > 1) {
         if (table[item, capacity] != table[item - 1, capacity]) {
             best_choice <- c(best_choice, item - 1)
             capacity <- capacity - x$w[item - 1]
         }
 
         item <- item - 1
-
-        if (item <= 1) {
-            break
-        }
     }
 
     return(sort(best_choice))
 }
 
 knapsack_greedy <- function(x, W) {
+    n <- nrow(x)
+    ordered_items <- order(x$v / x$w, decreasing=TRUE)
+
+    best_value <- 0
+    best_weight <- 0
+    best_choice <- c()
+
+    capacity <- W
+    item <- 1
+
+    while (capacity > 0 && item <= n) {
+        ordered_item <- ordered_items[item]
+
+        if (x$w[ordered_item] <= capacity) {
+            best_value <- best_value + x$v[ordered_item]
+            best_weight <- best_weight + x$w[ordered_item]
+            best_choice <- c(best_choice, ordered_item)
+
+            capacity <- capacity - x$w[ordered_item]
+        }
+
+        item <- item + 1
+    }
+
+    return(list(value=as.integer(best_value), weight=best_weight, elements=best_choice))
 }
