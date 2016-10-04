@@ -1,5 +1,6 @@
 knapsack_brute_force <- function(x, W) {
-    ## TODO: Check input
+  .check_input(x)
+
     n <- nrow(x)
 
     best_value <- -Inf
@@ -29,8 +30,12 @@ knapsack_brute_force <- function(x, W) {
     return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=which(best_choice == 1)))
 }
 
+
+
+
 knapsack_dynamic <- function(x, W) {
-    ## TODO: Check input
+   .check_input(x)
+  
     n <- nrow(x)
     table <- matrix(data=0, nrow=n+1, ncol=W+1)
     keep <- matrix(data=0, nrow=n+1, ncol=W+1)
@@ -81,4 +86,18 @@ knapsack_dynamic.best_choice <- function(x, table) {
 }
 
 knapsack_greedy <- function(x, W) {
+}
+
+.check_input <- function(x) {
+  valid <- FALSE
+  
+  if (is.data.frame(x) && x$v>0 && x$w>0){
+    valid <- TRUE
+  }
+  
+  if (!valid) {
+    stop("Invalid input.")
+  }
+  
+  return(invisible())
 }
