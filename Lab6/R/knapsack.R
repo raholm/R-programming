@@ -4,7 +4,8 @@
 #'
 #' @export
 knapsack_brute_force <- function(x, W, fast=FALSE) {
-    ## TODO: Check input
+    .check_input(x)
+
     if (fast) {
        result <- knapsack_brute_force_cpp(x, W)
     } else {
@@ -44,33 +45,39 @@ knapsack_brute_force_R <- function(x, W) {
     return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=which(best_choice == 1)))
 }
 
+#' Knapsack Dynamic
+#'
+#' Solves 0-1 knapsack problem using dynamic programming.
+#'
+#' @export
 knapsack_dynamic <- function(x, W) {
-    ## TODO: Check input
-    n <- nrow(x)
-    table <- matrix(data=0, nrow=n+1, ncol=W+1)
-    keep <- matrix(data=0, nrow=n+1, ncol=W+1)
+   .check_input(x)
 
-    for (item in 1:n) {
-        for (capacity in 1:W) {
-            capacity_index <- capacity + 1
+   n <- nrow(x)
+   table <- matrix(data=0, nrow=n+1, ncol=W+1)
+   keep <- matrix(data=0, nrow=n+1, ncol=W+1)
 
-            if (x$w[item] > capacity) {
-                table[item + 1, capacity_index] <- table[item, capacity_index]
-            } else {
-                value_without_current_item <- table[item, capacity_index]
-                value_with_current_item <- x$v[item] + table[item, capacity_index - x$w[item]]
+   for (item in 1:n) {
+       for (capacity in 1:W) {
+           capacity_index <- capacity + 1
 
-                table[item + 1, capacity_index] <- max(value_without_current_item,
-                                                       value_with_current_item)
-            }
-        }
-    }
+           if (x$w[item] > capacity) {
+               table[item + 1, capacity_index] <- table[item, capacity_index]
+           } else {
+               value_without_current_item <- table[item, capacity_index]
+               value_with_current_item <- x$v[item] + table[item, capacity_index - x$w[item]]
 
-    best_value <- as.integer(table[nrow(table), ncol(table)] + 0.5)
-    best_choice <- knapsack_dynamic.best_choice(x, table)
-    best_weight <- sum(x$v[best_choice])
+               table[item + 1, capacity_index] <- max(value_without_current_item,
+                                                      value_with_current_item)
+           }
+       }
+   }
 
-    return(list(value=best_value, weight=best_weight, elements=best_choice))
+   best_value <- as.integer(table[nrow(table), ncol(table)] + 0.5)
+   best_choice <- knapsack_dynamic.best_choice(x, table)
+   best_weight <- sum(x$v[best_choice])
+
+   return(list(value=best_value, weight=best_weight, elements=best_choice))
 }
 
 knapsack_dynamic.best_choice <- function(x, table) {
@@ -91,8 +98,14 @@ knapsack_dynamic.best_choice <- function(x, table) {
     return(sort(best_choice))
 }
 
+#' Knapsack Greedy
+#'
+#' Solves 0-1 knapsack problem using greedy heuristic.
+#'
+#' @export
 knapsack_greedy <- function(x, W) {
-    ## TODO: Check input
+    .check_input(x)
+
     n <- nrow(x)
     ordered_items <- order(x$v / x$w, decreasing=TRUE)
 
@@ -118,4 +131,18 @@ knapsack_greedy <- function(x, W) {
     }
 
     return(list(value=as.integer(best_value), weight=best_weight, elements=best_choice))
+}
+
+.check_input <- function(x) {
+    valid <- FALSE
+
+    if (is.data.frame(x) && x$v>0 && x$w>0){
+        valid <- TRUE
+    }
+
+    if (!valid) {
+        stop("Invalid input.")
+    }
+
+    return(invisible())
 }

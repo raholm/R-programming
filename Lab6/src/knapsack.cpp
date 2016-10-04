@@ -91,4 +91,3 @@ Rcpp::List knapsack_dynamic_cpp(const Rcpp::DataFrame& x, unsigned W) {
 // Greedy Implementation --------------------------------------------------------
 Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W) {
 }
-
