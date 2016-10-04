@@ -1,5 +1,15 @@
-knapsack_brute_force <- function(x, W) {
+knapsack_brute_force <- function(x, W, fast=FALSE) {
     ## TODO: Check input
+    if (fast) {
+       result <- knapsack_brute_force_cpp(x, W)
+    } else {
+        result <- knapsack_brute_force_R(x, W)
+    }
+
+    return(result)
+}
+
+knapsack_brute_force_R <- function(x, W) {
     n <- nrow(x)
 
     best_value <- -Inf
@@ -77,6 +87,7 @@ knapsack_dynamic.best_choice <- function(x, table) {
 }
 
 knapsack_greedy <- function(x, W) {
+    # TODO: Check input
     n <- nrow(x)
     ordered_items <- order(x$v / x$w, decreasing=TRUE)
 
