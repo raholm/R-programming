@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <limits>
+#include <algorithm>
 
 
 // Brute Force Implementation ---------------------------------------------------
@@ -42,7 +43,7 @@ Rcpp::List knapsack_brute_force_cpp(const Rcpp::DataFrame& x, unsigned W) {
     }
   }
 
-  Rcpp::IntegerVector elements = get_elements(best_choice);
+  Rcpp::IntegerVector elements = get_elements_bitstring(best_choice);
 
   return Rcpp::List::create(Rcpp::Named("value", int(best_value + 0.5)),
                             Rcpp::Named("weight", best_weight),
@@ -62,7 +63,7 @@ std::vector<bool> create_bitstring(const std::vector<bool>& bitstring) {
   return output;
 }
 
-Rcpp::IntegerVector get_elements(const std::vector<bool>& bitstring) {
+Rcpp::IntegerVector get_elements_bitstring(const std::vector<bool>& bitstring) {
   Rcpp::IntegerVector elements;
 
   for (unsigned i = 0; i < bitstring.size(); ++i) {
@@ -78,14 +79,62 @@ Rcpp::IntegerVector get_elements(const std::vector<bool>& bitstring) {
 // [[Rcpp::export]]
 Rcpp::List knapsack_dynamic_cpp(const Rcpp::DataFrame& x, unsigned W) {
   // TODO: Implement
-  double best_value = 0.0;
-  unsigned best_weight = 0;
-  Rcpp::IntegerVector elements;
+  Rcpp::NumericVector values = x["v"];
+  Rcpp::IntegerVector weights = x["w"];
+
+  unsigned n = values.size();
+
+  Rcpp::NumericMatrix table(n+1, W+1);
+
+  for (unsigned item = 1; item < (n + 1); ++item) {
+    for (unsigned capacity = 0; capacity < (W + 1); ++capacity) {
+      if (weights[item - 1] > capacity) {
+        table(item, capacity) = table(item - 1, capacity);
+      } else {
+        table(item, capacity) = std::max<double>(table(item - 1, capacity),
+                                                 values[item - 1] + table(item - 1, capacity - weights[item - 1]));
+      }
+    }
+  }
+
+
+  double best_value = table(n, W);
+  Rcpp::IntegerVector elements = get_elements_table(table, weights);
+  unsigned best_weight = get_weights(elements, weights);
 
   return Rcpp::List::create(Rcpp::Named("value", int(best_value + 0.5)),
                             Rcpp::Named("weight", best_weight),
                             Rcpp::Named("elements", elements));
 }
+
+Rcpp::IntegerVector get_elements_table(const Rcpp::NumericMatrix& table, const Rcpp::IntegerVector& weights) {
+  unsigned item = table.nrow() - 1;
+  unsigned capacity = table.ncol() - 1;
+
+  Rcpp::IntegerVector elements;
+
+  while (capacity > 0 && item > 0) {
+    if (table(item, capacity) != table(item - 1, capacity)) {
+      elements.push_back(item);
+      capacity -= weights[item - 1];
+    }
+
+    item -= 1;
+  }
+
+  return elements.sort();
+}
+
+unsigned get_weights(const Rcpp::IntegerVector& elements, const Rcpp::IntegerVector& weights) {
+  unsigned weight = 0;
+
+  for (unsigned i = 0; i < elements.size(); ++i) {
+    weight += weights[elements[i] - 1];
+  }
+
+  return weight;
+}
+
 
 // Greedy Implementation --------------------------------------------------------
 // [[Rcpp::export]]

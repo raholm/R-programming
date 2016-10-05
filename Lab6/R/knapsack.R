@@ -50,12 +50,23 @@ knapsack_brute_force_R <- function(x, W) {
 #' Solves 0-1 knapsack problem using dynamic programming.
 #'
 #' @export
-knapsack_dynamic <- function(x, W) {
+knapsack_dynamic <- function(x, W, fast=FALSE) {
     .check_input(x)
 
+    result <- NULL
+
+    if (fast) {
+        result <- knapsack_dynamic_cpp(x, W)
+    } else {
+        result <- knapsack_dynamic_R(x, W)
+    }
+
+    return(result)
+}
+
+knapsack_dynamic_R <- function(x, W) {
     n <- nrow(x)
     table <- matrix(data=0, nrow=n+1, ncol=W+1)
-    keep <- matrix(data=0, nrow=n+1, ncol=W+1)
 
     for (item in 1:n) {
         for (capacity in 1:W) {
@@ -74,13 +85,13 @@ knapsack_dynamic <- function(x, W) {
     }
 
     best_value <- as.integer(table[nrow(table), ncol(table)] + 0.5)
-    best_choice <- knapsack_dynamic.best_choice(x, table)
-    best_weight <- sum(x$v[best_choice])
+    best_choice <- knapsack_dynamic_R.best_choice(x, table)
+    best_weight <- sum(x$w[best_choice])
 
     return(list(value=best_value, weight=best_weight, elements=best_choice))
 }
 
-knapsack_dynamic.best_choice <- function(x, table) {
+knapsack_dynamic_R.best_choice <- function(x, table) {
     item <- nrow(table)
     capacity <- ncol(table) - 1
 
