@@ -149,7 +149,7 @@ Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W) {
     ratios.at(i) = values[i] / weights[i];
   }
 
-  std::vector<unsigned> sorted_items(sort_indexes(ratios));
+  std::vector<unsigned> sorted_items(arg_sort(ratios));
 
   unsigned capacity = W;
   unsigned item = 0;
@@ -178,7 +178,7 @@ Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W) {
                             Rcpp::Named("elements", elements));
 }
 
-std::vector<unsigned> sort_indexes(const std::vector<double>& values) {
+std::vector<unsigned> arg_sort(const std::vector<double>& values) {
   std::vector<unsigned> indexes(values.size(), 0);
   for (unsigned i = 0; i < indexes.size(); ++i) {
     indexes.at(i) = i;

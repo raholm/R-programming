@@ -4,7 +4,7 @@
 \alias{knapsack_brute_force}
 \title{Knapsack Brute Force}
 \usage{
-knapsack_brute_force(x, W, fast = FALSE)
+knapsack_brute_force(x, W, fast = FALSE, parallel = FALSE)
 }
 \description{
 Solves 0-1 knapsack problem using brute force.

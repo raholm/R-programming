@@ -2,11 +2,17 @@
 #'
 #' Solves 0-1 knapsack problem using brute force.
 #'
+#' @import parallel
+#'
 #' @export
-knapsack_brute_force <- function(x, W, fast=FALSE) {
+knapsack_brute_force <- function(x, W, fast=FALSE, parallel=FALSE) {
     .check_input(x)
 
-    if (fast) {
+    result <- NULL
+
+    if (parallel) {
+        result <- knapsack_brute_force_parallel(x, W)
+    } else if (fast) {
        result <- knapsack_brute_force_cpp(x, W)
     } else {
        result <- knapsack_brute_force_R(x, W)
@@ -44,6 +50,59 @@ knapsack_brute_force_R <- function(x, W) {
 
     return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=which(best_choice == 1)))
 }
+
+knapsack_brute_force_parallel <- function(x, W) {
+    n <- nrow(x)
+    core_count <- detectCores()
+
+    numbers <- 1:2^n
+    numbers_per_core <- as.integer(length(numbers) / core_count)
+
+    cluster <- makeCluster(mc <- getOption("cl.cores", core_count))
+
+    result <- parLapply(cluster, seq_len(core_count) - 1, function(i, x, W, numbers, numbers_per_core) {
+        start_index <- (i * numbers_per_core + 1)
+        end_index <- start_index + numbers_per_core
+        core_numbers <- numbers[start_index:end_index]
+        return(knapsack_brute_force_parallel_internal(x, W, core_numbers))
+    }, x, W, numbers, numbers_per_core)
+
+    best_result <- result[order(sapply(result,'[[', "value"), decreasing=TRUE)][[1]]
+
+    stopCluster(cluster)
+    return(best_result)
+}
+
+knapsack_brute_force_parallel_internal <- function(x, W, numbers) {
+    n <- nrow(x)
+
+    best_value <- -Inf
+    best_weight <- Inf
+    best_choice <- NULL
+
+    for (i in numbers) {
+        bitstring <- intToBits(i)
+
+        current_weight <- 0
+        current_value <- 0
+
+        for (k in 1:n) {
+            if (bitstring[k] == 1) {
+                current_weight <- current_weight + x$w[k]
+                current_value <- current_value + x$v[k]
+            }
+        }
+
+        if (current_value > best_value && current_weight < W) {
+            best_value <- current_value
+            best_weight <- current_weight
+            best_choice <- bitstring
+        }
+    }
+
+    return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=which(best_choice == 1)))
+}
+
 
 #' Knapsack Dynamic
 #'
