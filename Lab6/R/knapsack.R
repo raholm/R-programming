@@ -58,7 +58,7 @@ knapsack_brute_force_parallel <- function(x, W) {
     numbers <- 1:2^n
     numbers_per_core <- as.integer(length(numbers) / core_count + 0.5)
 
-    cluster <- makeCluster(mc <- getOption("cl.cores", core_count))
+    cluster <- makeCluster(core_count)
 
     result <- parLapply(cluster, seq_len(core_count) - 1, function(i, x, W, numbers, numbers_per_core) {
         start_index <- (i * numbers_per_core + 1)
