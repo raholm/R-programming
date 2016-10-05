@@ -114,9 +114,21 @@ knapsack_dynamic_R.best_choice <- function(x, table) {
 #' Solves 0-1 knapsack problem using greedy heuristic.
 #'
 #' @export
-knapsack_greedy <- function(x, W) {
+knapsack_greedy <- function(x, W, fast=FALSE) {
     .check_input(x)
 
+    result <- NULL
+
+    if (fast) {
+        result <- knapsack_greedy_cpp(x, W)
+    } else {
+        result <- knapsack_greedy_R(x, W)
+    }
+
+    return(result)
+}
+
+knapsack_greedy_R <- function(x, W) {
     n <- nrow(x)
     ordered_items <- order(x$v / x$w, decreasing=TRUE)
 
@@ -141,7 +153,7 @@ knapsack_greedy <- function(x, W) {
         item <- item + 1
     }
 
-    return(list(value=as.integer(best_value), weight=best_weight, elements=best_choice))
+    return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=best_choice))
 }
 
 .check_input <- function(x) {

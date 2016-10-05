@@ -78,7 +78,6 @@ Rcpp::IntegerVector get_elements_bitstring(const std::vector<bool>& bitstring) {
 // Dynamic Implementation -------------------------------------------------------
 // [[Rcpp::export]]
 Rcpp::List knapsack_dynamic_cpp(const Rcpp::DataFrame& x, unsigned W) {
-  // TODO: Implement
   Rcpp::NumericVector values = x["v"];
   Rcpp::IntegerVector weights = x["w"];
 
@@ -139,12 +138,56 @@ unsigned get_weights(const Rcpp::IntegerVector& elements, const Rcpp::IntegerVec
 // Greedy Implementation --------------------------------------------------------
 // [[Rcpp::export]]
 Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W) {
-  // TODO: Implement
+  Rcpp::NumericVector values = x["v"];
+  Rcpp::IntegerVector weights = x["w"];
+
+  unsigned n = values.size();
+
+  std::vector<double> ratios(n);
+
+  for (unsigned i = 0; i < ratios.size(); ++i) {
+    ratios.at(i) = values[i] / weights[i];
+  }
+
+  std::vector<unsigned> sorted_items(sort_indexes(ratios));
+
+  unsigned capacity = W;
+  unsigned item = 0;
+  unsigned ordered_item;
+
   double best_value = 0.0;
   unsigned best_weight = 0;
   Rcpp::IntegerVector elements;
 
+  while (capacity > 0 && item < n) {
+    ordered_item = sorted_items.at(item);
+
+    if (weights[ordered_item] <= capacity) {
+      best_value += values[ordered_item];
+      best_weight += weights[ordered_item];
+      elements.push_back(ordered_item + 1);
+
+      capacity -= weights[ordered_item];
+    }
+
+    item += 1;
+  }
+
   return Rcpp::List::create(Rcpp::Named("value", int(best_value + 0.5)),
                             Rcpp::Named("weight", best_weight),
                             Rcpp::Named("elements", elements));
+}
+
+std::vector<unsigned> sort_indexes(const std::vector<double>& values) {
+  std::vector<unsigned> indexes(values.size(), 0);
+  for (unsigned i = 0; i < indexes.size(); ++i) {
+    indexes.at(i) = i;
+  }
+
+  Comparitor comparitor;
+  comparitor.values = &values;
+
+  std::sort(indexes.begin(), indexes.end(), comparitor);
+
+  return indexes;
 }
