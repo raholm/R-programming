@@ -56,7 +56,7 @@ knapsack_brute_force_parallel <- function(x, W) {
     core_count <- detectCores()
 
     numbers <- 1:2^n
-    numbers_per_core <- as.integer(length(numbers) / core_count)
+    numbers_per_core <- as.integer(length(numbers) / core_count + 0.5)
 
     cluster <- makeCluster(mc <- getOption("cl.cores", core_count))
 
