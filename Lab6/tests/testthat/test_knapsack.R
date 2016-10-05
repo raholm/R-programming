@@ -1,6 +1,11 @@
 library(Lab6)
 context("Knapsack")
 
+set.seed(42)
+n <- 2000
+test_knapsack_objects <- data.frame(w=sample(1:4000, size=n, replace=TRUE),
+                                    v=runif(n=n, 0, 10000))
+
 test_that("Brute force solution is correct", {
     actual <- knapsack_brute_force(x = test_knapsack_objects[1:8,], W = 3500)
     expect_equal(actual$value, 16770)
