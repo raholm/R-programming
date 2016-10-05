@@ -19,6 +19,24 @@ test_that("Brute force solution is correct", {
     expect_equal(actual$elements, c(3, 8))
 })
 
+test_that("Parallel brute force solution is correct", {
+    actual <- knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, parallel=TRUE)
+    expect_equal(actual$value, 16770)
+    expect_equal(actual$elements, c(5, 8))
+
+    actual <- knapsack_brute_force(x = knapsack_objects[1:12,], W = 3500, parallel=TRUE)
+    expect_equal(actual$value, 16770)
+    expect_equal(actual$elements, c(5, 8))
+
+    actual <- knapsack_brute_force(x = knapsack_objects[1:8,], W = 2000, parallel=TRUE)
+    expect_equal(actual$value, 15428)
+    expect_equal(actual$elements, c(3, 8))
+
+    actual <- knapsack_brute_force(x = knapsack_objects[1:12,], W = 2000, parallel=TRUE)
+    expect_equal(actual$value, 15428)
+    expect_equal(actual$elements, c(3, 8))
+})
+
 test_that("Brute force solution using cpp is correct", {
     actual <- knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, fast=TRUE)
     expect_equal(actual$value, 16770)
