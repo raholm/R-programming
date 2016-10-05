@@ -1,0 +1,52 @@
+---
+title: "lab_report_knapsack"
+author: "Zhendong Wang"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{lab_report_knapsack}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## knapsack_brute_force() Function
+
+The codes below shows the `knapsack_brute_force()` function result and how many time did it take for the computation of 16 observations.
+
+```{r, fig.show='hold'}
+my_df <- Lab6::knapsack_objects
+start.time<-Sys.time()
+Lab6::knapsack_brute_force(x=my_df[1:16,],W=3500)
+end.time<-Sys.time()
+time.taken <- end.time - start.time
+time.taken
+```
+
+
+
+## knapsack_dynamic() Function
+
+The codes below shows the `knapsack_dynamic()` function result and how many time did it take for the computation of 500 observations.
+
+```{r}
+start.time<-Sys.time()
+Lab6::knapsack_dynamic(x=my_df[1:500,],W=3500)
+end.time<-Sys.time()
+time.taken <- end.time - start.time
+time.taken
+```
+
+## knapsack_greedy() Funciton
+
+The codes below shows the `knapsack_greedy()` function result and how many time did it take for the computation of 1,000,000 observations.
+
+```{r}
+start.time<-Sys.time()
+Lab6::knapsack_greedy(x=my_df[1:1000000,],W=3500)
+end.time<-Sys.time()
+time.taken <- end.time - start.time
+time.taken
+```
+
+
