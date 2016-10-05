@@ -25,7 +25,7 @@ knapsack_brute_force_R <- function(x, W) {
     n <- nrow(x)
 
     best_value <- -Inf
-    best_weight <- Inf
+    best_weight <- 0
     best_choice <- NULL
 
     for (i in 1:2^n) {
@@ -77,7 +77,7 @@ knapsack_brute_force_parallel_internal <- function(x, W, numbers) {
     n <- nrow(x)
 
     best_value <- -Inf
-    best_weight <- Inf
+    best_weight <- 0
     best_choice <- NULL
 
     for (i in numbers) {
