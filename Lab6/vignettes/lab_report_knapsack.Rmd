@@ -36,7 +36,9 @@ time.taken <- end.time - start.time
 time.taken
 ```
 
+"Question How large performance gain could you get by trying to improving your code?"
 
+By removing the for-loop to compute the value/weight of the current subset of items into a vectorized version, the performance increased by approximately 7 times.
 
 ## knapsack_dynamic() Function
 
