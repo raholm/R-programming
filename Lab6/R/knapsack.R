@@ -51,41 +51,33 @@ knapsack_brute_force_R <- function(x, W) {
     best_weight <- 0
     best_choice <- NULL
 
-    for (i in 1:2^n) {
-        bitstring <- intToBits(i)
-
-        current_weight <- 0
-        current_value <- 0
-
-        for (k in 1:n) {
-            if (bitstring[k] == 1) {
-                current_weight <- current_weight + x$w[k]
-                current_value <- current_value + x$v[k]
-            }
-        }
+    for (i in 1:(2^n - 1)) {
+        items <- which(intToBits(i) == 1)
+        current_weight <- sum(x$w[items])
+        current_value <- sum(x$v[items])
 
         if (current_value > best_value && current_weight < W) {
             best_value <- current_value
             best_weight <- current_weight
-            best_choice <- bitstring
+            best_choice <- items
         }
     }
 
-    return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=which(best_choice == 1)))
-   }
+    return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=best_choice))
+}
 
 knapsack_brute_force_parallel <- function(x, W) {
     n <- nrow(x)
     core_count <- detectCores()
 
-    combinations <- 1:2^n
+    combinations <- 1:(2^n - 1)
     combinations_per_core <- as.integer(length(combinations) / core_count + 0.5)
 
     cluster <- makeCluster(core_count)
 
     result <- parLapply(cluster, seq_len(core_count) - 1, function(i, x, W, combinations, combinations_per_core) {
         start_index <- (i * combinations_per_core + 1)
-        end_index <- start_index + combinations_per_core
+        end_index <- start_index + combinations_per_core - 1
         core_combinations <- combinations[start_index:end_index]
         return(knapsack_brute_force_parallel_internal(x, W, core_combinations))
     }, x, W, combinations, combinations_per_core)
@@ -104,26 +96,18 @@ knapsack_brute_force_parallel_internal <- function(x, W, combinations) {
     best_choice <- NULL
 
     for (i in combinations) {
-        bitstring <- intToBits(i)
-
-        current_weight <- 0
-        current_value <- 0
-
-        for (k in 1:n) {
-            if (bitstring[k] == 1) {
-                current_weight <- current_weight + x$w[k]
-                current_value <- current_value + x$v[k]
-            }
-        }
+        items <- which(intToBits(i) == 1)
+        current_weight <- sum(x$w[items])
+        current_value <- sum(x$v[items])
 
         if (current_value > best_value && current_weight < W) {
             best_value <- current_value
             best_weight <- current_weight
-            best_choice <- bitstring
+            best_choice <- items
         }
     }
 
-    return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=which(best_choice == 1)))
+    return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=best_choice))
 }
 
 
