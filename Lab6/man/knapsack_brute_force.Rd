@@ -4,9 +4,36 @@
 \alias{knapsack_brute_force}
 \title{Knapsack Brute Force}
 \usage{
-knapsack_brute_force(x, W, fast = FALSE)
+knapsack_brute_force(x, W, fast=FALSE, parallel=FALSE)
+}
+\arguments{
+\item{x}{A data frame containing the knapsack objects.
+\describe{
+\item{v}{The values of the objects.}
+\item{w}{The weights of the objects.}
+}}
+
+\item{W}{The total amount of capacity available.}
+
+\item{fast}{Set to FALSE by default. Will use a c++ implementation if set to TRUE.}
+
+\item{parallel}{Set to FALSE by default. Will use a parallel implementation if set to TRUE and override fast=TRUE.}
+}
+\value{
+a List containing information about the solution.
+\describe{
+\item{value}{The best value found.}
+\item{weight}{The weight of the best value.}
+\item{elements}{The items picked to achieve the best solution.}
+}
 }
 \description{
 Solves 0-1 knapsack problem using brute force.
+}
+\examples{
+knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500)
+knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, fast=TRUE)
+knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, parallel=TRUE)
+
 }
 

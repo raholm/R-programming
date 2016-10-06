@@ -16,5 +16,10 @@ Suggests:
     rmarkdown
 RoxygenNote: 5.0.1
 LinkingTo: Rcpp
+<<<<<<< HEAD
 Imports: Rcpp
 VignetteBuilder: knitr
+=======
+Imports: Rcpp,
+         parallel
+>>>>>>> 67e6d7c707fefd5508a24f1c4f42cc7e552f5d09

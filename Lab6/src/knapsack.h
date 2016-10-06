@@ -27,6 +27,6 @@ struct Comparitor
 };
 
 Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W);
-std::vector<unsigned> sort_indexes(const std::vector<double>& values);
+std::vector<unsigned> arg_sort(const std::vector<double>& values);
 
 #endif // KNAPSACK_H

@@ -4,9 +4,37 @@
 \alias{knapsack_greedy}
 \title{Knapsack Greedy}
 \usage{
+<<<<<<< HEAD
 knapsack_greedy(x, W, fast = FALSE)
+=======
+knapsack_greedy(x, W, fast=FALSE)
+}
+\arguments{
+\item{x}{A data frame containing the knapsack objects.
+\describe{
+\item{v}{The values of the objects.}
+\item{w}{The weights of the objects.}
+}}
+
+\item{W}{The total amount of capacity available.}
+
+\item{fast}{Set to FALSE by default. Will use a c++ implementation if set to TRUE.}
+}
+\value{
+A list containing information about the solution.
+\describe{
+\item{value}{The best value found.}
+\item{weight}{The weight of the best value.}
+\item{elements}{The items picked to achieve the best solution.}
+}
+>>>>>>> 67e6d7c707fefd5508a24f1c4f42cc7e552f5d09
 }
 \description{
-Solves 0-1 knapsack problem using greedy heuristic.
+Solves 0-1 knapsack problem using greedy heuristic. The heuristic used is value / weight.
+}
+\examples{
+knapsack_greedy(x = knapsack_objects[1:800,], W = 3500)
+knapsack_greedy(x = knapsack_objects[1:800,], W = 3500, fast=TRUE)
+
 }
 
