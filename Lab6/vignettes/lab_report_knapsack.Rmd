@@ -9,9 +9,22 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+## The Knapsack Package
+
+The package contains three different functions for solving what is called the knapsack problem. They are using diverse Big Oh notations to work out this problem. Below there will be the examples about the three functions below.
+
+## Data
+
+At first it need to create a data set to generate these data for the calculation later, as we need 1,000,000 observations to be analysed in the `knapsack_greedy()` part, so the number was changed `n=1000000` in the data set. Here we can show some of the data, the 1,000,000 items each contain an unique weight "w"" and a value "v".
+
+```{r}
+library(Lab6)
+head(Lab6::knapsack_objects)
+```
+
 
 ## knapsack_brute_force() Function
-
+ 
 The codes below shows the `knapsack_brute_force()` function result and how many time did it take for the computation of 16 observations.
 
 ```{r, fig.show='hold'}
@@ -43,10 +56,16 @@ The codes below shows the `knapsack_greedy()` function result and how many time 
 
 ```{r}
 start.time<-Sys.time()
-Lab6::knapsack_greedy(x=my_df[1:1000000,],W=3500)
+invisible.output <- Lab6::knapsack_greedy(x=my_df[1:1000000,],W=3500)
 end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
 ```
 
+## Profiling the code
 
+"Question:How large performance gain could you get by using Rcpp and C++?"
+
+## Rcpp
+
+"Question How large performance gain could you get by parallelizing brute force search?"
