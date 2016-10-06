@@ -4,9 +4,6 @@
 \alias{knapsack_dynamic}
 \title{Knapsack Dynamic}
 \usage{
-<<<<<<< HEAD
-knapsack_dynamic(x, W, fast = FALSE)
-=======
 knapsack_dynamic(x, W, fast=FALSE)
 }
 \arguments{
@@ -27,7 +24,6 @@ A list containing information about the solution.
 \item{weight}{The weight of the best value.}
 \item{elements}{The items picked to achieve the best solution.}
 }
->>>>>>> 67e6d7c707fefd5508a24f1c4f42cc7e552f5d09
 }
 \description{
 Solves 0-1 knapsack problem using dynamic programming.

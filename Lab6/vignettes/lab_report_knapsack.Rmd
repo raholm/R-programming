@@ -30,7 +30,7 @@ The codes below shows the `knapsack_brute_force()` function result and how many 
 ```{r, fig.show='hold'}
 my_df <- Lab6::knapsack_objects
 start.time<-Sys.time()
-Lab6::knapsack_brute_force(x=my_df[1:16,],W=3500)
+Lab6::knapsack_brute_force(x=my_df[1:16,], W=3500)
 end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
@@ -44,7 +44,7 @@ The codes below shows the `knapsack_dynamic()` function result and how many time
 
 ```{r}
 start.time<-Sys.time()
-Lab6::knapsack_dynamic(x=my_df[1:500,],W=3500)
+Lab6::knapsack_dynamic(x=my_df[1:500, ], W=3500)
 end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
@@ -56,7 +56,7 @@ The codes below shows the `knapsack_greedy()` function result and how many time 
 
 ```{r}
 start.time<-Sys.time()
-invisible.output <- Lab6::knapsack_greedy(x=my_df[1:1000000,],W=3500)
+invisible.output <- Lab6::knapsack_greedy(x=my_df[1:1000000,], W=3500)
 end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
@@ -66,6 +66,43 @@ time.taken
 
 "Question:How large performance gain could you get by using Rcpp and C++?"
 
+Using C++ doesn't change the complexity of the algorithms, but since C++ is a compiled language it will increase the performance and the increase depends on the hardware and compiler.
+
+```{r}
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, fast=TRUE))
+
+system.time(knapsack_dynamic(x=my_df[1:500,], W=3500))
+system.time(knapsack_dynamic(x=my_df[1:500,], W=3500, fast=TRUE))
+
+system.time(knapsack_greedy(x=my_df[1:1000000,], W=3500))
+system.time(knapsack_greedy(x=my_df[1:1000000,], W=3500, fast=TRUE))
+```
+
+In the brute force and dynamic cases, it is almost a gain of 1000 using a C++ implementation over R code.
+
 ## Rcpp
 
 "Question How large performance gain could you get by parallelizing brute force search?"
+
+Let's assumse that about 95% of the brute force algorithm is parallaziable (probably an understatement), the only part that can't be is to distribute the work among the cores and pick the best solution out of the the returned ones. That leave us with 5% of serial code.
+
+By Amdalh's law, the speedup would be
+$$S_{p} = \frac{1}{0.05 + \frac{0.95}{\text{P}}}$$
+for a fixed size problem where P is the number of cores.
+
+By Gustafson's Law with the same parameters, the speedup would be
+$$S_{p} = \text{P} - 0.05 * (\text{P}-1)$$
+where P is the number of cores.
+
+Lastly, lets do an empirical example to see if there is anything to gain from using parallelization:
+
+```{r}
+library(parallel)
+
+## The number of cores in the CPU
+detectCores()
+
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, parallel=TRUE))
+```
