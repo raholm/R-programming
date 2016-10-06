@@ -24,3 +24,22 @@ end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
 
+## ------------------------------------------------------------------------
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, fast=TRUE))
+
+system.time(knapsack_dynamic(x=my_df[1:500,], W=3500))
+system.time(knapsack_dynamic(x=my_df[1:500,], W=3500, fast=TRUE))
+
+system.time(knapsack_greedy(x=my_df[1:1000000,], W=3500))
+system.time(knapsack_greedy(x=my_df[1:1000000,], W=3500, fast=TRUE))
+
+## ------------------------------------------------------------------------
+library(parallel)
+
+## The number of cores in the CPU
+detectCores()
+
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, parallel=TRUE))
+

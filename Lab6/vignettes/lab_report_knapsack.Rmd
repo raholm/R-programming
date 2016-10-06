@@ -94,7 +94,7 @@ $$S_{p} = \frac{1}{0.05 + \frac{0.95}{\text{P}}}$$
 for a fixed size problem where P is the number of cores.
 
 By Gustafson's Law with the same parameters, the speedup would be
-$$S_{p} = \text{P} - 0.05 * (\text{P}-1)$$
+$$S_{p} = \text{P} - 0.05 * (\text{P} - 1)$$
 where P is the number of cores.
 
 Lastly, lets do an empirical example to see if there is anything to gain from using parallelization:

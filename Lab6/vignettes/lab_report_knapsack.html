@@ -93,40 +93,43 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="knapsack_brute_force-function" class="section level2">
 <h2>knapsack_brute_force() Function</h2>
-<p>The codes below shows the <code>knapsack_brute_force()</code> function result and how many time did it take for the computation of 12 observations.</p>
+<p>The codes below shows the <code>knapsack_brute_force()</code> function result and how many time did it take for the computation of 16 observations.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_df &lt;-<span class="st"> </span>Lab6::knapsack_objects
 start.time&lt;-<span class="kw">Sys.time</span>()
-Lab6::<span class="kw">knapsack_brute_force</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">12</span>,], <span class="dt">W=</span><span class="dv">3500</span>)</code></pre></div>
+Lab6::<span class="kw">knapsack_brute_force</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W=</span><span class="dv">3500</span>)</code></pre></div>
 <pre><code>## $value
-## [1] 14076
+## [1] 18092
 ## 
 ## $weight
-## [1] 2976
+## [1] 2706
 ## 
 ## $elements
-## [1]  3 11</code></pre>
+## [1]  3  8 14</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">end.time&lt;-<span class="kw">Sys.time</span>()
 time.taken &lt;-<span class="st"> </span>end.time -<span class="st"> </span>start.time
 time.taken</code></pre></div>
-<pre><code>## Time difference of 0.7733922 secs</code></pre>
+<pre><code>## Time difference of 2.50924 secs</code></pre>
+<p>“Question How large performance gain could you get by trying to improving your code?”</p>
+<p>By removing the for-loop to compute the value/weight of the current subset of items into a vectorized version, the performance increased by approximately 7 times.</p>
 </div>
 <div id="knapsack_dynamic-function" class="section level2">
 <h2>knapsack_dynamic() Function</h2>
-<p>The codes below shows the <code>knapsack_dynamic()</code> function result and how many time did it take for the computation of 20 observations.</p>
+<p>The codes below shows the <code>knapsack_dynamic()</code> function result and how many time did it take for the computation of 500 observations.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">start.time&lt;-<span class="kw">Sys.time</span>()
-Lab6::<span class="kw">knapsack_dynamic</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">20</span>, ], <span class="dt">W=</span><span class="dv">3500</span>)</code></pre></div>
+Lab6::<span class="kw">knapsack_dynamic</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">500</span>, ], <span class="dt">W=</span><span class="dv">3500</span>)</code></pre></div>
 <pre><code>## $value
-## [1] 19610
+## [1] 185809
 ## 
 ## $weight
-## [1] 3176
+## [1] 3455
 ## 
 ## $elements
-## [1]  3  8 14 18</code></pre>
+##  [1]  35  37  55  71  77  80  92 110 117 195 196 214 229 234 255 282 288
+## [18] 290 332 345 346 401 434 436 450 462 472 500</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">end.time&lt;-<span class="kw">Sys.time</span>()
 time.taken &lt;-<span class="st"> </span>end.time -<span class="st"> </span>start.time
 time.taken</code></pre></div>
-<pre><code>## Time difference of 1.875378 secs</code></pre>
+<pre><code>## Time difference of 54.51771 secs</code></pre>
 </div>
 <div id="knapsack_greedy-funciton" class="section level2">
 <h2>knapsack_greedy() Funciton</h2>
@@ -136,22 +139,50 @@ invisible.output &lt;-<span class="st"> </span>Lab6::<span class="kw">knapsack_g
 end.time&lt;-<span class="kw">Sys.time</span>()
 time.taken &lt;-<span class="st"> </span>end.time -<span class="st"> </span>start.time
 time.taken</code></pre></div>
-<pre><code>## Time difference of 0.9264326 secs</code></pre>
+<pre><code>## Time difference of 0.9299963 secs</code></pre>
 </div>
 <div id="profiling-the-code" class="section level2">
 <h2>Profiling the code</h2>
 <p>“Question:How large performance gain could you get by using Rcpp and C++?”</p>
-<p>Using C++ doesn’t change the complexity of the algorithms, but since C++ is a compiled language it will increase the performance and the increase will depend on the hardware and compiler.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_greedy</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">1000000</span>,], <span class="dt">W=</span><span class="dv">35000</span>))</code></pre></div>
+<p>Using C++ doesn’t change the complexity of the algorithms, but since C++ is a compiled language it will increase the performance and the increase depends on the hardware and compiler.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_brute_force</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W=</span><span class="dv">3500</span>))</code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.973   0.005   0.980</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_greedy</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">1000000</span>,], <span class="dt">W=</span><span class="dv">35000</span>, <span class="dt">fast=</span><span class="ot">TRUE</span>))</code></pre></div>
+##   2.416   0.004   2.424</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_brute_force</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W=</span><span class="dv">3500</span>, <span class="dt">fast=</span><span class="ot">TRUE</span>))</code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.401   0.000   0.403</code></pre>
+##   0.015   0.000   0.015</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_dynamic</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">500</span>,], <span class="dt">W=</span><span class="dv">3500</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##  53.899   0.068  54.024</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_dynamic</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">500</span>,], <span class="dt">W=</span><span class="dv">3500</span>, <span class="dt">fast=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.037   0.000   0.038</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_greedy</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">1000000</span>,], <span class="dt">W=</span><span class="dv">3500</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.869   0.008   0.878</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_greedy</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">1000000</span>,], <span class="dt">W=</span><span class="dv">3500</span>, <span class="dt">fast=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.372   0.000   0.372</code></pre>
+<p>In the brute force and dynamic cases, the gain can be over 1000 using a C++ implementation over R code.</p>
 </div>
 <div id="rcpp" class="section level2">
 <h2>Rcpp</h2>
 <p>“Question How large performance gain could you get by parallelizing brute force search?”</p>
+<p>Let’s assumse that about 95% of the brute force algorithm is parallaziable (probably an understatement), the only part that can’t be is to distribute the work among the cores and pick the best solution out of the the returned ones. That leave us with 5% of serial code.</p>
+<p>By Amdalh’s law, the speedup would be <span class="math display">\[S_{p} = \frac{1}{0.05 + \frac{0.95}{\text{P}}}\]</span> for a fixed size problem where P is the number of cores.</p>
+<p>By Gustafson’s Law with the same parameters, the speedup would be <span class="math display">\[S_{p} = \text{P} - 0.05 * (\text{P}-1)\]</span> where P is the number of cores.</p>
+<p>Lastly, lets do an empirical example to see if there is anything to gain from using parallelization:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(parallel)
+
+## The number of cores in the CPU
+<span class="kw">detectCores</span>()</code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_brute_force</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W=</span><span class="dv">3500</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##   2.334   0.008   2.345</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(<span class="kw">knapsack_brute_force</span>(<span class="dt">x=</span>my_df[<span class="dv">1</span>:<span class="dv">16</span>,], <span class="dt">W=</span><span class="dv">3500</span>, <span class="dt">parallel=</span><span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.027   0.023   1.957</code></pre>
 </div>
 
 
