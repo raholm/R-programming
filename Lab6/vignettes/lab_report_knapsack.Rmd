@@ -15,11 +15,11 @@ The package contains three different functions for solving what is called the kn
 
 ## Data
 
-At first it need to create a data set to generate these data for the calculation later, as we need 1,000,000 observations to be analysed in the `knapsack_greedy()` part, so the number was changed `n=1000000` in the data set. Here we can show some of the data, the 1,000,000 items each contain an unique weight "w"" and a value "v".
+At first it need to create a data set to generate these data for the calculation later, as we need 1,000,000 observations to be analysed in the `knapsack_greedy()` part, so there is a function called `knapsack_objects` to generate the data set. Here we can show some of the output, these items each contain an unique weight "w"" and a value "v".
 
 ```{r}
 library(Lab6)
-head(Lab6::knapsack_objects)
+head(Lab6::knapsack_objects(2000))
 ```
 
 
@@ -30,13 +30,15 @@ The codes below shows the `knapsack_brute_force()` function result and how many 
 ```{r, fig.show='hold'}
 my_df <- Lab6::knapsack_objects(2000)
 start.time<-Sys.time()
-Lab6::knapsack_brute_force(x=my_df[1:16,],W=3500)
+Lab6::knapsack_brute_force(x=my_df[1:16,], W=3500)
 end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
 ```
 
+"Question How large performance gain could you get by trying to improving your code?"
 
+By removing the for-loop to compute the value/weight of the current subset of items into a vectorized version, the performance increased by approximately 7 times.
 
 ## knapsack_dynamic() Function
 
@@ -44,7 +46,7 @@ The codes below shows the `knapsack_dynamic()` function result and how many time
 
 ```{r}
 start.time<-Sys.time()
-Lab6::knapsack_dynamic(x=my_df[1:500,],W=3500)
+Lab6::knapsack_dynamic(x=my_df[1:500, ], W=3500)
 end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
@@ -67,9 +69,47 @@ time.taken
 
 "Question:How large performance gain could you get by using Rcpp and C++?"
 
+Using C++ doesn't change the complexity of the algorithms, but since C++ is a compiled language it will increase the performance and the increase depends on the hardware and compiler.
+
+```{r}
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, fast=TRUE))
+
+system.time(knapsack_dynamic(x=my_df[1:500,], W=3500))
+system.time(knapsack_dynamic(x=my_df[1:500,], W=3500, fast=TRUE))
+
+system.time(knapsack_greedy(x=my_big_df[1:1000000,], W=3500))
+system.time(knapsack_greedy(x=my_big_df[1:1000000,], W=3500, fast=TRUE))
+```
+
+In the brute force and dynamic cases, the gain can be over 1000 using a C++ implementation over R code.
+
 ## Rcpp
 
 "Question How large performance gain could you get by parallelizing brute force search?"
+
+
+Let's assumse that about 95% of the brute force algorithm is parallaziable (probably an understatement), the only part that can't be is to distribute the work among the cores and pick the best solution out of the the returned ones. That leave us with 5% of serial code.
+
+By Amdalh's law, the speedup would be
+$$S_{p} = \frac{1}{0.05 + \frac{0.95}{\text{P}}}$$
+for a fixed size problem where P is the number of cores.
+
+By Gustafson's Law with the same parameters, the speedup would be
+$$S_{p} = \text{P} - 0.05 * (\text{P}-1)$$
+where P is the number of cores.
+
+Lastly, lets do an empirical example to see if there is anything to gain from using parallelization:
+
+```{r}
+library(parallel)
+
+## The number of cores in the CPU
+detectCores()
+
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
+system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, parallel=TRUE))
+```
 
 
 ## Source
@@ -80,3 +120,4 @@ time.taken
 3.Profiling ([via](http://adv-r.had.co.nz/Profiling.html))
 
 4.Rcpp ([via](http://adv-r.had.co.nz/Rcpp.html))
+
