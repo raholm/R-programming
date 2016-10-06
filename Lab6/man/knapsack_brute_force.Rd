@@ -17,7 +17,7 @@ knapsack_brute_force(x, W, fast=FALSE, parallel=FALSE)
 
 \item{fast}{Set to FALSE by default. Will use a c++ implementation if set to TRUE.}
 
-\item{parallel}{Set to FALSE by default. If set to TRUE, will use a parallel implementation. It will override the fast=TRUE.}
+\item{parallel}{Set to FALSE by default. Will use a parallel implementation if set to TRUE and override fast=TRUE.}
 }
 \value{
 a List containing information about the solution.

@@ -12,7 +12,7 @@
 #' }
 #' @param W The total amount of capacity available.
 #' @param fast Set to FALSE by default. Will use a c++ implementation if set to TRUE.
-#' @param parallel Set to FALSE by default. If set to TRUE, will use a parallel implementation. It will override the fast=TRUE. 
+#' @param parallel Set to FALSE by default. Will use a parallel implementation if set to TRUE and override fast=TRUE.
 #' @return a List containing information about the solution.
 #' \describe{
 #' \item{value}{The best value found.}
