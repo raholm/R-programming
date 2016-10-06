@@ -28,7 +28,7 @@ head(Lab6::knapsack_objects)
 The codes below shows the `knapsack_brute_force()` function result and how many time did it take for the computation of 16 observations.
 
 ```{r, fig.show='hold'}
-my_df <- Lab6::knapsack_objects
+my_df <- Lab6::knapsack_objects(2000)
 start.time<-Sys.time()
 Lab6::knapsack_brute_force(x=my_df[1:16,],W=3500)
 end.time<-Sys.time()
@@ -55,8 +55,9 @@ time.taken
 The codes below shows the `knapsack_greedy()` function result and how many time did it take for the computation of 1,000,000 observations.
 
 ```{r}
+my_big_df<-Lab6::knapsack_objects(1000000)
 start.time<-Sys.time()
-invisible.output <- Lab6::knapsack_greedy(x=my_df[1:1000000,],W=3500)
+invisible.output <- Lab6::knapsack_greedy(x=my_big_df[1:1000000,],W=3500)
 end.time<-Sys.time()
 time.taken <- end.time - start.time
 time.taken
@@ -69,3 +70,13 @@ time.taken
 ## Rcpp
 
 "Question How large performance gain could you get by parallelizing brute force search?"
+
+
+## Source
+1.Dynamic programming([via](https://en.wikipedia.org/wiki/Knapsack_problem#0.2F1_knapsack_problem))
+
+2.Greedy heuristic([via](https://en.wikipedia.org/wiki/Knapsack_problem#Greedy_approximation_algorithm))
+
+3.Profiling ([via](http://adv-r.had.co.nz/Profiling.html))
+
+4.Rcpp ([via](http://adv-r.had.co.nz/Rcpp.html))
