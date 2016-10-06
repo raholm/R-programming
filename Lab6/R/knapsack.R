@@ -76,8 +76,13 @@ knapsack_brute_force_parallel <- function(x, W) {
     cluster <- makeCluster(core_count)
 
     result <- parLapply(cluster, seq_len(core_count) - 1, function(i, x, W, combinations, combinations_per_core) {
-        start_index <- (i * combinations_per_core + 1)
+        start_index <- i * combinations_per_core + 1
         end_index <- start_index + combinations_per_core - 1
+
+        if (end_index > length(combinations)) {
+            end_index <- length(combinations)
+        }
+
         core_combinations <- combinations[start_index:end_index]
         return(knapsack_brute_force_parallel_internal(x, W, core_combinations))
     }, x, W, combinations, combinations_per_core)

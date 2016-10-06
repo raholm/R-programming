@@ -18,7 +18,7 @@ Rcpp::List knapsack_brute_force_cpp(const Rcpp::DataFrame& x, unsigned W) {
   std::vector<bool> best_choice;
 
   // Loop variables
-  unsigned iterations = std::pow(2, n);
+  unsigned iterations = std::pow(2, n) - 1;
   unsigned current_weight;
   double current_value;
   std::vector<bool> bitstring(n, false);
