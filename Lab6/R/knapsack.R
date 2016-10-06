@@ -2,6 +2,29 @@
 #'
 #' Solves 0-1 knapsack problem using brute force.
 #'
+#' @usage
+#' knapsack_brute_force(x, W, fast=FALSE, parallel=FALSE)
+#'
+#' @param x A data frame containing the knapsack objects.
+#' \describe{
+#' \item{v}{The values of the objects.}
+#' \item{w}{The weights of the objects.}
+#' }
+#' @param W The total amount of capacity available.
+#' @param fast Set to FALSE by default. Will use a c++ implementation if set to TRUE.
+#' @param parallel Set to FALSE by default. If set to TRUE, will use a parallel implementation. It will override the fast=TRUE. 
+#' @return a List containing information about the solution.
+#' \describe{
+#' \item{value}{The best value found.}
+#' \item{weight}{The weight of the best value.}
+#' \item{elements}{The items picked to achieve the best solution.}
+#' }
+#'
+#' @examples
+#' knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500)
+#' knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, fast=TRUE)
+#' knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, parallel=TRUE)
+#'
 #' @import parallel
 #'
 #' @export
@@ -55,17 +78,17 @@ knapsack_brute_force_parallel <- function(x, W) {
     n <- nrow(x)
     core_count <- detectCores()
 
-    numbers <- 1:2^n
-    numbers_per_core <- as.integer(length(numbers) / core_count + 0.5)
+    combinations <- 1:2^n
+    combinations_per_core <- as.integer(length(combinations) / core_count + 0.5)
 
     cluster <- makeCluster(core_count)
 
-    result <- parLapply(cluster, seq_len(core_count) - 1, function(i, x, W, numbers, numbers_per_core) {
-        start_index <- (i * numbers_per_core + 1)
-        end_index <- start_index + numbers_per_core
-        core_numbers <- numbers[start_index:end_index]
-        return(knapsack_brute_force_parallel_internal(x, W, core_numbers))
-    }, x, W, numbers, numbers_per_core)
+    result <- parLapply(cluster, seq_len(core_count) - 1, function(i, x, W, combinations, combinations_per_core) {
+        start_index <- (i * combinations_per_core + 1)
+        end_index <- start_index + combinations_per_core
+        core_combinations <- combinations[start_index:end_index]
+        return(knapsack_brute_force_parallel_internal(x, W, core_combinations))
+    }, x, W, combinations, combinations_per_core)
 
     best_result <- result[order(sapply(result,'[[', "value"), decreasing=TRUE)][[1]]
 
@@ -73,14 +96,14 @@ knapsack_brute_force_parallel <- function(x, W) {
     return(best_result)
 }
 
-knapsack_brute_force_parallel_internal <- function(x, W, numbers) {
+knapsack_brute_force_parallel_internal <- function(x, W, combinations) {
     n <- nrow(x)
 
     best_value <- -Inf
     best_weight <- 0
     best_choice <- NULL
 
-    for (i in numbers) {
+    for (i in combinations) {
         bitstring <- intToBits(i)
 
         current_weight <- 0
@@ -107,6 +130,28 @@ knapsack_brute_force_parallel_internal <- function(x, W, numbers) {
 #' Knapsack Dynamic
 #'
 #' Solves 0-1 knapsack problem using dynamic programming.
+#'
+#' @usage
+#' knapsack_dynamic(x, W, fast=FALSE)
+#'
+#' @param x A data frame containing the knapsack objects.
+#' \describe{
+#' \item{v}{The values of the objects.}
+#' \item{w}{The weights of the objects.}
+#' }
+#'
+#' @param W The total amount of capacity available.
+#' @param fast Set to FALSE by default. Will use a c++ implementation if set to TRUE.
+#' @return A list containing information about the solution.
+#' \describe{
+#' \item{value}{The best value found.}
+#' \item{weight}{The weight of the best value.}
+#' \item{elements}{The items picked to achieve the best solution.}
+#' }
+#'
+#' @examples
+#' knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
+#' knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500, fast=TRUE)
 #'
 #' @export
 knapsack_dynamic <- function(x, W, fast=FALSE) {
@@ -170,7 +215,29 @@ knapsack_dynamic_R.best_choice <- function(x, table) {
 
 #' Knapsack Greedy
 #'
-#' Solves 0-1 knapsack problem using greedy heuristic.
+#' Solves 0-1 knapsack problem using greedy heuristic. The heuristic used is value / weight.
+#'
+#' @usage
+#' knapsack_greedy(x, W, fast=FALSE)
+#'
+#' @param x A data frame containing the knapsack objects.
+#' \describe{
+#' \item{v}{The values of the objects.}
+#' \item{w}{The weights of the objects.}
+#' }
+#'
+#' @param W The total amount of capacity available.
+#' @param fast Set to FALSE by default. Will use a c++ implementation if set to TRUE.
+#' @return A list containing information about the solution.
+#' \describe{
+#' \item{value}{The best value found.}
+#' \item{weight}{The weight of the best value.}
+#' \item{elements}{The items picked to achieve the best solution.}
+#' }
+#'
+#' @examples
+#' knapsack_greedy(x = knapsack_objects[1:800,], W = 3500)
+#' knapsack_greedy(x = knapsack_objects[1:800,], W = 3500, fast=TRUE)
 #'
 #' @export
 knapsack_greedy <- function(x, W, fast=FALSE) {
