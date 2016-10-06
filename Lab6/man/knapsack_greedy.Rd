@@ -4,7 +4,7 @@
 \alias{knapsack_greedy}
 \title{Knapsack Greedy}
 \usage{
-knapsack_greedy(x, W)
+knapsack_greedy(x, W, fast = FALSE)
 }
 \description{
 Solves 0-1 knapsack problem using greedy heuristic.

@@ -4,7 +4,7 @@
 \alias{knapsack_dynamic}
 \title{Knapsack Dynamic}
 \usage{
-knapsack_dynamic(x, W)
+knapsack_dynamic(x, W, fast = FALSE)
 }
 \description{
 Solves 0-1 knapsack problem using dynamic programming.

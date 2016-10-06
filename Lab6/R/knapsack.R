@@ -43,7 +43,7 @@ knapsack_brute_force_R <- function(x, W) {
     }
 
     return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=which(best_choice == 1)))
-}
+   }
 
 #' Knapsack Dynamic
 #'

@@ -11,7 +11,10 @@ Description: Description
 License: CC0
 LazyData: true
 Suggests:
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 RoxygenNote: 5.0.1
 LinkingTo: Rcpp
 Imports: Rcpp
+VignetteBuilder: knitr
