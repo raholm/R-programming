@@ -34,7 +34,7 @@ knapsack_brute_force <- function(x, W, fast=FALSE, parallel=FALSE) {
     result <- NULL
 
     if (parallel) {
-        result <- knapsack_brute_force_parallel(x, W)
+       result <- knapsack_brute_force_parallel(x, W)
     } else if (fast) {
        result <- knapsack_brute_force_cpp(x, W)
     } else {

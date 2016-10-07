@@ -15,8 +15,8 @@
 #' @name knapsack_objects
 #' @export
 knapsack_objects <- function(n){
-set.seed(42)
-knapsack_df <- data.frame(w=sample(1:4000, size=n, replace=TRUE),
-                               v=runif(n=n, 0, 10000))
-return(knapsack_df)
+    set.seed(42)
+    knapsack_df <- data.frame(w=sample(1:4000, size=n, replace=TRUE),
+                              v=runif(n=n, 0, 10000))
+    return(knapsack_df)
 }
