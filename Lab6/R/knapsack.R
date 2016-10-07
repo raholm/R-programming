@@ -45,25 +45,7 @@ knapsack_brute_force <- function(x, W, fast=FALSE, parallel=FALSE) {
 }
 
 knapsack_brute_force_R <- function(x, W) {
-    n <- nrow(x)
-
-    best_value <- -Inf
-    best_weight <- 0
-    best_choice <- NULL
-
-    for (i in 1:(2^n - 1)) {
-        items <- which(intToBits(i) == 1)
-        current_weight <- sum(x$w[items])
-        current_value <- sum(x$v[items])
-
-        if (current_value > best_value && current_weight < W) {
-            best_value <- current_value
-            best_weight <- current_weight
-            best_choice <- items
-        }
-    }
-
-    return(list(value=as.integer(best_value + 0.5), weight=best_weight, elements=best_choice))
+    return(knapsack_brute_force_internal(x, W, 1:(2^(nrow(x)) - 1)))
 }
 
 knapsack_brute_force_parallel <- function(x, W) {
@@ -84,7 +66,7 @@ knapsack_brute_force_parallel <- function(x, W) {
         }
 
         core_combinations <- combinations[start_index:end_index]
-        return(knapsack_brute_force_parallel_internal(x, W, core_combinations))
+        return(knapsack_brute_force_internal(x, W, core_combinations))
     }, x, W, combinations, combinations_per_core)
 
     best_result <- result[order(sapply(result,'[[', "value"), decreasing=TRUE)][[1]]
@@ -93,7 +75,7 @@ knapsack_brute_force_parallel <- function(x, W) {
     return(best_result)
 }
 
-knapsack_brute_force_parallel_internal <- function(x, W, combinations) {
+knapsack_brute_force_internal <- function(x, W, combinations) {
     n <- nrow(x)
 
     best_value <- -Inf
@@ -254,7 +236,7 @@ knapsack_greedy_R <- function(x, W) {
     capacity <- W
     item <- 1
 
-    while (capacity > x$w[ordered_items[item]]  && item <= n) {
+    while (item <= n && capacity > x$w[ordered_items[item]]) {
         ordered_item <- ordered_items[item]
 
         if (x$w[ordered_item] <= capacity) {

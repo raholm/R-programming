@@ -159,7 +159,7 @@ Rcpp::List knapsack_greedy_cpp(const Rcpp::DataFrame& x, unsigned W) {
   unsigned best_weight = 0;
   Rcpp::IntegerVector elements;
 
-  while (capacity > 0 && item < n) {
+  while (item < n && capacity > weights[sorted_items.at(item)]) {
     ordered_item = sorted_items.at(item);
 
     if (weights[ordered_item] <= capacity) {
