@@ -1,13 +1,13 @@
 Package: Lab6
 Type: Package
-Title: Title
+Title: Lab 6
 Version: 1.0
 Date: 2016-09-27
 Author: Rasmus Holm [aut, cre],
     Zhendong Wang [aut, cre],
     Karolina Ziomek [aut, cre]
 Maintainer: Rasmus Holm <rasho258@student.liu.se>
-Description: Description
+Description: Contains implementations of various algorithms for solving the knapsack project
 License: CC0
 LazyData: true
 Suggests:
@@ -16,10 +16,6 @@ Suggests:
     rmarkdown
 RoxygenNote: 5.0.1
 LinkingTo: Rcpp
-<<<<<<< HEAD
-Imports: Rcpp
 VignetteBuilder: knitr
-=======
 Imports: Rcpp,
          parallel
->>>>>>> 67e6d7c707fefd5508a24f1c4f42cc7e552f5d09
