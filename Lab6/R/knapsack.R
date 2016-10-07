@@ -21,9 +21,9 @@
 #' }
 #'
 #' @examples
-#' knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500)
-#' knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, fast=TRUE)
-#' knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, parallel=TRUE)
+#' knapsack_brute_force(x = knapsack_objects(2000)[1:8,], W = 3500)
+#' knapsack_brute_force(x = knapsack_objects(2000)[1:8,], W = 3500, fast=TRUE)
+#' knapsack_brute_force(x = knapsack_objects(2000)[1:8,], W = 3500, parallel=TRUE)
 #'
 #' @import parallel
 #'
@@ -139,8 +139,8 @@ knapsack_brute_force_parallel_internal <- function(x, W, combinations) {
 #' }
 #'
 #' @examples
-#' knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500)
-#' knapsack_dynamic(x = knapsack_objects[1:8,], W = 3500, fast=TRUE)
+#' knapsack_dynamic(x = knapsack_objects(2000)[1:8,], W = 3500)
+#' knapsack_dynamic(x = knapsack_objects(2000)[1:8,], W = 3500, fast=TRUE)
 #'
 #' @export
 knapsack_dynamic <- function(x, W, fast=FALSE) {
@@ -225,8 +225,8 @@ knapsack_dynamic_R.best_choice <- function(x, table) {
 #' }
 #'
 #' @examples
-#' knapsack_greedy(x = knapsack_objects[1:800,], W = 3500)
-#' knapsack_greedy(x = knapsack_objects[1:800,], W = 3500, fast=TRUE)
+#' knapsack_greedy(x = knapsack_objects(2000)[1:800,], W = 3500)
+#' knapsack_greedy(x = knapsack_objects(2000)[1:800,], W = 3500, fast=TRUE)
 #'
 #' @export
 knapsack_greedy <- function(x, W, fast=FALSE) {

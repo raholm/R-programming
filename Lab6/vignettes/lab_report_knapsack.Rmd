@@ -72,14 +72,17 @@ time.taken
 Using C++ doesn't change the complexity of the algorithms, but since C++ is a compiled language it will increase the performance and the increase depends on the hardware and compiler.
 
 ```{r}
-system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
-system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, fast=TRUE))
+library(microbenchmark)
 
-system.time(knapsack_dynamic(x=my_df[1:500,], W=3500))
-system.time(knapsack_dynamic(x=my_df[1:500,], W=3500, fast=TRUE))
-
-system.time(knapsack_greedy(x=my_big_df[1:1000000,], W=3500))
-system.time(knapsack_greedy(x=my_big_df[1:1000000,], W=3500, fast=TRUE))
+microbenchmark(
+  Brute=knapsack_brute_force(x=my_df[1:16,], W=3500),
+  Brute_Cpp=knapsack_brute_force(x=my_df[1:16,], W=3500, fast=TRUE),
+  Dynamic=knapsack_dynamic(x=my_df[1:500,], W=3500),
+  Dynamic_Cpp=knapsack_dynamic(x=my_df[1:500,], W=3500, fast=TRUE),
+  Greedy=knapsack_greedy(x=my_big_df[1:1000000,], W=3500),
+  Greedy_Cpp=knapsack_greedy(x=my_big_df[1:1000000,], W=3500, fast=TRUE),
+  times=1
+  )
 ```
 
 In the brute force and dynamic cases, the gain can be over 1000 using a C++ implementation over R code.
@@ -111,7 +114,6 @@ system.time(knapsack_brute_force(x=my_df[1:16,], W=3500))
 system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, parallel=TRUE))
 ```
 
-
 ## Source
 1.Dynamic programming([via](https://en.wikipedia.org/wiki/Knapsack_problem#0.2F1_knapsack_problem))
 
@@ -120,4 +122,3 @@ system.time(knapsack_brute_force(x=my_df[1:16,], W=3500, parallel=TRUE))
 3.Profiling ([via](http://adv-r.had.co.nz/Profiling.html))
 
 4.Rcpp ([via](http://adv-r.had.co.nz/Rcpp.html))
-

@@ -1,12 +1,16 @@
 #' Knapsack Objects
 #'
-#' A data set containing knapsack objects
+#' Function to generate knapsack objects
 #'
+#' @param n The number of objects to create
+#' @return A data frame containing n knapsack objects
 #' @format A data frame with two variables.
 #' \describe{
 #' \item{w}{The weights of the objects.}
 #' \item{v}{The values of the objects.}
 #' }
+#'
+#' @importFrom stats runif
 #'
 #' @name knapsack_objects
 #' @export

@@ -7,7 +7,7 @@ Author: Rasmus Holm [aut, cre],
     Zhendong Wang [aut, cre],
     Karolina Ziomek [aut, cre]
 Maintainer: Rasmus Holm <rasho258@student.liu.se>
-Description: Contains implementations of various algorithms for solving the knapsack project
+Description: Contains implementations of various algorithms for solving the knapsack project.
 License: CC0
 LazyData: true
 Suggests:

@@ -31,9 +31,9 @@ a List containing information about the solution.
 Solves 0-1 knapsack problem using brute force.
 }
 \examples{
-knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500)
-knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, fast=TRUE)
-knapsack_brute_force(x = knapsack_objects[1:8,], W = 3500, parallel=TRUE)
+knapsack_brute_force(x = knapsack_objects(2000)[1:8,], W = 3500)
+knapsack_brute_force(x = knapsack_objects(2000)[1:8,], W = 3500, fast=TRUE)
+knapsack_brute_force(x = knapsack_objects(2000)[1:8,], W = 3500, parallel=TRUE)
 
 }
 

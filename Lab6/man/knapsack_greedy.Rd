@@ -4,9 +4,6 @@
 \alias{knapsack_greedy}
 \title{Knapsack Greedy}
 \usage{
-<<<<<<< HEAD
-knapsack_greedy(x, W, fast = FALSE)
-=======
 knapsack_greedy(x, W, fast=FALSE)
 }
 \arguments{
@@ -27,14 +24,13 @@ A list containing information about the solution.
 \item{weight}{The weight of the best value.}
 \item{elements}{The items picked to achieve the best solution.}
 }
->>>>>>> 67e6d7c707fefd5508a24f1c4f42cc7e552f5d09
 }
 \description{
 Solves 0-1 knapsack problem using greedy heuristic. The heuristic used is value / weight.
 }
 \examples{
-knapsack_greedy(x = knapsack_objects[1:800,], W = 3500)
-knapsack_greedy(x = knapsack_objects[1:800,], W = 3500, fast=TRUE)
+knapsack_greedy(x = knapsack_objects(2000)[1:800,], W = 3500)
+knapsack_greedy(x = knapsack_objects(2000)[1:800,], W = 3500, fast=TRUE)
 
 }
 

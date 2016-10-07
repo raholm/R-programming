@@ -8,7 +8,16 @@
 \item{w}{The weights of the objects.}
 \item{v}{The values of the objects.}
 }}
+\usage{
+knapsack_objects(n)
+}
+\arguments{
+\item{n}{The number of objects to create}
+}
+\value{
+A data frame containing n knapsack objects
+}
 \description{
-A data set containing knapsack objects
+Function to generate knapsack objects
 }
 
