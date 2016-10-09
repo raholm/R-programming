@@ -1,3 +1,4 @@
+Package: Lab7
 Type: Package
 Title: Lab 7
 Version: 1.0
@@ -9,4 +10,6 @@ Maintainer: Rasmus Holm <rasho258@student.liu.se>
 Description: Description
 License: CC0
 LazyData: true
-Suggests: testthat
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
