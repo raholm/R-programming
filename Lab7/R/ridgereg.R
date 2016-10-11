@@ -20,26 +20,63 @@
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
 ridgereg <- function(formula, data, lambda=0){
+  ridgereg_check_input(formula, data, lambda)
+
   call <- match.call()
   
-  X <- model.matrix(formula, data)
-  #####sd() 
+  X <- ridge_reg(formula, data)
+  y <- ridge_reg(formula, data)
+  
   Xnorm <- (X - mean(X))/ sd(X)
   
-  y <- as.matrix(data[,all.vars(formula)[1]])  
+  coefficients <- ridgereg_coefficients(Xnorm, y, lambda)
+  fitted_values <- ridgereg_fitted_values(Xnorm, coefficients)
   
-  reg.coe <- solve(t(Xnorm) %*% Xnorm - lambda * diag(dim(Xnorm)[2])) %*% t(Xnorm) %*% y
-  reg.coe <- reg.coe[-1]
-  names(reg.coe) <- names(X)
-  
-  fit.val <- Xnorm %*% reg.coe
-  
-  return(list(
-      call = gsub(" +", " ", paste(deparse(call), collapse="")),
-      coefficients = t(reg.coe),
-      fitted.values = as.numeric(fit.val)
+  return(ridgeregmod(
+      call = call,
+      coefficients = coefficients,
+      fitted.values = fitted_values)
   ))
 }
+
+ridgereg_check_input <- function(formula, data, lambda)
+{
+    stopifnot(length(all.vars(formula)) > 0)
+    stopifnot(is.data.frame(data))
+    stopifnot(is.numeric(lambda) && lambda >= 0)
+
+    ## Ensures that all variables in the formula
+    ## are present in the data frame
+    variables <- all.vars(formula)
+    for (variable in variables)
+    {
+        stopifnot(variable %in% names(data))
+    }
+}
+
+ridgereg_X <- function(formula, data) {
+    return(model.matrix(object=formula, data=data))
+}
+
+ridgereg_y <- function(formula, data) {
+    y_variables <- all.vars(formula)[1]
+    y <- data[, y_variables]
+    return(as.matrix(y))
+}
+
+ridgereg_coefficients <- function(X, y, lambda) {
+    coefficients <- solve(t(X) %*% X - lambda * diag(dim(X)[2])) %*% t(X) %*% y
+    names(coefficients) <- colnames(X)
+    return(coefficients)
+}
+
+ridgereg_fitted_values <- function(X, coefficients) {
+    fitted_values <- X %*% coefficients
+    fitted_values <- as.vector(fitted_values)
+    names(fitted_values) <- 1:length(fitted_values)
+    return(fitted_values)
+}
+
 
 linreg <- function(formula, data)
 {
@@ -72,31 +109,6 @@ linreg <- function(formula, data)
                                  df=df))
 }
 
-linreg_check_input <- function(formula, data)
-{
-    stopifnot(length(all.vars(formula)) > 0)
-    stopifnot(is.data.frame(data))
-
-    ## Ensures that all variables in the formula
-    ## are present in the data frame
-    variables <- all.vars(formula)
-    for (variable in variables)
-    {
-        stopifnot(variable %in% names(data))
-    }
-}
-
-linreg_X <- function(formula, data) {
-    return(model.matrix(object=formula, data=data))
-}
-
-linreg_y <- function(formula, data, X) {
-    ## Limit the use to only one dependent variable
-    ## TODO: Fix this limitation
-    y_variables <- all.vars(formula)[1]
-    y <- data[, y_variables]
-    return(as.matrix(y))
-}
 
 linreg_df <- function(X) {
     return(nrow(X) - ncol(X))

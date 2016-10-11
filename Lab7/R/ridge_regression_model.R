@@ -23,7 +23,6 @@ RidgeRegressionModel <- setRefClass("RidgeRegressionModel",
                                          call="character",
                                          coefficients="list",
                                          fitted.values="numeric",
-                                         df="numeric"
                                      ))
 
 ## Constructor and Destructor
