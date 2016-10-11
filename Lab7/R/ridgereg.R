@@ -141,18 +141,6 @@ linreg_fitted_values <- function(X, coefficients) {
     return(fitted_values)
 }
 
-linreg_residuals <- function(y, fitted_values) {
-    residuals <- y - fitted_values
-    residuals <- as.vector(residuals)
-    names(residuals) <- 1:length(residuals)
-    return(residuals)
-}
-
-linreg_residuals_variance <- function(residuals, df) {
-    residuals_variance <- (t(residuals) %*% residuals) / df
-    return(as.numeric(residuals_variance))
-}
-
 linreg_inverse_QR_decomposition <- function(X) {
     return(qr.solve(qr(X)))
 }
