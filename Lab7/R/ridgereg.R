@@ -1,43 +1,43 @@
-#' Linear Regression
+#' Ridge Regression
 #'
-#' linreg is used to fit linear regression models.
+#' ridgereg is used to fit ridge regression models.
 #'
 #' @usage
-#' linreg(formula, data)
+#' ridgereg(formula, data, lambda=0)
 #'
 #' @param formula an object of class \code{formula}. Describes the model to be fitted.
 #' @param data a data frame containing the variables in the model.
+#' @param lambda A constant >= 0
 #' @return The fitted model of class \code{"LinearRegressionModel"}.
 #'
 #' @examples
-#' linreg(formula = Petal.Width ~ Petal.Length, data=iris)
-#' linreg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
-#' linreg(Petal.Width ~ Species, iris)
+#' ridgereg(formula = Petal.Width ~ Petal.Length, data=iris)
+#' ridgereg(formula = Petal.Width ~ Petal.Length, data=iris, lambda=2)
 #'
 #' @importFrom stats model.matrix
 #' @importFrom stats pt
 #'
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
-
-ridgereg <- function(formula, data, lambda){
-  call<- match.call()
+ridgereg <- function(formula, data, lambda=0){
+  call <- match.call()
   
-  X<- model.matrix(formula,data)
+  X <- model.matrix(formula, data)
   #####sd() 
   Xnorm <- (X - mean(X))/ sd(X)
   
-  y <- as.matrix(data[,all.vars(formula)[1]])
+  y <- as.matrix(data[,all.vars(formula)[1]])  
   
-  reg.coe <- solve(t(X) %*% X - lambda #####*I
-  ) %*% t(X) %*% y
+  reg.coe <- solve(t(Xnorm) %*% Xnorm - lambda * diag(dim(Xnorm)[2])) %*% t(Xnorm) %*% y
+  reg.coe <- reg.coe[-1]
+  names(reg.coe) <- names(X)
   
-  fit.val <- X %*% reg.coe
+  fit.val <- Xnorm %*% reg.coe
   
-  return(ridgeregclass(
-    call = as.character(call),
-    coefficients = t(reg.coe),
-    fitted.values = as.numeric(fit.val)
+  return(list(
+      call = gsub(" +", " ", paste(deparse(call), collapse="")),
+      coefficients = t(reg.coe),
+      fitted.values = as.numeric(fit.val)
   ))
 }
 

@@ -4,7 +4,7 @@
 \name{Lab7}
 \alias{Lab7}
 \alias{Lab7-package}
-\title{Lab 7}
+\title{Title}
 \description{
 Description
 }
