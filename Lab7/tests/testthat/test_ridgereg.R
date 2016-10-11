@@ -9,13 +9,23 @@ test_that("ridgereg of invalid input is invalid", {
     expect_error(ridgereg(y ~ x, iris))
     expect_error(ridgereg(formula=y ~ x))
     expect_error(ridgereg(data=iris))
+    expect_error(ridgereg(Petal.Width ~ Petal.Length + Sepal.Length, data=iris, lambda=-1))
 })
 
 test_that("ridgereg of valid input is correct", {
     check_model_methods <- function(actual, expected, data) {
-        scaled_data <- scale(data, center = model.expected$xm, scale = model.expected$scales)
-        expect_equal(actual$coefficients, expected$coef)
-        expect_equal(actual$fitted.values, scaled_data %*% model.expected$coef)
+        scaled_data <- scale(data, center = expected$xm, scale = expected$scales)
+        expected_fitted_values <- scaled_data %*% expected$coef
+        expected_fitted_values <- as.vector(expected_fitted_values)
+        names(expected_fitted_values) <- 1:length(expected_fitted_values)
+
+        ## print(expected_fitted_values)
+        ## print(coef(expected))
+        ## print(actual$coef())
+        ## print(actual$pred())
+
+        expect_equal(actual$coef(), coef(expected))
+        expect_equal(actual$pred(), expected_fitted_values)
     }
 
     ## Simple Model

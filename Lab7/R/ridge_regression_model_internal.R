@@ -11,8 +11,7 @@
 }
 
 ## Initialization --------------------------------------------------------------
-.initialize <- function(object, call, coefficients,
-                        fitted.values, ...) {
+.initialize <- function(object, call, coefficients, fitted.values, ...) {
     ## Extract the string representation of the call
     object$call <- gsub(" +", " ", paste(deparse(call), collapse=""))
 

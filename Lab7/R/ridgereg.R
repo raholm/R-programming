@@ -24,19 +24,24 @@ ridgereg <- function(formula, data, lambda=0){
 
   call <- match.call()
   
-  X <- ridge_reg(formula, data)
-  y <- ridge_reg(formula, data)
+  X <- ridgereg_X(formula, data)
+  y <- ridgereg_y(formula, data)
+
+  Xmean <- mean(X)
+  Xscale <- sd(X)
+  Xnorm <- (X - Xmean) / Xscale
+
+  ymean <- mean(y)
+  ynorm <- y - ymean
+
+  coefficients <- list()
+  coefficients$val <- ridgereg_coefficients(Xnorm, ynorm, lambda, Xscale)
   
-  Xnorm <- (X - mean(X))/ sd(X)
+  fitted_values <- ridgereg_fitted_values(Xnorm, coefficients$val)
   
-  coefficients <- ridgereg_coefficients(Xnorm, y, lambda)
-  fitted_values <- ridgereg_fitted_values(Xnorm, coefficients)
-  
-  return(ridgeregmod(
-      call = call,
-      coefficients = coefficients,
-      fitted.values = fitted_values)
-  ))
+  return(RidgeRegressionModel(call = call,
+                              coefficients = coefficients,
+                              fitted.values = fitted_values))
 }
 
 ridgereg_check_input <- function(formula, data, lambda)
@@ -64,9 +69,12 @@ ridgereg_y <- function(formula, data) {
     return(as.matrix(y))
 }
 
-ridgereg_coefficients <- function(X, y, lambda) {
+ridgereg_coefficients <- function(X, y, lambda, scale) {
     coefficients <- solve(t(X) %*% X - lambda * diag(dim(X)[2])) %*% t(X) %*% y
-    names(coefficients) <- colnames(X)
+    coefficients <- as.vector(coefficients)
+    coefficients <- coefficients / scale
+    # Remove intercept name
+    names(coefficients) <- c("", colnames(X)[-1])
     return(coefficients)
 }
 
@@ -77,6 +85,7 @@ ridgereg_fitted_values <- function(X, coefficients) {
     return(fitted_values)
 }
 
+## REMOVE BELOW WHEN DONE ----------------------------------------
 
 linreg <- function(formula, data)
 {
