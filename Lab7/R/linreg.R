@@ -19,6 +19,28 @@
 #'
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Linear_regression}
+
+ridgereg <- function(formula, data, lambda){
+  call<- match.call()
+  
+  X<- model.matrix(formula,data)
+  #####sd() 
+  Xnorm <- (X - mean(X))/ sd(X)
+  
+  y <- as.matrix(data[,all.vars(formula)[1]])
+  
+  reg.coe <- solve(t(X) %*% X - lambda #####*I
+  ) %*% t(X) %*% y
+  
+  fit.val <- X %*% reg.coe
+  
+  return(ridgeregclass(
+    call = as.character(call),
+    coefficients = t(reg.coe),
+    fitted.values = as.numeric(fit.val)
+  ))
+}
+
 linreg <- function(formula, data)
 {
     linreg_check_input(formula, data)
