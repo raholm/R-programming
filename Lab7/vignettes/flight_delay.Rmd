@@ -1,0 +1,60 @@
+---
+title: "Flight Delay"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Flight Delay}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+suppressMessages(library(MASS))
+suppressMessages(library(caret))
+suppressMessages(library(elasticnet))
+suppressMessages(library(leaps))
+
+## Data Processing
+set.seed(123)
+train_idx <- createDataPartition(Boston$crim, p=0.80, list=FALSE)
+
+training <- Boston[train_idx,]
+testing <- Boston[-train_idx,]
+
+## Linear Regression
+lm.fit <- train(crim ~ ., data=training, method="lm", preProc=c("center", "scale"))
+
+lm.train_predict <- predict(lm.fit, newdata=training)
+training_mse <- mean((training$crim - lm.train_predict)^2)
+training_mse
+
+lm.test_predict <- predict(lm.fit, newdata=testing)
+testing_mse <- mean((testing$crim - lm.test_predict)^2)
+testing_mse
+
+## Linear Regression Forward Selection
+lmfs.fit <- train(crim ~ ., data=training, method="leapForward", preProc=c("center", "scale"))
+
+lmfs.train_predict <- predict(lmfs.fit, newdata=training)
+training_mse <- mean((training$crim - lmfs.train_predict)^2)
+training_mse
+
+lmfs.test_predict <- predict(lmfs.fit, newdata=testing)
+testing_mse <- mean((testing$crim - lmfs.test_predict)^2)
+testing_mse
+
+## Ridge Regressions (Should use our own implementation)
+train_control <- trainControl(method="repeatedcv", number=10, repeats=10)
+
+ridge.fit <- train(crim ~ ., data=training, method="ridge", 
+                  trControl=train_control, preProc=c("center", "scale"))
+
+ridge.train_predict <- predict(ridge.fit, newdata=training)
+training_mse <- mean((training$crim - ridge.train_predict)^2)
+training_mse
+
+ridge.test_predict <- predict(ridge.fit, newdata=testing)
+testing_mse <- mean((testing$crim - ridge.test_predict)^2)
+testing_mse
+```

@@ -7,6 +7,6 @@
 visualize_airport_delays()
 }
 \description{
-Visualize average airport delays in USA
+Visualize average airport delays in USA.
 }
 
