@@ -36,7 +36,7 @@ ridgereg <- function(formula, data, lambda=0){
 
   coefficients <- list()
   coefficients$val <- ridgereg_coefficients(Xnorm, y, lambda, Xscale)
-  ## coefficients$val[1] <- (coefficients$val[1] - mean(X)) / sd(X)
+  ## coefficients$val[1] <- (coefficients$val[1] - mean(Xmean)) / mean(Xscale)
 
   fitted_values <- ridgereg_fitted_values(Xnorm, coefficients$val)
 
@@ -73,7 +73,7 @@ ridgereg_y <- function(formula, data) {
 }
 
 ridgereg_coefficients <- function(X, y, lambda, scale) {
-    lambda_matrix <- lambda * diag(dim(X)[2])
+    lambda_matrix <- lambda * diag(ncol(X))
     ## lambda_matrix <- t(lambda_matrix) %*% lambda_matrix
 
     coefficients <- solve(t(X) %*% X + lambda_matrix) %*% t(X) %*% y

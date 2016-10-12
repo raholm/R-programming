@@ -27,7 +27,6 @@ check_model_methods <- function(actual, expected, data) {
 }
 
 test_that("ridgereg of valid input is correct", {
-
     ## Advanced Model
     model.expected <- lm.ridge(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
     model.actual <- ridgereg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
