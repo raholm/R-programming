@@ -1,6 +1,6 @@
 ---
 title: "Flight Delay"
-author: "Vignette Author"
+author: "Rasmus Holm"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -42,20 +42,47 @@ set.seed(123)
 train_idx <- createDataPartition(imputed_data$dep_delay, p=0.85, list=FALSE)
 validation_idx <- sample(1:length(train_idx), nrow(imputed_data) * 0.05)
 
-training <- imputed_data[train_idx,]
+training <- imputed_data[train_idx,][-validation_idx,]
 testing <- imputed_data[-train_idx,]
+validation <- imputed_data[train_idx,][validation_idx,]
 
 ## Ridge Regressions (Should use our own implementation)
-train_control <- trainControl(method="cv", index=list(Fold1=validation_idx), number=1, repeats=1)
+rmse <- function(error) {
+  return(sqrt(mean(error)))
+}
 
-ridge.fit <- train(dep_delay ~ temp + dewp + humid, data=training, method="ridge", 
-                  trControl=train_control, preProc=c("center", "scale"))
+ridge.train_control <- trainControl(method="cv", number=5)
+ridge.formula <- as.formula(dep_delay ~ temp + dewp)
 
-ridge.train_predict <- predict(ridge.fit, newdata=training)
-training_mse <- mean((training$dep_delay - ridge.train_predict)^2)
-training_mse
+lambdas <- c(0, 0.001, 0.01, 0.1, 1, 1, 10, 100, 1000)
+
+min_rmse <- Inf
+best_lambda <- NULL
+
+for (lambda in lambdas) {
+  ridge.grid <- expand.grid(lambda=lambda)
+  ridge.fit <- train(ridge.formula, data=training, method="ridge",
+                     tuneGrid=ridge.grid, trControl=ridge.train_control)
+
+  ridge.validation_predict <- predict(ridge.fit, newdata=validation)
+  validation_rmse <- rmse((validation$dep_delay - ridge.validation_predict)^2)
+
+  if (validation_rmse < min_rmse) {
+    min_rmse <- validation_rmse
+    best_lambda <- lambda
+  }
+}
+
+print(best_lambda)
+
+ridge.fit <- train(ridge.formula, data=rbind(training, validation), method="ridge",
+                   tuneGrid=expand.grid(lambda=best_lambda), trControl=ridge.train_control)
+
+ridge.train_predict <- predict(ridge.fit, newdata=rbind(training, validation))
+training_rmse <- rmse((rbind(training, validation)$dep_delay - ridge.train_predict)^2)
+training_rmse
 
 ridge.test_predict <- predict(ridge.fit, newdata=testing)
-testing_mse <- mean((testing$dep_delay - ridge.test_predict)^2)
-testing_mse
+testing_rmse <- rmse((testing$dep_delay - ridge.test_predict)^2)
+testing_rmse
 ```

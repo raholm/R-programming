@@ -24,6 +24,7 @@ testing <- Boston[-train_idx,]
 
 ## Linear Regression
 lm.fit <- train(crim ~ ., data=training, method="lm", preProc=c("center", "scale"))
+lm.fit
 
 lm.train_predict <- predict(lm.fit, newdata=training)
 training_mse <- mean((training$crim - lm.train_predict)^2)
@@ -34,7 +35,8 @@ testing_mse <- mean((testing$crim - lm.test_predict)^2)
 testing_mse
 
 ## Linear Regression Forward Selection
-lmfs.fit <- train(crim ~ ., data=training, method="leapForward", preProc=c("center", "scale"))
+lmfs.fit <- train(crim ~ ., data=training, method="leapForward", tuneLength=12, preProc=c("center", "scale"))
+lmfs.fit
 
 lmfs.train_predict <- predict(lmfs.fit, newdata=training)
 training_mse <- mean((training$crim - lmfs.train_predict)^2)
@@ -45,10 +47,11 @@ testing_mse <- mean((testing$crim - lmfs.test_predict)^2)
 testing_mse
 
 ## Ridge Regressions (Should use our own implementation)
-train_control <- trainControl(method="repeatedcv", number=10, repeats=10)
+train_control <- trainControl(method="cv", number=10)
 
 ridge.fit <- train(crim ~ ., data=training, method="ridge",
-                  trControl=train_control, preProc=c("center", "scale"))
+                  trControl=train_control, tuneLength=12, preProc=c("center", "scale"))
+ridge.fit
 
 ridge.train_predict <- predict(ridge.fit, newdata=training)
 training_mse <- mean((training$crim - ridge.train_predict)^2)
