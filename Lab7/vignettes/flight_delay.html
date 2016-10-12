@@ -87,9 +87,9 @@ flights.drop_cols &lt;-<span class="st"> </span><span class="kw">c</span>(<span 
                        <span class="st">&quot;carrier&quot;</span>, <span class="st">&quot;sched_dep_time&quot;</span>, <span class="st">&quot;dep_time&quot;</span>, <span class="st">&quot;sched_arr_time&quot;</span>, <span class="st">&quot;arr_time&quot;</span>, <span class="st">&quot;flight&quot;</span>, <span class="st">&quot;tailnum&quot;</span>)
 flights.compact &lt;-<span class="st"> </span>flights %&gt;%<span class="st"> </span><span class="kw">select</span>(-<span class="kw">one_of</span>(flights.drop_cols))
 
-data &lt;-<span class="st"> </span>flights.compact %&gt;%<span class="st"> </span><span class="kw">left_join</span>(weather.compact) %&gt;%<span class="st"> </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(dep_delay))</code></pre></div>
-<pre><code>## Joining, by = c(&quot;origin&quot;, &quot;time_hour&quot;)</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">impute.mean &lt;-<span class="st"> </span>function(x) <span class="kw">replace</span>(x, <span class="kw">is.na</span>(x), <span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
+data &lt;-<span class="st"> </span>flights.compact %&gt;%<span class="st"> </span><span class="kw">left_join</span>(weather.compact, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;origin&quot;</span>, <span class="st">&quot;time_hour&quot;</span>)) %&gt;%<span class="st"> </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(dep_delay))
+
+impute.mean &lt;-<span class="st"> </span>function(x) <span class="kw">replace</span>(x, <span class="kw">is.na</span>(x), <span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
 
 imputed_data &lt;-<span class="st"> </span>data %&gt;%<span class="st"> </span><span class="kw">group_by</span>(origin) %&gt;%<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">temp =</span> <span class="kw">impute.mean</span>(temp),
                                      <span class="dt">dewp =</span> <span class="kw">impute.mean</span>(dewp),
@@ -112,7 +112,7 @@ validation &lt;-<span class="st"> </span>imputed_data[train_idx,][validation_idx
 
 ## Ridge Regressions (Should use our own implementation)
 rmse &lt;-<span class="st"> </span>function(error) {
-  <span class="kw">return</span>(<span class="kw">sqrt</span>(<span class="kw">mean</span>(error)))
+    <span class="kw">return</span>(<span class="kw">sqrt</span>(<span class="kw">mean</span>(error^<span class="dv">2</span>)))
 }
 
 ridge.train_control &lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method=</span><span class="st">&quot;cv&quot;</span>, <span class="dt">number=</span><span class="dv">5</span>)
@@ -124,32 +124,32 @@ min_rmse &lt;-<span class="st"> </span><span class="ot">Inf</span>
 best_lambda &lt;-<span class="st"> </span><span class="ot">NULL</span>
 
 for (lambda in lambdas) {
-  ridge.grid &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">lambda=</span>lambda)
-  ridge.fit &lt;-<span class="st"> </span><span class="kw">train</span>(ridge.formula, <span class="dt">data=</span>training, <span class="dt">method=</span><span class="st">&quot;ridge&quot;</span>,
-                     <span class="dt">tuneGrid=</span>ridge.grid, <span class="dt">trControl=</span>ridge.train_control)
+    ridge.grid &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">lambda=</span>lambda)
+    ridge.fit &lt;-<span class="st"> </span><span class="kw">train</span>(ridge.formula, <span class="dt">data=</span>training, <span class="dt">method=</span><span class="st">&quot;ridge&quot;</span>,
+                       <span class="dt">tuneGrid=</span>ridge.grid, <span class="dt">trControl=</span>ridge.train_control)
 
-  ridge.validation_predict &lt;-<span class="st"> </span><span class="kw">predict</span>(ridge.fit, <span class="dt">newdata=</span>validation)
-  validation_rmse &lt;-<span class="st"> </span><span class="kw">rmse</span>((validation$dep_delay -<span class="st"> </span>ridge.validation_predict)^<span class="dv">2</span>)
+    ridge.validation_predict &lt;-<span class="st"> </span><span class="kw">predict</span>(ridge.fit, <span class="dt">newdata=</span>validation)
+    validation_rmse &lt;-<span class="st"> </span><span class="kw">rmse</span>(validation$dep_delay -<span class="st"> </span>ridge.validation_predict)
 
-  if (validation_rmse &lt;<span class="st"> </span>min_rmse) {
-    min_rmse &lt;-<span class="st"> </span>validation_rmse
-    best_lambda &lt;-<span class="st"> </span>lambda
-  }
+    if (validation_rmse &lt;<span class="st"> </span>min_rmse) {
+        min_rmse &lt;-<span class="st"> </span>validation_rmse
+        best_lambda &lt;-<span class="st"> </span>lambda
+    }
 }
 
-<span class="kw">print</span>(best_lambda)</code></pre></div>
-<pre><code>## [1] 0</code></pre>
+<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Best lambda found:&quot;</span>, best_lambda, <span class="dt">sep=</span><span class="st">&quot; &quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;Best lambda found: 0&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ridge.fit &lt;-<span class="st"> </span><span class="kw">train</span>(ridge.formula, <span class="dt">data=</span><span class="kw">rbind</span>(training, validation), <span class="dt">method=</span><span class="st">&quot;ridge&quot;</span>,
                    <span class="dt">tuneGrid=</span><span class="kw">expand.grid</span>(<span class="dt">lambda=</span>best_lambda), <span class="dt">trControl=</span>ridge.train_control)
 
 ridge.train_predict &lt;-<span class="st"> </span><span class="kw">predict</span>(ridge.fit, <span class="dt">newdata=</span><span class="kw">rbind</span>(training, validation))
-training_rmse &lt;-<span class="st"> </span><span class="kw">rmse</span>((<span class="kw">rbind</span>(training, validation)$dep_delay -<span class="st"> </span>ridge.train_predict)^<span class="dv">2</span>)
-training_rmse</code></pre></div>
-<pre><code>## [1] 40.1005</code></pre>
+training_rmse &lt;-<span class="st"> </span><span class="kw">rmse</span>(<span class="kw">rbind</span>(training, validation)$dep_delay -<span class="st"> </span>ridge.train_predict)
+<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Training RMSE:&quot;</span>, training_rmse, <span class="dt">sep=</span><span class="st">&quot; &quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;Training RMSE: 40.1005048009454&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ridge.test_predict &lt;-<span class="st"> </span><span class="kw">predict</span>(ridge.fit, <span class="dt">newdata=</span>testing)
-testing_rmse &lt;-<span class="st"> </span><span class="kw">rmse</span>((testing$dep_delay -<span class="st"> </span>ridge.test_predict)^<span class="dv">2</span>)
-testing_rmse</code></pre></div>
-<pre><code>## [1] 39.43888</code></pre>
+testing_rmse &lt;-<span class="st"> </span><span class="kw">rmse</span>(testing$dep_delay -<span class="st"> </span>ridge.test_predict)
+<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">&quot;Testing RMSE:&quot;</span>, testing_rmse, <span class="dt">sep=</span><span class="st">&quot; &quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;Testing RMSE: 39.4388780138859&quot;</code></pre>
 
 
 
