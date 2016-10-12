@@ -1,6 +1,6 @@
 ---
 title: "Ridge Regression"
-author: "Vignette Author"
+author: "Rasmus Holm"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >

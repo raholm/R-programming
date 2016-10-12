@@ -1,20 +1,77 @@
 ## ------------------------------------------------------------------------
-library(MASS)
-library(caret)
+suppressMessages(library(nycflights13))
+suppressMessages(library(dplyr))
+suppressMessages(library(caret))
+suppressMessages(library(lars))
+suppressMessages(library(elasticnet))
 
-train_idx <- createDataPartition(Boston$crim, p=0.80, list=FALSE)
+weather.drop_cols <- c("year", "month", "day", "hour")
+weather.compact <- weather %>% select(-one_of(weather.drop_cols))
 
-training <- Boston[train_idx,]
-testing <- Boston[-train_idx,]
+flights.drop_cols <- c("year", "month", "day", "hour", "minute", "dest", "air_time", "distance",
+                       "carrier", "sched_dep_time", "dep_time", "sched_arr_time", "arr_time", "flight", "tailnum")
+flights.compact <- flights %>% select(-one_of(flights.drop_cols))
 
-lmfit <- train(crim ~ ., data=training, method="lm", preProc=c("center", "scale"))
+data <- flights.compact %>% left_join(weather.compact) %>% filter(!is.na(dep_delay))
 
-lmfit.test_predict <- predict(lmfit, newdata=testing)
-testing_mse <- mean((testing$crim - lmfit.test_predict)^2)
-testing_mse
+impute.mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
 
-lmfit.train_predict <- predict(lmfit, newdata=training)
-training_mse <- mean((training$crim - lmfit.train_predict)^2)
-training_mse
+imputed_data <- data %>% group_by(origin) %>% mutate(temp = impute.mean(temp),
+                                     dewp = impute.mean(dewp),
+                                     humid = impute.mean(humid),
+                                     wind_dir= impute.mean(wind_dir),
+                                     wind_speed= impute.mean(wind_speed),
+                                     wind_gust= impute.mean(wind_gust),
+                                     precip = impute.mean(precip),
+                                     pressure = impute.mean(pressure),
+                                     visib = impute.mean(visib))
 
+
+set.seed(123)
+train_idx <- createDataPartition(imputed_data$dep_delay, p=0.85, list=FALSE)
+validation_idx <- sample(1:length(train_idx), nrow(imputed_data) * 0.05)
+
+training <- imputed_data[train_idx,][-validation_idx,]
+testing <- imputed_data[-train_idx,]
+validation <- imputed_data[train_idx,][validation_idx,]
+
+## Ridge Regressions (Should use our own implementation)
+rmse <- function(error) {
+  return(sqrt(mean(error)))
+}
+
+ridge.train_control <- trainControl(method="cv", number=5)
+ridge.formula <- as.formula(dep_delay ~ temp + dewp)
+
+lambdas <- c(0, 0.001, 0.01, 0.1, 1, 1, 10, 100, 1000)
+
+min_rmse <- Inf
+best_lambda <- NULL
+
+for (lambda in lambdas) {
+  ridge.grid <- expand.grid(lambda=lambda)
+  ridge.fit <- train(ridge.formula, data=training, method="ridge",
+                     tuneGrid=ridge.grid, trControl=ridge.train_control)
+
+  ridge.validation_predict <- predict(ridge.fit, newdata=validation)
+  validation_rmse <- rmse((validation$dep_delay - ridge.validation_predict)^2)
+
+  if (validation_rmse < min_rmse) {
+    min_rmse <- validation_rmse
+    best_lambda <- lambda
+  }
+}
+
+print(best_lambda)
+
+ridge.fit <- train(ridge.formula, data=rbind(training, validation), method="ridge",
+                   tuneGrid=expand.grid(lambda=best_lambda), trControl=ridge.train_control)
+
+ridge.train_predict <- predict(ridge.fit, newdata=rbind(training, validation))
+training_rmse <- rmse((rbind(training, validation)$dep_delay - ridge.train_predict)^2)
+training_rmse
+
+ridge.test_predict <- predict(ridge.fit, newdata=testing)
+testing_rmse <- rmse((testing$dep_delay - ridge.test_predict)^2)
+testing_rmse
 

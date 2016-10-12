@@ -1,13 +1,13 @@
 Package: Lab7
 Type: Package
-Title: Lab 7
+Title: Ridge Regression and Machine Learning
 Version: 1.0
 Date: 2016-10-10
 Author: Rasmus Holm [aut, cre],
     Zhendong Wang [aut, cre],
     Karolina Ziomek [aut, cre]
 Maintainer: Rasmus Holm <rasho258@student.liu.se>
-Description: Description
+Description: Implementation of ridge regression and examples of applied machine learning.
 License: CC0
 LazyData: true
 Suggests:
