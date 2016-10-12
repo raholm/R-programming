@@ -27,9 +27,17 @@ ridgereg <- function(formula, data, lambda=0){
   X <- ridgereg_X(formula, data)
   y <- ridgereg_y(formula, data)
 
+  n <- nrow(X)
+  p <- ncol(X) - 1
+
   Xmean <- mean(X)
   Xscale <- sd(X)
   Xnorm <- (X - Xmean) / Xscale
+
+  ## Xmean <- colMeans(X[, -1])
+  ## Xcenter <- X[, -1] - rep(Xmean, rep(n, p))
+  ## Xscale <- drop(rep(1/n, n) %*% Xcenter^2)^0.5
+  ## Xnorm <- Xcenter / rep(Xscale, rep(n, p))
 
   ymean <- mean(y)
   ynorm <- y - ymean
