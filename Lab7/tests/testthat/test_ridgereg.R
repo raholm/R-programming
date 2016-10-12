@@ -12,64 +12,68 @@ test_that("ridgereg of invalid input is invalid", {
     expect_error(ridgereg(Petal.Width ~ Petal.Length + Sepal.Length, data=iris, lambda=-1))
 })
 
+fitted_values_lmridge <- function(model, data) {
+    scaled_data <- scale(data, center = model$xm, scale = model$scales)
+    scaled_data <- cbind(rep(1, nrow(scaled_data)), scaled_data)
+    fitted_values <- scaled_data %*% coef(model)
+    fitted_values <- as.vector(fitted_values)
+    names(fitted_values) <- 1:length(fitted_values)
+    return(fitted_values)
+}
+
+check_model_methods <- function(actual, expected, data) {
+    expect_equal(actual$coef()[-1], coef(expected)[-1])
+    expect_equal(actual$pred(), fitted_values_lmridge(expected, data))
+}
+
 test_that("ridgereg of valid input is correct", {
-    check_model_methods <- function(actual, expected, data) {
-        scaled_data <- scale(data, center = expected$xm, scale = expected$scales)
-        expected_fitted_values <- scaled_data %*% expected$coef
-        expected_fitted_values <- as.vector(expected_fitted_values)
-        names(expected_fitted_values) <- 1:length(expected_fitted_values)
 
-        ## print(expected_fitted_values)
-        ## print(coef(expected))
-        ## print(actual$coef())
-        ## print(actual$pred())
-
-        expect_equal(actual$coef(), coef(expected))
-        expect_equal(actual$pred(), expected_fitted_values)
-    }
-
-    ## Simple Model
-    ## model.expected <- lm.ridge(Petal.Width ~ Petal.Length, data=iris)
-    ## model.actual <- ridgereg(Petal.Width ~ Petal.Length, data=iris)
-    ## expect_equal(model.actual$call, "ridgereg(formula = Petal.Width ~ Petal.Length, data = iris)")
-    ## check_model_methods(model.actual, model.expected)
-    
     ## Advanced Model
     model.expected <- lm.ridge(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
     model.actual <- ridgereg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
+
     expect_equal(model.actual$call,
                  "ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data = iris)")
     check_model_methods(model.actual, model.expected, iris[, c("Petal.Length", "Sepal.Width", "Sepal.Length")])
 
     ## Qualitative Model
-    ## model.expected <- lm.ridge(Petal.Width ~ Species, data=iris)
-    ## model.actual <- ridgereg(Petal.Width ~ Species, data=iris)
-    ## expect_equal(model.actual$call, "ridgereg(formula = Petal.Width ~ Species, data = iris)")
-    ## check_model_methods(model.actual, model.expected)
+    formula <- as.formula(Petal.Width ~ Species + Petal.Length)
+    data <- model.matrix(formula, iris)[, -1]
+
+    model.expected <- lm.ridge(formula, data=iris)
+    model.actual <- ridgereg(Petal.Width ~ Species + Petal.Length, data=iris)
+    expect_equal(model.actual$call, "ridgereg(formula = Petal.Width ~ Species + Petal.Length, data = iris)")
+    check_model_methods(model.actual, model.expected, data)
 })
 
-## test_that("ridgereg coefficient statistics are correct", {
-##     check_coefficient_statistics <- function(actual, expected) {
-##         coefficients <- summary(expected)$coef
+test_that("new predictions are correct.", {
+    formula <- as.formula(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length)
 
-##         expect_equal(actual$coefficients$val, coefficients[, 1])
-##         expect_equal(actual$coefficients$se, coefficients[, 2])
-##         expect_equal(actual$coefficients$tval, coefficients[, 3])
-##         expect_equal(actual$coefficients$pval, coefficients[, 4])
-##     }
+    model.expected <- lm.ridge(formula, iris)
+    model.actual <- ridgereg(formula, iris)
 
-##     ## Simple Model
-##     ## model.expected <- lm.ridge(Petal.Width ~ Petal.Length, data=iris)
-##     ## model.actual <- ridgereg(Petal.Width ~ Petal.Length, data=iris)
-##     ## check_coefficient_statistics(model.actual, model.expected)    
-    
-##     ## Advanced Model
-##     model.expected <- lm.ridge(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
-##     model.actual <- ridgereg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
-##     check_coefficient_statistics(model.actual, model.expected)
+    test_data <- as.matrix(data.frame(Petal.Length=c(2, 5, 8, -14, -3),
+                                      Sepal.Width=c(12, 23, 5, -12, -7),
+                                      Sepal.Length=c(12, 3, 2, 8, -22)))
 
-##     ## Qualitative Model
-##     ## model.expected <- lm.ridge(Petal.Width ~ Species, data=iris)
-##     ## model.actual <- ridgereg(Petal.Width ~ Species, data=iris)
-##     ## check_coefficient_statistics(model.actual, model.expected)
-## })
+    expect_equal(model.actual$pred(test_data), fitted_values_lmridge(model.expected, test_data))
+})
+
+test_that("lambda works properly.", {
+    ## Advanced Model
+    formula <- as.formula(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length)
+
+    model.expected <- lm.ridge(formula, iris, lambda=1)
+    model.actual <- ridgereg(formula, iris, lambda=1)
+
+    check_model_methods(model.actual, model.expected, iris[, c("Petal.Length", "Sepal.Width", "Sepal.Length")])
+
+    ## Qualitative Model
+    formula <- as.formula(Petal.Width ~ Species + Petal.Length)
+    data <- model.matrix(formula, iris)[, -1]
+
+    model.expected <- lm.ridge(formula, iris, lambda=1)
+    model.actual <- ridgereg(formula, iris, lambda=1)
+
+    check_model_methods(model.actual, model.expected, data)
+})

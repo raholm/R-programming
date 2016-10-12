@@ -34,14 +34,12 @@ ridgereg <- function(formula, data, lambda=0){
   scale_matrix <- matrix(rep(Xscale, nrow(X)), ncol=length(Xscale), byrow=TRUE)
   Xnorm <- cbind(rep(1, nrow(X)), (X[, -1] - center_matrix) / scale_matrix)
 
-  ymean <- mean(y)
-  ynorm <- y
-
   coefficients <- list()
-  coefficients$val <- ridgereg_coefficients(Xnorm, ynorm, lambda, Xscale)
+  coefficients$val <- ridgereg_coefficients(Xnorm, y, lambda, Xscale)
+  ## coefficients$val[1] <- (coefficients$val[1] - mean(X)) / sd(X)
 
   fitted_values <- ridgereg_fitted_values(Xnorm, coefficients$val)
-  
+
   return(RidgeRegressionModel(call=call,
                               coefficients=coefficients,
                               fitted.values=fitted_values,
@@ -75,7 +73,8 @@ ridgereg_y <- function(formula, data) {
 }
 
 ridgereg_coefficients <- function(X, y, lambda, scale) {
-    lambda_matrix <- lambda * diag(dim(X))[2]
+    lambda_matrix <- lambda * diag(dim(X)[2])
+    ## lambda_matrix <- t(lambda_matrix) %*% lambda_matrix
 
     coefficients <- solve(t(X) %*% X + lambda_matrix) %*% t(X) %*% y
     coefficients <- as.vector(coefficients)
@@ -94,42 +93,6 @@ ridgereg_fitted_values <- function(X, coefficients) {
 
 ## REMOVE BELOW WHEN DONE ----------------------------------------
 
-linreg <- function(formula, data)
-{
-    linreg_check_input(formula, data)
-
-    call <- match.call()
-
-    X <- linreg_X(formula, data)
-    y <- linreg_y(formula, data, X)
-
-    df <- linreg_df(X)
-
-    coefficients <- list()
-    coefficients$val <- linreg_coefficients(X, y)
-    fitted_values <- linreg_fitted_values(X, coefficients$val)
-
-    residuals <- list()
-    residuals$val <- linreg_residuals(y, fitted_values)
-    residuals$var <- linreg_residuals_variance(residuals$val, df)
-
-    coefficients$var <- linreg_coefficients_variance(X, residuals$var)
-    coefficients$se <- linreg_coefficients_standard_error(coefficients$var)
-    coefficients$tval <- linreg_coefficients_t_value(coefficients$val, coefficients$var)
-    coefficients$pval <- linreg_coefficients_p_value(coefficients$tval, df)
-
-    return(LinearRegressionModel(call=call,
-                                 coefficients=coefficients,
-                                 fitted.values=fitted_values,
-                                 residuals=residuals,
-                                 df=df))
-}
-
-
-linreg_df <- function(X) {
-    return(nrow(X) - ncol(X))
-}
-
 linreg_coefficients <- function(X, y) {
     ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
     qr.X <- qr(X)
@@ -139,36 +102,4 @@ linreg_coefficients <- function(X, y) {
     coefficients <- as.vector(coefficients)
     names(coefficients) <- colnames(X)
     return(coefficients)
-}
-
-linreg_coefficients_variance <- function(X, residuals_variance) {
-    coefficients_variance <- residuals_variance * linreg_inverse_QR_decomposition(t(X) %*% X)
-    coefficients_variance <- as.vector(diag(coefficients_variance))
-    names(coefficients_variance) <- colnames(X)
-    return(coefficients_variance)
-}
-
-linreg_coefficients_standard_error <- function(coefficients_variance) {
-    return(sqrt(coefficients_variance))
-}
-
-linreg_coefficients_t_value <- function(coefficients, coefficients_variance) {
-    coefficients_t_value <- coefficients / sqrt(coefficients_variance)
-    return(coefficients_t_value)
-}
-
-linreg_coefficients_p_value <- function(t_values, df) {
-    p_value <- 2 * pt(-abs(t_values), df)
-    return(p_value)
-}
-
-linreg_fitted_values <- function(X, coefficients) {
-    fitted_values <- X %*% coefficients
-    fitted_values <- as.vector(fitted_values)
-    names(fitted_values) <- 1:length(fitted_values)
-    return(fitted_values)
-}
-
-linreg_inverse_QR_decomposition <- function(X) {
-    return(qr.solve(qr(X)))
 }

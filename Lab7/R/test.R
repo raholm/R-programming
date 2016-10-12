@@ -23,6 +23,26 @@ test <- function() {
 }
 
 
+ridgereg_test <- function() {
+    library(MASS)
 
+    model.expected <- lm.ridge(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
+    model.actual <- ridgereg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
 
+    model.actual$coef()
+    coef(model.expected)
 
+    mean(model.actual$center)
+    model.actual$center
+    model.actual$scale
+
+    model.expected$scales
+
+    formula <- as.formula(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length)
+
+    model.expected <- lm.ridge(formula, iris, lambda=1)
+    model.actual <- ridgereg(formula, iris, lambda=1)
+
+    model.actual$coef()
+    coef(model.expected)
+}
