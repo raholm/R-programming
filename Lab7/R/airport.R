@@ -18,7 +18,7 @@ visualize_airport_delays <- function() {
     flights_dest <- flights %>% group_by(dest) %>%
         summarise(mean_dep_delay=mean(dep_delay, na.rm=TRUE),
                   mean_arr_delay=mean(arr_delay, na.rm=TRUE)) %>%
-        mutate(total_mean_delay = mean_dep_delay + mean_arr_delay)
+        mutate(total_mean_delay = mean(mean_dep_delay + mean_arr_delay))
 
     airport_dest_data <- airports_dest %>% left_join(flights_dest, by="dest") %>% na.omit()
 

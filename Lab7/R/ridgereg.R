@@ -27,28 +27,26 @@ ridgereg <- function(formula, data, lambda=0){
   X <- ridgereg_X(formula, data)
   y <- ridgereg_y(formula, data)
 
-  Xmean <- mean(X)
-  Xscale <- sd(X)
-  Xnorm <- (X - Xmean) / Xscale
+  Xmean <- colMeans(X[, -1])
+  Xscale <- apply(X[, -1], 2, sd)
 
-  ## n <- nrow(X)
-  ## p <- ncol(X) - 1
-  ## Xmean <- colMeans(X[, -1])
-  ## Xcenter <- X[, -1] - rep(Xmean, rep(n, p))
-  ## Xscale <- drop(rep(1/n, n) %*% Xcenter^2)^0.5
-  ## Xnorm <- Xcenter / rep(Xscale, rep(n, p))
+  center_matrix <- matrix(rep(Xmean, nrow(X)), ncol=length(Xmean), byrow=TRUE)
+  scale_matrix <- matrix(rep(Xscale, nrow(X)), ncol=length(Xscale), byrow=TRUE)
+  Xnorm <- cbind(rep(1, nrow(X)), (X[, -1] - center_matrix) / scale_matrix)
 
   ymean <- mean(y)
-  ynorm <- y - ymean
+  ynorm <- y
 
   coefficients <- list()
   coefficients$val <- ridgereg_coefficients(Xnorm, ynorm, lambda, Xscale)
-  
+
   fitted_values <- ridgereg_fitted_values(Xnorm, coefficients$val)
   
-  return(RidgeRegressionModel(call = call,
-                              coefficients = coefficients,
-                              fitted.values = fitted_values))
+  return(RidgeRegressionModel(call=call,
+                              coefficients=coefficients,
+                              fitted.values=fitted_values,
+                              center=Xmean, scale=Xscale,
+                              variables=colnames(X)[-1]))
 }
 
 ridgereg_check_input <- function(formula, data, lambda)
@@ -77,9 +75,11 @@ ridgereg_y <- function(formula, data) {
 }
 
 ridgereg_coefficients <- function(X, y, lambda, scale) {
-    coefficients <- solve(t(X) %*% X - lambda * diag(dim(X)[2])) %*% t(X) %*% y
+    lambda_matrix <- lambda * diag(dim(X))[2]
+
+    coefficients <- solve(t(X) %*% X + lambda_matrix) %*% t(X) %*% y
     coefficients <- as.vector(coefficients)
-    coefficients <- coefficients / scale
+    coefficients[-1] <- coefficients[-1] / scale
     # Remove intercept name
     names(coefficients) <- c("", colnames(X)[-1])
     return(coefficients)

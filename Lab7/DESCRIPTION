@@ -13,6 +13,7 @@ LazyData: true
 Suggests:
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    MASS
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr

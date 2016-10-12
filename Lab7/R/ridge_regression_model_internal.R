@@ -10,15 +10,62 @@
     return(formatted)
 }
 
+
 ## Initialization --------------------------------------------------------------
-.initialize <- function(object, call, coefficients, fitted.values, ...) {
+.initialize <- function(object, call, coefficients, fitted.values, center, scale, variables, ...) {
     ## Extract the string representation of the call
     object$call <- gsub(" +", " ", paste(deparse(call), collapse=""))
 
     object$coefficients <- coefficients
     object$fitted.values <- fitted.values
+    object$center <- center
+    object$scale <- scale
+    object$variables <- variables
 
     return(invisible())
+}
+
+## Coef ------------------------------------------------------------------------
+.coef <- function(object, ...) {
+    ## coefficients <- object$coefficients$val
+    ## coefficients[-1] <- coefficients[-1] / object$scale
+    return(object$coefficients$val)
+}
+
+## Pred ------------------------------------------------------------------------
+.pred <- function(object, X, ...) {
+    if (is.null(X)) {
+        return(object$fitted.values)
+    }
+
+    .pred.check_input(object, X)
+
+    return(.fitted_values(object, X))
+}
+
+.pred.check_input <- function(object, X) {
+    stopifnot(is.matrix(X))
+
+    for (variable in object$variables) {
+        stopifnot(variable %in% colnames(X))
+    }
+}
+
+.fitted_values <- function(object, X) {
+    center_matrix <- matrix(rep(object$center, nrow(X)), ncol=length(object$center), byrow=TRUE)
+    scale_matrix <- matrix(rep(object$scale, nrow(X)), ncol=length(object$scale), byrow=TRUE)
+
+    Xnorm <- (X - center_matrix) / scale_matrix
+
+    ## Add intercept term if not present
+    if (!("(Intercept)" %in% colnames(Xnorm))) {
+        Xnorm <- cbind(rep(1, nrow(Xnorm)), Xnorm)
+    }
+
+    fitted_values <- Xnorm %*% object$coef()
+    fitted_values <- as.vector(fitted_values)
+    names(fitted_values) <- 1:length(fitted_values)
+    return(fitted_values)
 }
 
 ## Summary ---------------------------------------------------------------------

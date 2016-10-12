@@ -6,6 +6,9 @@
 \usage{
 visualize_airport_delays()
 }
+\value{
+A ggplot of north america with airports marked as points.
+}
 \description{
 Visualize average airport delays in USA.
 }
