@@ -13,6 +13,8 @@ vignette: >
 suppressMessages(library(nycflights13))
 suppressMessages(library(dplyr))
 suppressMessages(library(caret))
+suppressMessages(library(lars))
+suppressMessages(library(elasticnet))
 
 weather.drop_cols <- c("year", "month", "day", "hour")
 weather.compact <- weather %>% select(-one_of(weather.drop_cols))
@@ -43,11 +45,8 @@ validation_idx <- sample(1:length(train_idx), nrow(imputed_data) * 0.05)
 training <- imputed_data[train_idx,]
 testing <- imputed_data[-train_idx,]
 
-
 ## Ridge Regressions (Should use our own implementation)
 train_control <- trainControl(method="cv", index=list(Fold1=validation_idx), number=1, repeats=1)
-
-?trainControl
 
 ridge.fit <- train(dep_delay ~ temp + dewp + humid, data=training, method="ridge", 
                   trControl=train_control, preProc=c("center", "scale"))

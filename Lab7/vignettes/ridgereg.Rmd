@@ -47,7 +47,7 @@ testing_mse
 ## Ridge Regressions (Should use our own implementation)
 train_control <- trainControl(method="repeatedcv", number=10, repeats=10)
 
-ridge.fit <- train(crim ~ ., data=training, method="ridge", 
+ridge.fit <- train(crim ~ ., data=training, method="ridge",
                   trControl=train_control, preProc=c("center", "scale"))
 
 ridge.train_predict <- predict(ridge.fit, newdata=training)
