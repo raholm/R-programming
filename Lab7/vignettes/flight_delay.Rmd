@@ -20,7 +20,8 @@ weather.drop_cols <- c("year", "month", "day", "hour")
 weather.compact <- weather %>% select(-one_of(weather.drop_cols))
 
 flights.drop_cols <- c("year", "month", "day", "hour", "minute", "dest", "air_time", "distance",
-                       "carrier", "sched_dep_time", "dep_time", "sched_arr_time", "arr_time", "flight", "tailnum")
+                       "carrier", "sched_dep_time", "dep_time", "sched_arr_time", "arr_time",
+                       "flight", "tailnum")
 flights.compact <- flights %>% select(-one_of(flights.drop_cols))
 
 data <- flights.compact %>% left_join(weather.compact, by=c("origin", "time_hour")) %>% filter(!is.na(dep_delay))

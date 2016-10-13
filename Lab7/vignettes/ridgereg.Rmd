@@ -10,17 +10,19 @@ vignette: >
 ---
 
 ```{r}
-suppressMessages(library(MASS))
+suppressMessages(library(mlbench))
 suppressMessages(library(caret))
 suppressMessages(library(elasticnet))
 suppressMessages(library(leaps))
 
+data(BostonHousing)
+
 ## Data Processing
 set.seed(123)
-train_idx <- createDataPartition(Boston$crim, p=0.80, list=FALSE)
+train_idx <- createDataPartition(BostonHousing$crim, p=0.80, list=FALSE)
 
-training <- Boston[train_idx,]
-testing <- Boston[-train_idx,]
+training <- BostonHousing[train_idx,]
+testing <- BostonHousing[-train_idx,]
 
 ## Linear Regression
 lm.fit <- train(crim ~ ., data=training, method="lm", preProc=c("center", "scale"))
