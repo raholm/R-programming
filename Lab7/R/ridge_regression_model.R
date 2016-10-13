@@ -21,17 +21,18 @@
 RidgeRegressionModel <- setRefClass("RidgeRegressionModel",
                                      fields=list(
                                          call="character",
-                                         coefficients="list",
+                                         coefficients="numeric",
                                          fitted.values="numeric",
                                          center="numeric",
                                          scale="numeric",
-                                         variables="character"
+                                         variables="character",
+                                         lambda="numeric"
                                      ))
 
 ## Constructor and Destructor
 RidgeRegressionModel$methods(list(
-                          initialize = function(call, coefficients, fitted.values, center, scale, variables, ...) {
-                              .initialize(.self, call, coefficients, fitted.values, center, scale, variables, ...)
+                          initialize = function(call, formula, data, lambda, ...) {
+                              .initialize(.self, call, formula, data, lambda, ...)
                               callSuper(...)
                           }
                       ))
