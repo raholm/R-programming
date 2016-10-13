@@ -12,18 +12,22 @@ test_that("ridgereg of invalid input is invalid", {
     expect_error(ridgereg(Petal.Width ~ Petal.Length + Sepal.Length, data=iris, lambda=-1))
 })
 
-fitted_values_lmridge <- function(model, data) {
-    scaled_data <- scale(data, center = model$xm, scale = model$scales)
-    scaled_data <- cbind(rep(1, nrow(scaled_data)), scaled_data)
-    fitted_values <- scaled_data %*% coef(model)
+fitted_values_lmridge <- function(model, data, intercept) {
+    ## scaled_data <- scale(data, center = model$xm, scale = model$scales)
+    data <- cbind(rep(1, nrow(data)), data)
+    fitted_values <- data %*% c(intercept, model$coef)
     fitted_values <- as.vector(fitted_values)
     names(fitted_values) <- 1:length(fitted_values)
     return(fitted_values)
 }
 
 check_model_methods <- function(actual, expected, data) {
-    expect_equal(actual$coef()[-1], coef(expected)[-1])
-    expect_equal(actual$pred(), fitted_values_lmridge(expected, data))
+    
+    expect_equal(actual$coef()[-1], expected$coef)
+
+    actual.prediction <- model.actual$pred()
+    scaled_data <- scale(data, center=actual$center, scale=actual$scale)
+    expect_equal(actual.prediction, fitted_values_lmridge(expected, scaled_data, intercept=actual$coef()[1]))
 }
 
 test_that("ridgereg of valid input is correct", {
@@ -55,7 +59,10 @@ test_that("new predictions are correct.", {
                                       Sepal.Width=c(12, 23, 5, -12, -7),
                                       Sepal.Length=c(12, 3, 2, 8, -22)))
 
-    expect_equal(model.actual$pred(test_data), fitted_values_lmridge(model.expected, test_data))
+    actual.prediction <- model.actual$pred(test_data)
+    scaled_test_data <- scale(test_data, center=actual$center, scale=actual$scale)
+    expect_equal(actual.prediction, fitted_values_lmridge(model.expected, scaled_test_data,
+                                                                     intercept=model.actual$coef()[1]))
 })
 
 test_that("lambda works properly.", {
