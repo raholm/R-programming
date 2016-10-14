@@ -135,7 +135,9 @@ NULL
     cat(object$call)
     cat("\n\n")
     cat("Coefficients:\n  ")
-    base::print(.format_number(object$coef(), 4))
+    coefficients <- object$coef()
+    names(coefficients)[1] <- "(Intercept)"
+    base::print(.format_number(coefficients, 4))
     cat("\n")
     return(invisible())
 }
