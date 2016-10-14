@@ -16,10 +16,10 @@ Here we will use the caret package to test different regression models using the
 ## Loading the packages and import data set
 
 ```{r}
-suppressMessages(library(mlbench))
-suppressMessages(library(caret))
-suppressMessages(library(elasticnet))
-suppressMessages(library(leaps))
+suppressMessages(require(mlbench))
+suppressMessages(require(caret))
+suppressMessages(require(elasticnet))
+suppressMessages(require(leaps))
 
 data(BostonHousing)
 ```
@@ -41,7 +41,6 @@ testing <- BostonHousing[-train_idx,]
 The first model we fit to the data is the regular linear regression and we scale the data. The output shows the training/test mean squared errors and as expected the training error is less.
 
 ```{r}
-## Linear Regression
 lm.fit <- train(crim ~ ., data=training, method="lm", preProc=c("center", "scale"))
 lm.fit
 
@@ -59,7 +58,6 @@ testing_mse
 For our second model, we fit a linear regression with forward selection which uses a greedy algorithm to select the most important features. We use cross validation to validate our model and grid search to find the optimal number of parameters to use in our model. The training error is as expected lower than the test error and the optimal number of variables were 9.
 
 ```{r}
-## Linear Regression Forward Selection
 train_control <- trainControl(method="cv", number=10)
 grid <- expand.grid(nvmax=1:(ncol(BostonHousing) - 1))
 
@@ -80,7 +78,6 @@ testing_mse
 The last model is the ridge regression and similar to the previous model, we use cross validation and grid search to optimize the lambda parameter. The training error is as expected lower than the test error and the optimal lambda was around 0.025.
 
 ```{r}
-## Ridge Regressions (Should use our own implementation)
 train_control <- trainControl(method="cv", number=10)
 grid <- expand.grid(lambda=c(0, 0.001, 0.01, 0.1, 1, 10, 100, 1000))
 

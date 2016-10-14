@@ -10,11 +10,11 @@ vignette: >
 ---
 
 ```{r}
-suppressMessages(library(nycflights13))
-suppressMessages(library(dplyr))
-suppressMessages(library(caret))
-suppressMessages(library(lars))
-suppressMessages(library(elasticnet))
+suppressMessages(require(nycflights13))
+suppressMessages(require(dplyr))
+suppressMessages(require(caret))
+suppressMessages(require(lars))
+suppressMessages(require(elasticnet))
 
 weather.drop_cols <- c("year", "month", "day", "hour")
 weather.compact <- weather %>% select(-one_of(weather.drop_cols))
@@ -29,14 +29,14 @@ data <- flights.compact %>% left_join(weather.compact, by=c("origin", "time_hour
 impute.mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
 
 imputed_data <- data %>% group_by(origin) %>% mutate(temp = impute.mean(temp),
-                                     dewp = impute.mean(dewp),
-                                     humid = impute.mean(humid),
-                                     wind_dir= impute.mean(wind_dir),
-                                     wind_speed= impute.mean(wind_speed),
-                                     wind_gust= impute.mean(wind_gust),
-                                     precip = impute.mean(precip),
-                                     pressure = impute.mean(pressure),
-                                     visib = impute.mean(visib))
+                                                     dewp = impute.mean(dewp),
+                                                     humid = impute.mean(humid),
+                                                     wind_dir= impute.mean(wind_dir),
+                                                     wind_speed= impute.mean(wind_speed),
+                                                     wind_gust= impute.mean(wind_gust),
+                                                     precip = impute.mean(precip),
+                                                     pressure = impute.mean(pressure),
+                                                     visib = impute.mean(visib))
 
 
 set.seed(123)

@@ -11,11 +11,10 @@
 #' @return The fitted model of class \code{"LinearRegressionModel"}.
 #'
 #' @examples
-#' ridgereg(formula = Petal.Width ~ Petal.Length, data=iris)
-#' ridgereg(formula = Petal.Width ~ Petal.Length, data=iris, lambda=2)
+#' ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Length, data=iris)
+#' ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Length, data=iris, lambda=2)
 #'
-#' @importFrom stats model.matrix
-#' @importFrom stats pt
+#' @importFrom stats model.matrix pt
 #'
 #' @export
 #' @source \url{https://en.wikipedia.org/wiki/Tikhonov_regularization}

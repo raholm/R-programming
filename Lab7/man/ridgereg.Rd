@@ -23,8 +23,8 @@ The fitted model of class \code{"LinearRegressionModel"}.
 ridgereg is used to fit ridge regression models.
 }
 \examples{
-ridgereg(formula = Petal.Width ~ Petal.Length, data=iris)
-ridgereg(formula = Petal.Width ~ Petal.Length, data=iris, lambda=2)
+ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Length, data=iris)
+ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Length, data=iris, lambda=2)
 
 }
 

@@ -8,6 +8,7 @@
 #' @import nycflights13
 #' @import ggplot2
 #' @import maps
+#' @importFrom stats na.omit
 #'
 #' @export
 visualize_airport_delays <- function() {

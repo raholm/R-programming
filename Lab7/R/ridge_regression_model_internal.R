@@ -2,6 +2,8 @@
 #'
 #' All the internal functions of the RidgeRegressionModel class.
 #' (DO NOT EXPORT)
+#'
+#' @importFrom stats sd as.formula
 ## Helper Functions ------------------------------------------------------------
 .format_number <- function(number, decimals, ...) {
     formatted <- as.numeric(format(round(number, decimals), nsmall=decimals, ...))

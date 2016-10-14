@@ -1,17 +1,16 @@
-library(Lab7)
-library(MASS)
+require(Lab7)
 context("ridgereg")
 
 ## This is a bloody mess
 
 test_that("ridgereg of invalid input is invalid", {
-    expect_error(ridgereg(1, iris))
+    expect_error(ridgereg(1, datasets::iris))
     expect_error(ridgereg(y ~ x, 1))
-    # The variables x, y does not exist in iris.
-    expect_error(ridgereg(y ~ x, iris))
+    # The variables x, y does not exist in datasets::iris.
+    expect_error(ridgereg(y ~ x, datasets::iris))
     expect_error(ridgereg(formula=y ~ x))
-    expect_error(ridgereg(data=iris))
-    expect_error(ridgereg(Petal.Width ~ Petal.Length + Sepal.Length, data=iris, lambda=-1))
+    expect_error(ridgereg(data=datasets::iris))
+    expect_error(ridgereg(Petal.Width ~ Petal.Length + Sepal.Length, data=datasets::iris, lambda=-1))
 })
 
 fitted_values_lmridge <- function(model, data, intercept, coef_scale) {
@@ -37,28 +36,28 @@ check_model_methods <- function(actual, expected, data) {
 
 test_that("ridgereg of valid input is correct", {
     ## Advanced Model
-    model.expected <- lm.ridge(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
-    model.actual <- ridgereg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=iris)
+    model.expected <- MASS::lm.ridge(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=datasets::iris)
+    model.actual <- ridgereg(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data=datasets::iris)
 
     expect_equal(model.actual$call,
-                 "ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data = iris)")
-    check_model_methods(model.actual, model.expected, iris[, c("Petal.Length", "Sepal.Width", "Sepal.Length")])
+                 "ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length, data = datasets::iris)")
+    check_model_methods(model.actual, model.expected, datasets::iris[, c("Petal.Length", "Sepal.Width", "Sepal.Length")])
 
     ## Qualitative Model
     formula <- as.formula(Petal.Width ~ Species + Petal.Length)
-    data <- model.matrix(formula, iris)[, -1]
+    data <- model.matrix(formula, datasets::iris)[, -1]
 
-    model.expected <- lm.ridge(formula, data=iris)
-    model.actual <- ridgereg(Petal.Width ~ Species + Petal.Length, data=iris)
-    expect_equal(model.actual$call, "ridgereg(formula = Petal.Width ~ Species + Petal.Length, data = iris)")
+    model.expected <- MASS::lm.ridge(formula, data=datasets::iris)
+    model.actual <- ridgereg(Petal.Width ~ Species + Petal.Length, data=datasets::iris)
+    expect_equal(model.actual$call, "ridgereg(formula = Petal.Width ~ Species + Petal.Length, data = datasets::iris)")
     check_model_methods(model.actual, model.expected, data)
 })
 
 test_that("new predictions are correct.", {
     formula <- as.formula(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length)
 
-    model.expected <- lm.ridge(formula, iris)
-    model.actual <- ridgereg(formula, iris)
+    model.expected <- MASS::lm.ridge(formula, datasets::iris)
+    model.actual <- ridgereg(formula, datasets::iris)
 
     test_data <- as.matrix(data.frame(Petal.Length=c(2, 5, 8, -14, -3),
                                       Sepal.Width=c(12, 23, 5, -12, -7),
@@ -76,17 +75,17 @@ test_that("lambda works properly.", {
     ## Advanced Model
     formula <- as.formula(Petal.Width ~ Petal.Length + Sepal.Width + Sepal.Length)
 
-    model.expected <- lm.ridge(formula, iris, lambda=1)
-    model.actual <- ridgereg(formula, iris, lambda=1)
+    model.expected <- MASS::lm.ridge(formula, datasets::iris, lambda=1)
+    model.actual <- ridgereg(formula, datasets::iris, lambda=1)
 
-    check_model_methods(model.actual, model.expected, iris[, c("Petal.Length", "Sepal.Width", "Sepal.Length")])
+    check_model_methods(model.actual, model.expected, datasets::iris[, c("Petal.Length", "Sepal.Width", "Sepal.Length")])
 
     ## Qualitative Model
     formula <- as.formula(Petal.Width ~ Species + Petal.Length)
-    data <- model.matrix(formula, iris)[, -1]
+    data <- model.matrix(formula, datasets::iris)[, -1]
 
-    model.expected <- lm.ridge(formula, iris, lambda=1)
-    model.actual <- ridgereg(formula, iris, lambda=1)
+    model.expected <- MASS::lm.ridge(formula, datasets::iris, lambda=1)
+    model.actual <- ridgereg(formula, datasets::iris, lambda=1)
 
     check_model_methods(model.actual, model.expected, data)
 })

@@ -13,7 +13,19 @@ LazyData: true
 Suggests:
     testthat,
     knitr,
-    rmarkdown,
-    MASS
+    rmarkdowm,
+    MASS,
+    datasets,
+    caret,
+    mlbench,
+    leaps,
+    elasticnet,
+    lars
+Imports:
+    ggplot2 (>= 2.1.0),
+    methods,
+    dplyr (>= 0.5.0),
+    maps (>= 3.1.1),
+    nycflights13 (>= 0.2.0),
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
