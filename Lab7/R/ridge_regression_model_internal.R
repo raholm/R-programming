@@ -35,17 +35,20 @@
 .standardise <- function(object, X) {
     intercept <- .has_intercept(X)
 
-    object$center <- colMeans(X[, -intercept])
-    object$scale <- apply(X[, -intercept], 2, sd)
+    if (intercept) {
+        X <- X[, -which(colnames(X) == "(Intercept)")]
+    }
+
+    object$center <- colMeans(X)
+    object$scale <- apply(X, 2, sd)
 
     center_matrix <- matrix(rep(object$center, nrow(X)), ncol=length(object$center), byrow=TRUE)
     scale_matrix <- matrix(rep(object$scale, nrow(X)), ncol=length(object$scale), byrow=TRUE)
 
-    X[, -intercept] <- (X[, -intercept] - center_matrix) / scale_matrix
+    X <- (X - center_matrix) / scale_matrix
 
-    if (!intercept) {
-        X <- cbind(rep(1, nrow(X)), X)
-    }
+    X <- cbind(rep(1, nrow(X)), X)
+    colnames(X)[1] <- "(Intercept)"
 
     return(X)
 }
@@ -66,7 +69,12 @@
 
     coefficients <- solve(t(X) %*% X + lambda_matrix) %*% t(X) %*% y
     coefficients <- as.vector(coefficients)
+
+    ## Should I rescale the coefficients here and use those
+    ## at all times or scale it according to the data that
+    ## is being predicted?
     ## coefficients[-1] <- coefficients[-1] / scale
+
     ## Remove intercept name
     names(coefficients) <- c("", colnames(X)[-1])
     return(coefficients)
@@ -85,6 +93,13 @@
 
     .pred.check_input(object, X)
 
+    X <- .filter_variables(object, X)
+
+    ## Not sure if the data should be normalized
+    ## before the prediction or just when actually
+    ## getting the coefficients and then rescale
+    ## the coefficients and use those without any
+    ## further scaling of input data
     Xnorm <- .standardise(object, X)
 
     return(.fitted_values(object, Xnorm))
@@ -98,41 +113,15 @@
     }
 }
 
+.filter_variables <- function(object, X) {
+    return(X[, object$variables])
+}
+
 .fitted_values <- function(object, X) {
-    fitted_values <- X %*% object$coef() / object$scale
+    fitted_values <- X %*% (object$coef() / c(1, object$scale))
     fitted_values <- as.vector(fitted_values)
     names(fitted_values) <- 1:length(fitted_values)
     return(fitted_values)
-}
-
-
-## Summary ---------------------------------------------------------------------
-.summary <- function(object, ...) {
-    .summary.call(object, ...)
-    .summary.coef(object, ...)
-    return(invisible())
-}
-
-.summary.call <- function(object, ...) {
-    cat("\nCall:\n")
-    cat(object$call)
-    cat("\n\n")
-    return(invisible())
-}
-
-.summary.coef <- function(object, ...) {
-    coefficients <- object$coefficients
-
-    rownames <- names(coefficients)
-    coef_statistics <- matrix(c(.format_number(coefficients, 4)),
-                              byrow=FALSE,
-                              nrow=length(coefficients),
-                              row.names=rownames)
-
-    cat("Coefficients:\n")
-    base::print(coef_statistics)
-    cat("\n")
-    return(invisible())
 }
 
 ## Print -----------------------------------------------------------------------

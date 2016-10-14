@@ -2,6 +2,8 @@ library(Lab7)
 library(MASS)
 context("ridgereg")
 
+## This is a bloody mess
+
 test_that("ridgereg of invalid input is invalid", {
     expect_error(ridgereg(1, iris))
     expect_error(ridgereg(y ~ x, 1))
@@ -12,22 +14,25 @@ test_that("ridgereg of invalid input is invalid", {
     expect_error(ridgereg(Petal.Width ~ Petal.Length + Sepal.Length, data=iris, lambda=-1))
 })
 
-fitted_values_lmridge <- function(model, data, intercept) {
-    ## scaled_data <- scale(data, center = model$xm, scale = model$scales)
+fitted_values_lmridge <- function(model, data, intercept, coef_scale) {
     data <- cbind(rep(1, nrow(data)), data)
-    fitted_values <- data %*% c(intercept, model$coef)
+    ## Scales the coefficients the same as in our model and uses the same intercept
+    fitted_values <- data %*% c(intercept, model$coef / coef_scale)
     fitted_values <- as.vector(fitted_values)
     names(fitted_values) <- 1:length(fitted_values)
     return(fitted_values)
 }
 
 check_model_methods <- function(actual, expected, data) {
-    
-    expect_equal(actual$coef()[-1], expected$coef)
+    ## Check that every coefficient except the intercept matches reasonably well
+    expect_equal(actual$coef()[-1], expected$coef, tolerance=1e-2)
 
-    actual.prediction <- model.actual$pred()
+    actual.prediction <- actual$pred()
     scaled_data <- scale(data, center=actual$center, scale=actual$scale)
-    expect_equal(actual.prediction, fitted_values_lmridge(expected, scaled_data, intercept=actual$coef()[1]))
+    expect_equal(actual.prediction, fitted_values_lmridge(expected, scaled_data,
+                                                          intercept=actual$coef()[1],
+                                                          coef_scale=actual$scale),
+                 tolerance=1e-2)
 }
 
 test_that("ridgereg of valid input is correct", {
@@ -60,9 +65,11 @@ test_that("new predictions are correct.", {
                                       Sepal.Length=c(12, 3, 2, 8, -22)))
 
     actual.prediction <- model.actual$pred(test_data)
-    scaled_test_data <- scale(test_data, center=actual$center, scale=actual$scale)
+    scaled_test_data <- scale(test_data, center=model.actual$center, scale=model.actual$scale)
     expect_equal(actual.prediction, fitted_values_lmridge(model.expected, scaled_test_data,
-                                                                     intercept=model.actual$coef()[1]))
+                                                          intercept=model.actual$coef()[1],
+                                                          coef_scale=model.actual$scale),
+                 tolerance=1e-2)
 })
 
 test_that("lambda works properly.", {
