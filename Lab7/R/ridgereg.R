@@ -43,16 +43,3 @@ ridgereg_check_input <- function(formula, data, lambda)
         stopifnot(variable %in% names(data))
     }
 }
-
-## REMOVE BELOW WHEN DONE ----------------------------------------
-
-linreg_coefficients <- function(X, y) {
-    ## Source: http://www.stats.ox.ac.uk/~konis/Rcourse/qr.pdf
-    qr.X <- qr(X)
-    b <- t(qr.Q(qr.X)) %*% y
-    R <- qr.R(qr.X)
-    coefficients <- backsolve(R, b)
-    coefficients <- as.vector(coefficients)
-    names(coefficients) <- colnames(X)
-    return(coefficients)
-}

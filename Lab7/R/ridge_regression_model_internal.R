@@ -23,7 +23,7 @@
 
     object$variables <- colnames(X)[-1]
     object$lambda <- lambda
-    object$coefficients <- .normal_coefficients(Xnorm, y, lambda)
+    object$coefficients <- .QR_coefficients(Xnorm, y, lambda)
     object$fitted.values <- .fitted_values(object, Xnorm)
 
     return(invisible())
@@ -80,6 +80,24 @@
 
     ## Remove intercept name
     names(coefficients) <- c("", colnames(X)[-1])
+    return(coefficients)
+}
+
+.QR_coefficients <- function(X, y, lambda) {
+    ## Source: https://math.stackexchange.com/questions/299481/qr-factorization-for-ridge-regression
+    A <- X
+    b <- y
+    tau <- lambda * diag(ncol(X))
+
+    B <- rbind(A, tau)
+    Bx <- c(b, rep(0, nrow(tau)))
+
+    qr.B <- qr(B)
+    b <- t(qr.Q(qr.B)) %*% Bx
+    R <- qr.R(qr.B)
+    coefficients <- backsolve(R, b)
+    coefficients <- as.vector(coefficients)
+    names(coefficients) <- colnames(X)
     return(coefficients)
 }
 
