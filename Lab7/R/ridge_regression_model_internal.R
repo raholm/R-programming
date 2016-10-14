@@ -120,7 +120,7 @@
     ## before the prediction or just when actually
     ## getting the coefficients and then rescale
     ## the coefficients and use those without any
-    ## further scaling of input data
+    ## further scaling of input data.
     Xnorm <- .standardise(object, X)
 
     return(.fitted_values(object, Xnorm))

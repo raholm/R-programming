@@ -20,6 +20,7 @@ suppressMessages(require(mlbench))
 suppressMessages(require(caret))
 suppressMessages(require(elasticnet))
 suppressMessages(require(leaps))
+suppressMessages(require(Lab7))
 
 data(BostonHousing)
 ```
@@ -41,6 +42,7 @@ testing <- BostonHousing[-train_idx,]
 The first model we fit to the data is the regular linear regression and we scale the data. The output shows the training/test mean squared errors and as expected the training error is less.
 
 ```{r}
+set.seed(123)
 lm.fit <- train(crim ~ ., data=training, method="lm", preProc=c("center", "scale"))
 lm.fit
 
@@ -55,12 +57,13 @@ testing_mse
 
 ### Linear Regression Forward Selection
 
-For our second model, we fit a linear regression with forward selection which uses a greedy algorithm to select the most important features. We use cross validation to validate our model and grid search to find the optimal number of parameters to use in our model. The training error is as expected lower than the test error and the optimal number of variables were 9.
+For our second model, we fit a linear regression with forward selection which uses a greedy algorithm to select the most important features. We use cross validation to validate our model and grid search to find the optimal number of parameters to use in our model. The training error is as expected lower than the test error and the optimal number of variables were 3.
 
 ```{r}
 train_control <- trainControl(method="cv", number=10)
 grid <- expand.grid(nvmax=1:(ncol(BostonHousing) - 1))
 
+set.seed(123)
 lmfs.fit <- train(crim ~ ., data=training, method="leapForward", trControl=train_control, tuneGrid=grid, preProc=c("center", "scale"))
 lmfs.fit
 
@@ -75,14 +78,35 @@ testing_mse
 
 ### Ridge Regression
 
-The last model is the ridge regression and similar to the previous model, we use cross validation and grid search to optimize the lambda parameter. The training error is as expected lower than the test error and the optimal lambda was around 0.025.
+The last model is the ridge regression and similar to the previous model, we use cross validation and grid search to optimize the lambda parameter. The training error is as expected lower than the test error and the optimal lambda was around 0.01.
 
 ```{r}
 train_control <- trainControl(method="cv", number=10)
 grid <- expand.grid(lambda=c(0, 0.001, 0.01, 0.1, 1, 10, 100, 1000))
 
-ridge.fit <- train(crim ~ ., data=training, method="ridge",
-                  trControl=train_control, tuneLength=12, preProc=c("center", "scale"))
+set.seed(123)
+ridge.fit <- train(crim ~ ., data=training, method="ridge", tuneGrid=grid,
+                  trControl=train_control, preProc=c("center", "scale"))
+ridge.fit
+
+ridge.train_predict <- predict(ridge.fit, newdata=training)
+training_mse <- mean((training$crim - ridge.train_predict)^2)
+training_mse
+
+ridge.test_predict <- predict(ridge.fit, newdata=testing)
+testing_mse <- mean((testing$crim - ridge.test_predict)^2)
+testing_mse
+```
+
+Here we use our own implementation of ridge regression and it find the lambda to be 10 for optimal solution.
+
+```{r}
+train_control <- trainControl(method="cv", number=10)
+grid <- expand.grid(lambda=c(0, 0.001, 0.01, 0.1, 1, 10, 100, 1000))
+
+set.seed(123)
+ridge.fit <- train(crim ~ ., data=training, method=cridgereg, tuneGrid=grid,
+                   trControl=train_control, preProc=c("center", "scale"))
 ridge.fit
 
 ridge.train_predict <- predict(ridge.fit, newdata=training)

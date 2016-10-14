@@ -31,20 +31,20 @@ RidgeRegressionModel$methods(list(
                               .initialize(.self, call, formula, data, lambda, ...)
                               callSuper(...)
                           }
-                      ))
+                     ))
 
 ## Methods
 RidgeRegressionModel$methods(list(
-                          coef = function() {
-                              "Returns the estimated coefficients."
-                              .coef(.self)
-                          },
-                          pred = function(X=NULL) {
-                              "Returns the lastest fitted values or
+                         coef = function() {
+                             "Returns the estimated coefficients."
+                             .coef(.self)
+                         },
+                         pred = function(X=NULL) {
+                             "Returns the lastest fitted values or
                                if X is specified it will return new predicted values.
                                X do not need to be scaled, it is performed inside this method."
-                              .pred(.self, X)
-                          },
+                             .pred(.self, X)
+                         },
                          print = function() {
                              "Prints the model."
                              .print(.self)

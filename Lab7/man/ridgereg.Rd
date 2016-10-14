@@ -20,7 +20,7 @@ ridgereg(formula, data, lambda=0)
 The fitted model of class \code{"LinearRegressionModel"}.
 }
 \description{
-ridgereg is used to fit ridge regression models.
+ridgereg is used to fit ridge regression models. Uses the QR decomposition to find the coefficients.
 }
 \examples{
 ridgereg(formula = Petal.Width ~ Petal.Length + Sepal.Length, data=iris)

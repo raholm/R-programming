@@ -1,6 +1,6 @@
 #' Ridge Regression
 #'
-#' ridgereg is used to fit ridge regression models.
+#' ridgereg is used to fit ridge regression models. Uses the QR decomposition to find the coefficients.
 #'
 #' @usage
 #' ridgereg(formula, data, lambda=0)
@@ -36,8 +36,8 @@ ridgereg_check_input <- function(formula, data, lambda)
     stopifnot(is.numeric(lambda) && lambda >= 0)
 
     ## Ensures that all variables in the formula
-    ## are present in the data frame
-    variables <- all.vars(formula)
+    ## are present in the data frame.
+    variables <- names(model.matrix(formula, data))[-1]
     for (variable in variables)
     {
         stopifnot(variable %in% names(data))

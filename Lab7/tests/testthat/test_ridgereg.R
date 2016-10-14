@@ -1,4 +1,4 @@
-require(Lab7)
+library(Lab7)
 context("ridgereg")
 
 ## This is a bloody mess
