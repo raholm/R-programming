@@ -3,6 +3,8 @@
 #' All the internal functions of the RidgeRegressionModel class.
 #' (DO NOT EXPORT)
 #'
+NULL
+
 ## Helper Functions ------------------------------------------------------------
 .format_number <- function(number, decimals, ...) {
     formatted <- as.numeric(format(round(number, decimals), nsmall=decimals, ...))
@@ -42,6 +44,8 @@
     object$center <- colMeans(X)
     object$scale <- apply(X, 2, sd)
 
+    ## Could use the scale() method which is probably a much better choice
+    ## but we are here to learn so lets do it the manual (bad) way.
     center_matrix <- matrix(rep(object$center, nrow(X)), ncol=length(object$center), byrow=TRUE)
     scale_matrix <- matrix(rep(object$scale, nrow(X)), ncol=length(object$scale), byrow=TRUE)
 
