@@ -117,3 +117,7 @@ ridge.test_predict <- predict(ridge.fit, newdata=testing)
 testing_mse <- mean((testing$crim - ridge.test_predict)^2)
 testing_mse
 ```
+
+## Result
+
+Based on the mean squarred error from the test data set, the regular linear regression and the ridge regression used in the caret package performed the best.
