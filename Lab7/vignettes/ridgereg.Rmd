@@ -9,6 +9,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Testing Regression Models using the caret package
+
+Here we will use the caret package to test different regression models using the BostonHousing data set from mlbench.
+
+## Loading the packages and import data set
+
 ```{r}
 suppressMessages(library(mlbench))
 suppressMessages(library(caret))
@@ -16,14 +22,25 @@ suppressMessages(library(elasticnet))
 suppressMessages(library(leaps))
 
 data(BostonHousing)
+```
 
-## Data Processing
+## Regression Tests
+
+The first part of training a model is the partition the data set into a training set and a test set. In this particular example we use 80% of the data set as training set and we will be estimating the crime rate by using all the other variables in the dat set.
+
+```{r}
 set.seed(123)
 train_idx <- createDataPartition(BostonHousing$crim, p=0.80, list=FALSE)
 
 training <- BostonHousing[train_idx,]
 testing <- BostonHousing[-train_idx,]
+```
 
+### Linear Regression
+
+The first model we fit to the data is the regular linear regression and we scale the data. The output shows the training/test mean squared errors and as expected the training error is less.
+
+```{r}
 ## Linear Regression
 lm.fit <- train(crim ~ ., data=training, method="lm", preProc=c("center", "scale"))
 lm.fit
@@ -35,9 +52,18 @@ training_mse
 lm.test_predict <- predict(lm.fit, newdata=testing)
 testing_mse <- mean((testing$crim - lm.test_predict)^2)
 testing_mse
+```
 
+### Linear Regression Forward Selection
+
+For our second model, we fit a linear regression with forward selection which uses a greedy algorithm to select the most important features. We use cross validation to validate our model and grid search to find the optimal number of parameters to use in our model. The training error is as expected lower than the test error and the optimal number of variables were 9.
+
+```{r}
 ## Linear Regression Forward Selection
-lmfs.fit <- train(crim ~ ., data=training, method="leapForward", tuneLength=12, preProc=c("center", "scale"))
+train_control <- trainControl(method="cv", number=10)
+grid <- expand.grid(nvmax=1:(ncol(BostonHousing) - 1))
+
+lmfs.fit <- train(crim ~ ., data=training, method="leapForward", trControl=train_control, tuneGrid=grid, preProc=c("center", "scale"))
 lmfs.fit
 
 lmfs.train_predict <- predict(lmfs.fit, newdata=training)
@@ -47,9 +73,16 @@ training_mse
 lmfs.test_predict <- predict(lmfs.fit, newdata=testing)
 testing_mse <- mean((testing$crim - lmfs.test_predict)^2)
 testing_mse
+```
 
+### Ridge Regression
+
+The last model is the ridge regression and similar to the previous model, we use cross validation and grid search to optimize the lambda parameter. The training error is as expected lower than the test error and the optimal lambda was around 0.025.
+
+```{r}
 ## Ridge Regressions (Should use our own implementation)
 train_control <- trainControl(method="cv", number=10)
+grid <- expand.grid(lambda=c(0, 0.001, 0.01, 0.1, 1, 10, 100, 1000))
 
 ridge.fit <- train(crim ~ ., data=training, method="ridge",
                   trControl=train_control, tuneLength=12, preProc=c("center", "scale"))
